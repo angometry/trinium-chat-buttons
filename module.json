@@ -1,7 +1,7 @@
 {
   "id": "trinium-chat-buttons",
   "title": "Trinium Chat Buttons",
-  "description": "Replaces the roll type dropdown with buttons. Inspired by DF Chat Enhancements.",
+  "description": "Adds several buttons below the Foundry VTT Chat with a few convenient features.",
   "version": "1.0.0",
   "authors": [
     {
