@@ -1,5 +1,11 @@
 ## Changelog
 
+### v1.1.1
+
+#### Improvements
+- More desirable default settings
+- Direct links to main branch in module.json
+
 ### v1.1.0
 
 #### New Features
