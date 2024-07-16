@@ -1,7 +1,7 @@
 #chat-controls {
   padding: 0;
   margin: 0;
-  gap: 0.25em;
+  gap: 4px;
   align-items: center;
   width: 100%;
   display: flex;
@@ -11,10 +11,12 @@
 .chat-controls-wrapper {
   display: flex;
   flex-direction: column;
-  padding: .35em .5em .10em .5em;
-  gap: .35em;
   align-items: center;
   width: 100%;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  margin: 0 0 2px 0;
+  padding: 4px;
 }
 
 .chat-sidebar > * {
@@ -26,29 +28,33 @@
 }
 
 #tcb-midi-buttons {
-  height: 1.75em;
-  gap: 0.25em;
+  height: 24px;
+  gap: 4px;
+  margin-bottom: 5px;
 }
 
 #tcb-combat-tracker-button-groups {
-  height: 1.75em;
+  height: 24px;
   width: 100%;
-  gap: 0.25em;
+  gap: 4px;
+    margin-bottom: 5px;
 }
 
 #tcb-roll-type-buttons {
   width: 100%;
-  gap: 0.25em;
+  gap: 4px;
 }
 
 #tcb-combat-tracker-buttons {
   display: flex;
   width: 100%;
+
 }
 
 .tcb-button-row {
   display: flex;
   width: 100%;
+  gap: 4px;
 }
 
 .tcb-button {
@@ -58,26 +64,68 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border-color: black;
+}
+
+/* Midi buttons */
+#tcb-midi-buttons .tcb-button {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: 1px solid black;
+}
+
+#tcb-midi-buttons .tcb-button:hover {
+  color: white;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+#tcb-midi-buttons .tcb-button.tcb-active {
+  color: black;
+}
+
+
+#tcb-combat-tracker-toggle {
+  flex: 0 0 60%;
+}
+
+#tcb-control-icons {
+  flex: 1;
+  background-color: rgb(0 0 0 / 0.25);
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 8px;
+  display: flex;
+  gap: 0.25em;
+}
+
+#tcb-control-icons .tcb-button {
+  background-color: #ffffff00;
+  color: white;
+  border: 0;
+}
+
+#tcb-control-icons .tcb-button:hover {
+  text-shadow: 0 0 10px rgb(255 255 255 / 50%);
+  box-shadow: none;
 }
 
 .tcb-button[data-id="publicroll"].tcb-active {
-  background-color: #7bcf66; /* Green for public roll */
+  background-color: #85ce72; /* Green for public roll */
 }
 
 .tcb-button[data-id="gmroll"].tcb-active {
-  background-color: #69ace4; /* Blue for GM roll */
+  background-color: #7fa5c5; /* Blue for GM roll */
 }
 
 .tcb-button[data-id="selfroll"].tcb-active {
-  background-color: #f3a837; /* Yellow for self roll */
+  background-color: #ffb13e; /* Yellow for self roll */
 }
 
 .tcb-button[data-id="blindroll"].tcb-active {
-  background-color: #ca7885;
+  background-color: #e16f81; /* Red for blind roll */
 }
 
 #tcb-midi-fast-forward-toggle.tcb-active {
-  background-color: #ff5722; 
+  background-color: #ff551f; 
 }
 
 #tcb-midi-roll-toggle.tcb-active {
@@ -85,18 +133,18 @@
 }
 
 #tcb-midi-advantage-toggle.tcb-active {
-  background-color: #74b53f; 
+  background-color: #88ff28; 
 }
 
 #tcb-midi-disadvantage-toggle.tcb-active {
-  background-color: #dd564c;
+  background-color: #ff3c2d;
 }
 
 #tcb-combat-tracker-toggle.tcb-active {
   background-color: #fedbff;
 }
 
-.tcb-active{
+.tcb-active {
   box-shadow: none;
   border: 1px solid black;
 }
