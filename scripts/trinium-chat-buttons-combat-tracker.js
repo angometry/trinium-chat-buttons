@@ -73,8 +73,6 @@ class TriniumChatButtonsCombatTracker {
             <i class="fas fa-dice"></i>
           </button>
         `);
-        controlIcons.css("width", "20%");
-        combatTrackerButton.css("width", "80%");
       }
 
       const buttonGroup = $(

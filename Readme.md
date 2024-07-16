@@ -35,11 +35,26 @@ These buttons allow you to toggle these states as if you held the corresponding 
 
 ### Combat Tracker
 
-A mini combat tracker is available within the chat controls. It includes:
-- A list of combatants with initiative, name, image, and health.
-- Controls for navigating between rounds and turns.
+A mini combat tracker is available within the chat controls, providing a compact view of the combat status directly in the chat interface.
 
-The current iteration of the mini combat tracker is very basic and *does not* mask sensitive information to players. The next release of the module will greatly expand its functionalities and enforce visibility settings.
+#### Features
+
+- **Combatant List:** Displays all active combatants with their initiative, name, image, and health.
+- **Health Bar:** Visual representation of combatant's health with color indicating health status.
+- **Disposition Colors:** Background colors to indicate if a combatant is an ally (green), enemy (red), or neutral (yellow). 
+- **Defeated Status:** Visual indication (strikethrough and red background) for defeated combatants.
+- **NPC Name Masking:** Invisible NPCs are hidden and all NPC names are set to "Creature" for non-GM players.
+- **Hidden NPCs:** Tokens set to invisible have a grey background for GM players and are hidden to non-GM players.
+
+#### Shortcuts
+- **Click Combatant:** Select token.
+- **Double Click Combatant:** Open character sheet.
+
+#### Additional Buttons
+- **GM: Roll all NPC initiatives** 
+- **GM: Select all players in scene** 
+- **GM: Select random player in scene** 
+- **Player: Own initiative roller**
 
 ### Additional CSS Changes
 
