@@ -10,6 +10,7 @@
     "ToggleMidiAdvantage": "Toggle MidiQOL Advantage",
     "ToggleMidiDisadvantage": "Toggle MidiQOL Disadvantage",
 
+    "MiniTracker": "Mini Tracker",
     "ToggleCombatTracker": "Toggle Mini Combat Tracker",
 
     "PreviousRound": "Previous Round",
@@ -51,6 +52,20 @@
     "PrivacyButtonsHeader": "Privacy Buttons",
     "MidiButtonsPollingHeader": "MIDI Buttons + Polling",
     "CombatTrackerHeader": "Combat Tracker",
-    "MiscHeader": "Misc Settings"
+    "MiscHeader": "Misc Settings",
+
+    "RollPlayerInitiative": "Roll Player Initiative",
+    "EndTurn": "Your turn! Click here to end.",
+    "NoCombat": "Add combatants and start combat to show the mini tracker",
+    "RollNPCInitiative": "Roll NPC Initiative",
+    "SelectAllPlayerTokens": "Select All Player Tokens",
+    "SelectRandomPlayerToken": "Select Random Player Token",
+    "UpdateCombatant": "Update Combatant",
+    "ClearInitiative": "Clear Initiative",
+    "RerollInitiative": "Re-Roll Initiative",
+    "SetCurrent": "Set to Current",
+    "RemoveCombatant": "Remove Combatant",
+    "ToggleVisibility": "Toggle Visibility",
+    "MarkDefeated": "Mark Defeated"
   }
 }
