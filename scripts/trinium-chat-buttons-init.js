@@ -27,7 +27,7 @@ class TriniumChatButtonsInit {
         'players': game.i18n.localize('TRINIUMCB.PlayersOnly'),
         'everyone': game.i18n.localize('TRINIUMCB.Everyone')
       },
-      default: 'gm'
+      default: 'everyone'
     });
 
     game.settings.register('trinium-chat-buttons', 'enableMidiButtons', {
@@ -91,7 +91,7 @@ class TriniumChatButtonsInit {
         'players': game.i18n.localize('TRINIUMCB.PlayersOnly'),
         'everyone': game.i18n.localize('TRINIUMCB.Everyone')
       },
-      default: 'gm'
+      default: 'everyone'
     });
 
     game.settings.register('trinium-chat-buttons', 'overrideDnd5eCheck', {
@@ -119,7 +119,7 @@ class TriniumChatButtonsInit {
       scope: 'world',
       config: true,
       type: Boolean,
-      default: false
+      default: true
     });
   }
 
