@@ -1,0 +1,40 @@
+{
+  "id": "trinium-chat-buttons",
+  "title": "Trinium Chat Buttons",
+  "description": "Replaces the roll type dropdown with buttons. Inspired by DF Chat Enhancements.",
+  "version": "1.0.0",
+  "authors": [
+    {
+      "name": "Andrea Gomez",
+      "discord": "angometry",
+      "url": "https://github.com/TheDarkTongo",
+      "flags": {}
+    }
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "languages/en.json",
+      "flags": {}
+    }
+  ],
+  "esmodules": [
+    "scripts/trinium-chat-buttons-init.js",
+    "scripts/trinium-chat-buttons-privacy.js",
+    "scripts/trinium-chat-buttons-midi.js",
+    "scripts/trinium-chat-buttons-combat-tracker.js"
+  ],
+  "styles": [
+    "styles/trinium-chat-buttons.css",
+    "styles/trinium-chat-buttons-combat-tracker.css"
+  ],
+  "url": "https://github.com/thedarktongo/trinium-chat-buttons",
+  "manifest": "https://github.com/thedarktongo/trinium-chat-buttons/releases/latest/download/module.json",
+  "download": "https://github.com/thedarktongo/trinium-chat-buttons/releases/download/v1.0.0/module.zip",
+  "compatibility": {
+    "minimum": "12",
+    "verified": "12",
+    "maximum": "12.999"
+  }
+}

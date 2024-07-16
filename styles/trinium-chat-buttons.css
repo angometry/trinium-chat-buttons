@@ -1,0 +1,102 @@
+#chat-controls {
+  padding: 0;
+  margin: 0;
+  gap: 0.25em;
+  align-items: center;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.chat-controls-wrapper {
+  display: flex;
+  flex-direction: column;
+  padding: .35em .5em .10em .5em;
+  gap: .35em;
+  align-items: center;
+  width: 100%;
+}
+
+.chat-sidebar > * {
+  flex: 0 0 auto;
+}
+
+#tcb-midi-button-groups {
+  width: 100%;
+}
+
+#tcb-midi-buttons {
+  height: 1.75em;
+  gap: 0.25em;
+}
+
+#tcb-combat-tracker-button-groups {
+  height: 1.75em;
+  width: 100%;
+  gap: 0.25em;
+}
+
+#tcb-roll-type-buttons {
+  width: 100%;
+  gap: 0.25em;
+}
+
+#tcb-combat-tracker-buttons {
+  display: flex;
+  width: 100%;
+}
+
+.tcb-button-row {
+  display: flex;
+  width: 100%;
+}
+
+.tcb-button {
+  flex: 1 1 auto;
+  max-height: 2em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tcb-button[data-id="publicroll"].tcb-active {
+  background-color: #7bcf66; /* Green for public roll */
+}
+
+.tcb-button[data-id="gmroll"].tcb-active {
+  background-color: #69ace4; /* Blue for GM roll */
+}
+
+.tcb-button[data-id="selfroll"].tcb-active {
+  background-color: #f3a837; /* Yellow for self roll */
+}
+
+.tcb-button[data-id="blindroll"].tcb-active {
+  background-color: #ca7885;
+}
+
+#tcb-midi-fast-forward-toggle.tcb-active {
+  background-color: #ff5722; 
+}
+
+#tcb-midi-roll-toggle.tcb-active {
+  background-color: #ffe922;
+}
+
+#tcb-midi-advantage-toggle.tcb-active {
+  background-color: #74b53f; 
+}
+
+#tcb-midi-disadvantage-toggle.tcb-active {
+  background-color: #dd564c;
+}
+
+#tcb-combat-tracker-toggle.tcb-active {
+  background-color: #fedbff;
+}
+
+.tcb-active{
+  box-shadow: none;
+  border: 1px solid black;
+}

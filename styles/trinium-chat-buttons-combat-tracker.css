@@ -1,0 +1,78 @@
+#tcb-mini-combat-tracker {
+  width: 100%;
+  background: #0000003d;
+  border: 1px solid #00000029;
+  border-radius: 4px;
+  display: none;
+}
+
+.tcb-combatants-mini {
+  display: flex;
+  overflow-x: auto;
+}
+
+.tcb-combatant-mini {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.25em;
+  border: 1px solid #00000085;
+  background: #00000000;
+}
+
+.tcb-combatant-mini:hover {
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.tcb-combatant-mini.tcb-active {
+  box-shadow: inset 0 0 10px 2px #ff5a00;
+}
+
+
+
+.tcb-combatant-mini-img {
+  height: 4em;
+  width: auto;
+  margin-bottom: 2px;
+  border: none;
+  object-fit: contain;
+}
+
+.tcb-combatant-mini-name {
+  font-size: 12px;
+  text-align: center;
+  width: 50px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tcb-combatant-mini-initiative,
+.tcb-combatant-mini-health {
+  font-size: 11px;
+}
+
+.tcb-combat-controls-mini {
+  display: flex;
+  justify-content: space-between;
+  gap: 2px;
+  height: 1.5em;
+}
+
+.tcb-combat-controls-mini button {
+  background: none;
+  border: none;
+  border-radius: 0 !important;
+  color: #fff;
+  margin: 0;
+  cursor: pointer;
+  font-size: 11px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tcb-combat-controls-mini button:hover {
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+}

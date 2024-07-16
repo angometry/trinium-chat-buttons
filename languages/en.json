@@ -1,0 +1,56 @@
+{
+  "TRINIUMCB": {
+    "PublicRoll": "Public Roll",
+    "PrivateRoll": "Private Roll",
+    "SelfRoll": "Self Roll",
+    "BlindRoll": "Blind Roll",
+
+    "ToggleMidiFastForward": "Toggle MidiQOL Fast Forward",
+    "ToggleMidiRoll": "Toggle MidiQOL Auto Roll + d20 FF",
+    "ToggleMidiAdvantage": "Toggle MidiQOL Advantage",
+    "ToggleMidiDisadvantage": "Toggle MidiQOL Disadvantage",
+
+    "ToggleCombatTracker": "Toggle Mini Combat Tracker",
+
+    "PreviousRound": "Previous Round",
+    "PreviousTurn": "Previous Turn",
+    "NextTurn": "Next Turn",
+    "NextRound": "Next Round",
+
+    "PrivacyButtonVisibility": "Privacy Button Visibility",
+    "PrivacyButtonVisibilityHint": "Select who can see the privacy buttons.",
+    "EnablePrivacyButtons": "Enable Roll Privacy Buttons",
+    "EnablePrivacyButtonsHint": "Enable or disable the roll privacy buttons.",
+
+    "MidiButtonVisibility": "MidiQOL Button Visibility",
+    "MidiButtonVisibilityHint": "Select who can see the MidiQOL buttons.",
+    "EnableMidiButtons": "Enable Midi QOL Buttons",
+    "EnableMidiButtonsHint": "Enable or disable the Midi QOL buttons.",
+
+    "EnableCombatTrackerButtons": "Enable Combat Tracker Buttons",
+    "EnableCombatTrackerButtonsHint": "Enable or disable the combat tracker buttons.",
+    "CombatTrackerButtonVisibility": "Combat Tracker Button Visibility",
+    "CombatTrackerButtonVisibilityHint": "Select who can see the combat tracker buttons. At this time, the tracker doesn't hide any sensitive information from players, like names or HP values.",
+    "OverrideDnD5eCheck": "Experimental: Override DnD5e Check",
+    "OverrideDnD5eCheckHint": "By default, the combat tracker is not loaded when the system isn’t DnD5e. With this override on (default off) it still does. Things may break.",
+
+    "EnablePolling": "Enable Polling",
+    "EnablePollingHint": "Enable or disable polling to autoupdate MidiQOL button states when relative Midi keybindings are held down.",
+    "PollingRate": "Polling Rate",
+    "PollingRateHint": "Set the polling rate for checking MidiQOL button states (in milliseconds).",
+
+    "EnableCSSTweaks": "Enable Sidebar CSS Tweaks",
+    "EnableCSSTweaksHint": "Enable or disable custom CSS tweaks for a darker sidebar and reduced gaps.",
+    "Debug": "Enable Debug",
+    "DebugHint": "Enable or disable debug logging for Trinium Chat Buttons.",
+
+    "GMOnly": "GM Only",
+    "PlayersOnly": "Players Only",
+    "Everyone": "Everyone",
+    
+    "PrivacyButtonsHeader": "Privacy Buttons",
+    "MidiButtonsPollingHeader": "MIDI Buttons + Polling",
+    "CombatTrackerHeader": "Combat Tracker",
+    "MiscHeader": "Misc Settings"
+  }
+}

@@ -1,0 +1,1 @@
+This is a simple Foundry VTT module that replaces the default dropdown used to set roll privacy (Public, Private/GM, Self, Blind) with 4 easy to use buttons.
