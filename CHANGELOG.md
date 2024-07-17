@@ -1,5 +1,41 @@
 ## Changelog
 
+### v1.1.2
+
+#### New Features
+
+Added new features to the combat tracker:
+- Create combat button, only shown to GM if there is currently no combat.
+- Start combat button, only shown to GM if combat hasn't started yet.
+- Added Right-click menu on combatants in the combat tracker:
+  - Clear Initiative
+  - Reroll Initiative
+  - Set Initiative
+  - Set Turn to this Combatant
+  - Toggle Token Visibility
+  - Toggle Defeated Status
+  - Change Disposition (Neutral, Friendly, Enemy, Secret)
+
+Added new features to the buttons next to the combat tracker:
+- Double clicking "Select All Player Tokens" will instead select all NPCs.
+- Clicking the (previously) "Select Random Player Token" button while 2 or more tokens are selected will instead select one random token among the selected tokens.
+- Added "Find Own Token" button for players.
+- Buttons that select tokens now pan to them.
+
+#### Improvements
+- Added a setting to configure how much of an NPC's health is shown to the player. Nothing, only the healthbar or the nujmerical value too. Players' health value and bar are always shown.
+- On round 1, players no longer see non-player combatants that haven't taken a turn yet.
+- Refactored the janky mess the combat tracker class used to be.
+- Added support for "Secret" token disposition.
+- Improved CSS
+
+#### Bug Fixes
+
+- Fixed hidden status not being removed when the token is unhidden.
+- Fixed some issues with combats that were in view and running, but not marked as active by foundry.
+- Fixed defeated status sometimes not working.
+- Fixed some combat tracker event handlers not being cleaned up correctly.
+
 ### v1.1.1
 
 #### Improvements
