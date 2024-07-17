@@ -1,7 +1,7 @@
 #tcb-mini-combat-tracker {
   width: 100%;
   background: rgb(0 0 0 / 60%);
-  border: 3px solid rgb(0 0 0 / 60%);
+  border: 3px solid rgb(10 10 10 / 60%);
   border-radius: 5px;
   margin-bottom: 5px;
   display: none;
@@ -150,6 +150,10 @@
   background-color: rgb(255 250 97 / 20%);
 }
 
+.tcb-combatant-mini.secret {
+  background-color: rgb(238 97 255 / 25%);
+}
+
 .tcb-combatant-mini.tcb-defeated {
   background-color: rgb(255 0 0 / 0.2);
   text-decoration: line-through;
@@ -162,7 +166,7 @@
 
 @keyframes endTurnGlow {
   0% { color: #fff; }
-  50% { color: #ff5a00; }
+  50% { color: #fd782f; }
   100% { color: #fff; }
 }
 
@@ -171,3 +175,97 @@
   animation: endTurnGlow 2s infinite;
 }
 
+
+
+
+/* Midi button styles */
+.tcb-combatants-nocombatants,.tcb-combatants-nocombat {
+  color: white;
+  text-align: center;
+  padding: 5px;
+  margin: 2px;
+}
+
+/* Midi button styles */
+.tcb-combatants-nocombat {
+padding: 0;
+  margin: 0;
+}
+
+.tcb-combatants-nocombat .tcb-button{
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  cursor: pointer;
+  animation: endTurnGlow 2.5s infinite;
+}
+
+#tcb-start-combat {
+  background-color: transparent;
+  color: white;
+  cursor: pointer;
+  animation: endTurnGlow 5s infinite;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+
+#tcb-start-combat:hover{
+  color: white;
+  animation: none;
+  border: 1px solid rgb(255 255 255 / 50%);
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.25);
+}
+
+
+.tcb-dialog-button {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: 1px solid black;
+  padding: 2px 5px;
+  margin: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tcb-dialog-button:hover {
+  color: white;
+  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+
+.tcb-right-click-dialog {
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 3px;
+  padding: 0px;
+}
+
+
+.tcb-dialog-title {
+  padding: 2px;
+  margin-bottom: 2px;
+  text-align: center;
+}
+
+.tcb-dialog-section-title {
+  font-size: .75em;
+  text-align: center;
+  display:none;
+}
+
+
+.tcb-dialog-flex, .tcb-dialog-disposition {
+  display: flex;
+  justify-content: space-around;
+  padding: 0;
+}
+
+.tcb-dialog-disposition .tcb-dialog-button {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: 2px;
+}
