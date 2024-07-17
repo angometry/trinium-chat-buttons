@@ -1,6 +1,6 @@
 ## Changelog
 
-### v1.2.0
+### v1.2.1
 
 Verified foundry v11 compatibility
 
