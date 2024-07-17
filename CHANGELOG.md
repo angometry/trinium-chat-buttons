@@ -2,6 +2,10 @@
 
 ### v1.2.0
 
+Verified foundry v11 compatibility
+
+### v1.2.0
+
 #### New Features
 
 Added new features to the combat tracker:
