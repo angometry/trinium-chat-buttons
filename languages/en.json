@@ -48,7 +48,7 @@
     "PrivacyButtonsHeader": "Privacy Buttons",
     "MidiButtonsPollingHeader": "MIDI Buttons + Polling",
     "CombatTrackerHeader": "Combat Tracker",
-    "MiscHeader": "Misc Settings",
+    "DebugHeader": "Misc Settings",
 
     "UpdateCombatant": "Update Combatant",
     "RemoveCombatant": "Remove Combatant",
