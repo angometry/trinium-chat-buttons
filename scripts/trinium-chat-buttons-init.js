@@ -94,6 +94,20 @@ class TriniumChatButtonsInit {
       default: 'everyone'
     });
 
+    game.settings.register('trinium-chat-buttons', 'healthPrivacy', {
+      name: game.i18n.localize('TRINIUMCB.HealthPrivacy'),
+      hint: game.i18n.localize('TRINIUMCB.HealthPrivacyHint'),
+      scope: 'world',
+      config: true,
+      type: String,
+      choices: {
+        'all': game.i18n.localize('TRINIUMCB.HealthPrivacyAll'),
+        'healthbar': game.i18n.localize('TRINIUMCB.HealthPrivacyHealthbar'),
+        'nothing': game.i18n.localize('TRINIUMCB.HealthPrivacyNothing')
+      },
+      default: 'nothing'
+    });
+
     game.settings.register('trinium-chat-buttons', 'overrideDnd5eCheck', {
       name: game.i18n.localize('TRINIUMCB.OverrideDnD5eCheck'),
       hint: game.i18n.localize('TRINIUMCB.OverrideDnD5eCheckHint'),
