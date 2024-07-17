@@ -1,3 +1,10 @@
+.trinium-settings-header {
+  margin-top: 1em !important;
+  background-color: rgb(255 255 255 / 50%);
+  padding: 0.5em;
+  font-weight: bold;
+}
+
 #chat-controls {
   padding: 0;
   margin: 0;
@@ -37,7 +44,7 @@
   height: 24px;
   width: 100%;
   gap: 4px;
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
 
 #tcb-roll-type-buttons {
@@ -48,7 +55,6 @@
 #tcb-combat-tracker-buttons {
   display: flex;
   width: 100%;
-
 }
 
 .tcb-button-row {
@@ -82,7 +88,6 @@
 #tcb-midi-buttons .tcb-button.tcb-active {
   color: black;
 }
-
 
 #tcb-combat-tracker-toggle {
   flex: 0 0 60%;
@@ -125,7 +130,7 @@
 }
 
 #tcb-midi-fast-forward-toggle.tcb-active {
-  background-color: #ff551f; 
+  background-color: #ff551f;
 }
 
 #tcb-midi-roll-toggle.tcb-active {
@@ -133,7 +138,7 @@
 }
 
 #tcb-midi-advantage-toggle.tcb-active {
-  background-color: #88ff28; 
+  background-color: #88ff28;
 }
 
 #tcb-midi-disadvantage-toggle.tcb-active {

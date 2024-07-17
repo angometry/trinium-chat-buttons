@@ -150,10 +150,10 @@ class TriniumChatButtonsInit {
   // Add Headers to the settings page because they're nice
   static addSettingsHeaders() {
     Hooks.on('renderSettingsConfig', (app, html, data) => {
-      $('<div>').addClass('form-group group-header').html(game.i18n.localize('TRINIUMCB.PrivacyButtonsHeader')).insertBefore($('[name="trinium-chat-buttons.enablePrivacyButtons"]').closest('div.form-group'));
-      $('<div>').addClass('form-group group-header').html(game.i18n.localize('TRINIUMCB.MidiButtonsPollingHeader')).insertBefore($('[name="trinium-chat-buttons.enableMidiButtons"]').closest('div.form-group'));
-      $('<div>').addClass('form-group group-header').html(game.i18n.localize('TRINIUMCB.CombatTrackerHeader')).insertBefore($('[name="trinium-chat-buttons.enableCombatTrackerButtons"]').closest('div.form-group'));
-      $('<div>').addClass('form-group group-header').html(game.i18n.localize('TRINIUMCB.DebugHeader')).insertBefore($('[name="trinium-chat-buttons.debug"]').closest('div.form-group'));
+      $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.PrivacyButtonsHeader')).insertBefore($('[name="trinium-chat-buttons.enablePrivacyButtons"]').closest('div.form-group'));
+      $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.MidiButtonsPollingHeader')).insertBefore($('[name="trinium-chat-buttons.enableMidiButtons"]').closest('div.form-group'));
+      $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.CombatTrackerHeader')).insertBefore($('[name="trinium-chat-buttons.enableCombatTrackerButtons"]').closest('div.form-group'));
+      $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.DebugHeader')).insertBefore($('[name="trinium-chat-buttons.debug"]').closest('div.form-group'));
     });
   }
 }
