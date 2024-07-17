@@ -56,10 +56,13 @@ Convenient, concise, compact combat. This GM is one click away from an overview 
 
 - **Combatant List:** Displays all active combatants with their initiative, name, image, and health.
 - **Health Bar:** Visual representation of combatant's health with color indicating health status.
-- **Disposition Colors:** Background colors to indicate if a combatant is an ally (green), enemy (red), or neutral (yellow). 
+- **Disposition Colors:** Background colors to indicate if a combatant is an ally (green), enemy (red), neutral (yellow) or secret (purple). 
 - **Defeated Status:** Visual indication (strikethrough and red background) for defeated combatants.
-- **NPC Name Masking:** Invisible NPCs are hidden and all NPC names are set to "Creature" for non-GM players.
-- **Hidden NPCs:** Tokens set to invisible have a grey background for GM players and are hidden to non-GM players.
+- **Masking:**
+    - **Names:** All NPC names are set to "Creature" for non-GM players.
+    - **Hidden NPCs:** Tokens set to invisible have a grey background for GM players and are hidden to non-GM players.
+    - **Health:** Players can't see NPC Health and Healthbar. Can be configured in settings.
+    - **Hide until turn:** Before combat and on the first round, players can't see NPCs who haven't acted yet.
 
 #### GM and Player View
 While the GM on the left sees everything, the *Hidden* Zombie, ceature names and health values are hidden to the player. Yes, it also has a glowing End Turn button!
@@ -69,11 +72,25 @@ While the GM on the left sees everything, the *Hidden* Zombie, ceature names and
 #### Shortcuts
 - **Click Combatant:** Select token.
 - **Double Click Combatant:** Open character sheet.
+- **Right Click Combatant**:
+  - Clear Initiative
+  - Reroll Initiative
+  - Set Initiative
+  - Set Turn to this Combatant
+  - Toggle Token Visibility
+  - Toggle Defeated Status
+  - Change Disposition (Neutral, Friendly, Enemy, Secret)
 
-#### Additional Buttons
+#### Right-click menu.
+All it takes is one right-click to get all the quick actions the GM might want on their combatants!
+
+![Combat Tracker context menu](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/combat-tracker-menu.gif)
+
+#### Additional Buttons next to the Mini Tracker
 - **GM: Roll all NPC initiatives** 
-- **GM: Select all players in scene** 
-- **GM: Select random player in scene** 
+- **GM: Select all player tokens. Doubleclick to select all NPCs** 
+- **GM: Pick one selected token at random. If none selected, pick a random player** 
+- **Player: Find and select my token**
 - **Player: Own initiative roller**
 
 ### Additional CSS Changes
