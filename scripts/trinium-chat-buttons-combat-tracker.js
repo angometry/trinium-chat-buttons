@@ -1,5 +1,21 @@
+import { TriniumLogger } from './logger.js';
+
+/**
+ * TriniumChatButtonsCombatTracker
+ * Manages combat tracker functionality for Trinium Chat Buttons in Foundry VTT.
+ */
 class TriniumChatButtonsCombatTracker {
+  static SETTINGS = {
+    MODULE_NAME: 'trinium-chat-buttons',
+    COMBAT_TRACKER_VISIBILITY: 'combatTrackerButtonVisibility',
+    DEBUG: 'debug'
+  };
+
+  static logger;
+  static initialized = false;
+
   static init() {
+    this.logger = new TriniumLogger(this.SETTINGS.MODULE_NAME);
     Hooks.on("renderChatLog", this.initializeButtons.bind(this));
     this.initialized = false;
   }
@@ -13,8 +29,8 @@ class TriniumChatButtonsCombatTracker {
     }
 
     const combatTrackerVisibility = game.settings.get(
-      "trinium-chat-buttons",
-      "combatTrackerButtonVisibility"
+      this.SETTINGS.MODULE_NAME,
+      this.SETTINGS.COMBAT_TRACKER_VISIBILITY
     );
 
     const showCombatTrackerButtons =
@@ -22,9 +38,7 @@ class TriniumChatButtonsCombatTracker {
       (combatTrackerVisibility === "players" && !game.user.isGM) ||
       (combatTrackerVisibility === "gm" && game.user.isGM);
 
-    if (!showCombatTrackerButtons) {
-      return;
-    }
+    if (!showCombatTrackerButtons) {return;}
 
     if (!this.initialized) {
       this.addCombatTrackerButtons();
@@ -227,7 +241,7 @@ class TriniumChatButtonsCombatTracker {
       '<div id="tcb-mini-combat-tracker" class="tcb-button-row"></div>'
     );
 
-    this.updateMiniCombatTracker(combatTracker);
+    this.updateMiniCombatTracker();
 
     return combatTracker;
   }
@@ -235,22 +249,27 @@ class TriniumChatButtonsCombatTracker {
   static async toggleCombatTracker() {
     let combatTracker = $("#tcb-mini-combat-tracker");
     const combatTrackerButton = $("#tcb-combat-tracker-toggle");
+  
     if (combatTracker.length) {
-      combatTracker.toggle();
-      combatTrackerButton.toggleClass(
-        "tcb-active",
-        combatTracker.is(":visible")
-      );
+      if (combatTracker.is(":visible")) {
+        combatTracker.slideUp(350);
+      } else {
+        combatTracker.slideDown(350);
+      }
+      combatTrackerButton.toggleClass("tcb-active", combatTracker.is(":visible"));
       this.log("Toggled combat tracker visibility.");
     } else {
       combatTracker = this.createMiniCombatTracker();
       $("#chat-controls").parent().prepend(combatTracker);
+      combatTracker.slideDown(350);
       combatTrackerButton.addClass("tcb-active");
       this.log("Created and displayed mini combat tracker.");
     }
   }
+  
 
-  static async updateMiniCombatTracker(combatTracker) {
+  static async updateMiniCombatTracker() {
+    let combatTracker = $("#tcb-mini-combat-tracker");
     const isGM = game.user.isGM;
     let combat = game.combats.active || game.combats.viewed;
   
@@ -264,7 +283,7 @@ class TriniumChatButtonsCombatTracker {
         $("#tcb-create-combat").off("click").on("click", async () => {
           combat = await Combat.create({});
           await combat.activate();
-          this.updateMiniCombatTracker(combatTracker);
+          this.updateMiniCombatTracker();
         });
       }
       this.log("No combat exists. Displayed create combat button or status message.");
@@ -334,21 +353,15 @@ class TriniumChatButtonsCombatTracker {
       $("#tcb-start-combat").off("click").on("click", async () => {
         await combat.startCombat();
         await combat.activate();
-        this.updateMiniCombatTracker(combatTracker);
+        this.updateMiniCombatTracker();
       });
     }
   
-    this.addCombatTrackerEventListeners();
-    if(isGM){this.addRightClickDialogListeners()};
     this.scrollToActiveCombatant(combatTracker);
     this.log("Updated mini combat tracker.");
   }
   
-  
-  
-  
-  
-  
+
 
   static createHealthBar(combatant, isGM) {
     const healthPrivacy = game.settings.get("trinium-chat-buttons", "healthPrivacy");
@@ -420,106 +433,90 @@ class TriniumChatButtonsCombatTracker {
 
   static addEventListeners() {
     Hooks.on("updateCombat", () => {
-      this.updateMiniCombatTracker($("#tcb-mini-combat-tracker"));
+      this.updateMiniCombatTracker();
       this.log("Combat updated.");
     });
 
     Hooks.on("updateCombatant", () => {
-      this.updateMiniCombatTracker($("#tcb-mini-combat-tracker"));
+      this.updateMiniCombatTracker();
       this.log("Combatant updated.");
     });
 
     Hooks.on("deleteCombatant", () => {
-      this.updateMiniCombatTracker($("#tcb-mini-combat-tracker"));
+      this.updateMiniCombatTracker();
       this.log("Combatant deleted.");
     });
 
     Hooks.on("renderCombatTracker", () => {
-      this.updateMiniCombatTracker($("#tcb-mini-combat-tracker"));
+      this.updateMiniCombatTracker();
       this.log("Combat tracker rendered.");
     });
-  }
 
-  static addCombatTrackerEventListeners() {
-    $("#tcb-mini-combat-tracker .tcb-combat-controls-mini button")
-      .off("click")
-      .on("click", async (event) => {
-        const control = $(event.currentTarget).data("control");
-        const combat = game.combats.active;
-        if (combat) {
-          switch (control) {
-            case "previousRound":
-              await combat.previousRound();
-              break;
-            case "previousTurn":
-              await combat.previousTurn();
-              break;
-            case "nextTurn":
-              await combat.nextTurn();
-              break;
-            case "nextRound":
-              await combat.nextRound();
-              break;
-            case "endTurn":
-              await combat.nextTurn();
-              break;
-          }
-          this.updateMiniCombatTracker($("#tcb-mini-combat-tracker"));
-          this.log(`Executed combat control: ${control}`);
-        }
-      });
-
-    $("#tcb-mini-combat-tracker .tcb-combatant-mini")
-      .off("mouseenter mouseleave")
-      .on("mouseenter", (event) => {
-        const tokenId = $(event.currentTarget).data("token-id");
-        const token = canvas.tokens.get(tokenId);
-        if (token) {
-          token._onHoverIn(event);
-        }
-      })
-      .on("mouseleave", (event) => {
-        const tokenId = $(event.currentTarget).data("token-id");
-        const token = canvas.tokens.get(tokenId);
-        if (token) {
-          token._onHoverOut(event);
-        }
-      });
-
-    $("#tcb-mini-combat-tracker .tcb-combatant-mini")
-      .off("click")
-      .on("click", (event) => {
-        const tokenId = $(event.currentTarget).data("token-id");
-        const token = canvas.tokens.get(tokenId);
-        if (token) {
-          token.control({ releaseOthers: true });
-        }
-      });
-
-    $("#tcb-mini-combat-tracker .tcb-combatant-mini")
-      .off("dblclick")
-      .on("dblclick", (event) => {
-        const combatantId = $(event.currentTarget).data("combatant-id");
-        const combat = game.combats.active;
-        const combatant = combat.turns.find((c) => c.id === combatantId);
-        if (combatant && combatant.actor?.sheet) {
-          combatant.actor.sheet.render(true);
-        }
-      });
-
-  }
-
-  static addRightClickDialogListeners() {
-    $("#tcb-mini-combat-tracker .tcb-combatant-mini").off("contextmenu").on("contextmenu", (event) => {
-      event.preventDefault();
-  
-      const combatantId = $(event.currentTarget).data("combatant-id");
+    $("#tcb-mini-combat-tracker").on("click", ".tcb-combat-controls-mini button", async (event) => {
+      const control = $(event.currentTarget).data("control");
       const combat = game.combats.active;
-      const combatant = combat.turns.find(c => c.id === combatantId);
-      if (combatant) {
-        this.showRightClickDialog(combatant, event.pageX, event.pageY);
+      if (combat) {
+        switch (control) {
+          case "previousRound":
+            await combat.previousRound();
+            break;
+          case "previousTurn":
+            await combat.previousTurn();
+            break;
+          case "nextTurn":
+            await combat.nextTurn();
+            break;
+          case "nextRound":
+            await combat.nextRound();
+            break;
+          case "endTurn":
+            await combat.nextTurn();
+            break;
+        }
+        this.log(`Executed combat control: ${control}`);
       }
     });
+
+    $("#tcb-mini-combat-tracker").on("mouseenter mouseleave", ".tcb-combatant-mini", (event) => {
+      const tokenId = $(event.currentTarget).data("token-id");
+      const token = canvas.tokens.get(tokenId);
+      if (token) {
+        if (event.type === "mouseenter") {
+          token._onHoverIn(event);
+        } else {
+          token._onHoverOut(event);
+        }
+      }
+    });
+
+    $("#tcb-mini-combat-tracker").on("click", ".tcb-combatant-mini", (event) => {
+      const tokenId = $(event.currentTarget).data("token-id");
+      const token = canvas.tokens.get(tokenId);
+      if (token) {
+        token.control({ releaseOthers: true });
+      }
+    });
+
+    $("#tcb-mini-combat-tracker").on("dblclick", ".tcb-combatant-mini", (event) => {
+      const combatantId = $(event.currentTarget).data("combatant-id");
+      const combat = game.combats.active;
+      const combatant = combat.turns.find((c) => c.id === combatantId);
+      if (combatant && combatant.actor?.sheet) {
+        combatant.actor.sheet.render(true);
+      }
+    });
+
+    if (game.user.isGM) {
+      $("#tcb-mini-combat-tracker").on("contextmenu", ".tcb-combatant-mini", (event) => {
+        event.preventDefault();
+        const combatantId = $(event.currentTarget).data("combatant-id");
+        const combat = game.combats.active;
+        const combatant = combat.turns.find(c => c.id === combatantId);
+        if (combatant) {
+          this.showRightClickDialog(combatant, event.pageX, event.pageY);
+        }
+      });
+    }
   }
   
   static showRightClickDialog(combatant, x, y) {
@@ -535,7 +532,37 @@ class TriniumChatButtonsCombatTracker {
       }
     }
   
-    const dialogContent = `
+    const dialogContent = this.createDialogContent(combatant);
+  
+    const parentElement = $("#chat-controls-wrapper").length ? $("#chat-controls-wrapper") : $("#chat-controls").parent();
+    const dialog = $(dialogContent).hide().prependTo(parentElement);
+  
+    $(document).off("click.tcb-dialog");
+  
+    dialog.find(".tcb-dialog-button").off("click").on("click", async (event) => {
+      const action = $(event.currentTarget).data("action");
+      const disposition = $(event.currentTarget).data("disposition");
+      const combat = game.combats.active;
+  
+      await this.handleDialogAction(action, disposition, combat, combatant);
+    });
+  
+    $(document).on("click.tcb-dialog", (event) => {
+      if (!$(event.target).closest(".tcb-right-click-dialog").length) {
+        dialog.slideUp(() => dialog.remove());
+        $(document).off("click.tcb-dialog");
+      }
+    });
+  
+    if (!existingDialog.length) {
+      dialog.slideDown();
+    } else {
+      dialog.show();
+    }
+  }
+
+  static createDialogContent(combatant) {
+    return `
       <div class="tcb-right-click-dialog" data-combatant-id="${combatant.id}">
         <div class="tcb-dialog-title">${game.i18n.localize("TRINIUMCB.OptionsFor")} ${combatant.name}</div>
         <div class="tcb-dialog-section">
@@ -585,64 +612,39 @@ class TriniumChatButtonsCombatTracker {
         </div>
       </div>
     `;
-  
-    const parentElement = $("#chat-controls-wrapper").length ? $("#chat-controls-wrapper") : $("#chat-controls").parent();
-    const dialog = $(dialogContent).hide().prependTo(parentElement);
-  
-    dialog.find(".tcb-dialog-button").on("click", async (event) => {
-      const action = $(event.currentTarget).data("action");
-      const disposition = $(event.currentTarget).data("disposition");
-      const combat = game.combats.active;
-  
-      switch (action) {
-        case "clear-initiative":
-          await combat.updateEmbeddedDocuments('Combatant', [{ _id: combatant.id, initiative: null }]);
-          break;
-        case "reroll-initiative":
-          await combatant.rollInitiative();
-          break;
-        case "set-initiative":
-          const newInitiative = await this.promptForInitiative();
-          if (newInitiative !== null) {
-            await combat.updateEmbeddedDocuments('Combatant', [{ _id: combatant.id, initiative: newInitiative }]);
-          }
-          break;
-        case "set-turn":
-          await combat.update({ turn: combat.turns.indexOf(combatant) });
-          break;
-        case "toggle-visibility":
-          await combatant.token.update({ hidden: !combatant.token.hidden });
-          break;
-        case "toggle-defeated":
-          await combatant.update({ defeated: !combatant.defeated });
-          break;
-        case "set-disposition":
-          await combatant.token.update({ disposition: disposition });
-          break;
-      }
-  
-      dialog.slideUp(() => dialog.remove());
-      this.updateMiniCombatTracker($("#tcb-mini-combat-tracker"));
-    });
-  
-    $(document).one("click", () => dialog.slideUp(() => dialog.remove()));
-  
-    if (!existingDialog.length) {
-      dialog.slideDown();
-    } else {
-      dialog.show();
+  }
+
+  static async handleDialogAction(action, disposition, combat, combatant) {
+    switch (action) {
+      case "clear-initiative":
+        await combat.updateEmbeddedDocuments('Combatant', [{ _id: combatant.id, initiative: null }]);
+        break;
+      case "reroll-initiative":
+        await combatant.rollInitiative();
+        break;
+      case "set-initiative":
+        const newInitiative = await this.promptForInitiative();
+        if (newInitiative !== null) {
+          await combat.updateEmbeddedDocuments('Combatant', [{ _id: combatant.id, initiative: newInitiative }]);
+        }
+        break;
+      case "set-turn":
+        await combat.update({ turn: combat.turns.indexOf(combatant) });
+        break;
+      case "toggle-visibility":
+        await combatant.token.update({ hidden: !combatant.token.hidden });
+        this.updateMiniCombatTracker();
+        break;
+      case "toggle-defeated":
+        await combatant.update({ defeated: !combatant.defeated });
+        break;
+      case "set-disposition":
+        await combatant.token.update({ disposition: disposition });
+        this.updateMiniCombatTracker();
+        break;
     }
   }
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
   static async promptForInitiative() {
     return new Promise((resolve) => {
       new Dialog({

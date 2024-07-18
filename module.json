@@ -20,6 +20,7 @@
     }
   ],
   "esmodules": [
+    "scripts/logger.js",
     "scripts/trinium-chat-buttons-init.js",
     "scripts/trinium-chat-buttons-privacy.js",
     "scripts/trinium-chat-buttons-midi.js",
@@ -34,7 +35,6 @@
   "download": "https://github.com/TheDarkTongo/trinium-chat-buttons/archive/refs/heads/main.zip",
   "compatibility": {
     "minimum": "11",
-    "verified": "12",
-    "maximum": "12.999"
+    "verified": "12"
   }
 }

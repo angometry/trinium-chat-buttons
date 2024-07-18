@@ -1,158 +1,135 @@
+import { TriniumLogger } from './logger.js';
+
 class TriniumChatButtonsMidi {
+  static SETTINGS = {
+    MODULE_NAME: 'trinium-chat-buttons',
+    MIDI_BUTTON_VISIBILITY: 'midiButtonVisibility',
+    ENABLE_POLLING: 'enablePolling',
+    POLLING_RATE: 'pollingRate',
+    DEBUG: 'debug'
+  };
+
+  static BUTTONS = {
+    FAST_FORWARD: { id: 'tcb-midi-fast-forward-toggle', icon: 'fa-forward', tooltip: 'TRINIUMCB.ToggleMidiFastForward', key: '_fastForwardSet' },
+    ROLL_TOGGLE: { id: 'tcb-midi-roll-toggle', icon: 'fa-toggle-on', tooltip: 'TRINIUMCB.ToggleMidiRoll', key: '_rollToggle' },
+    ADVANTAGE: { id: 'tcb-midi-advantage-toggle', icon: 'fa-plus-circle', tooltip: 'TRINIUMCB.ToggleMidiAdvantage', key: '_adv' },
+    DISADVANTAGE: { id: 'tcb-midi-disadvantage-toggle', icon: 'fa-minus-circle', tooltip: 'TRINIUMCB.ToggleMidiDisadvantage', key: '_dis' }
+  };
+
   static init() {
+    this.logger = new TriniumLogger(this.SETTINGS.MODULE_NAME);
     this.midiKeyManager = this.getMidiKeyManager();
     if (!this.midiKeyManager) {
-      this.log('MidiKeyManager not found. Exiting.');
+      this.logger.warn('MidiKeyManager not found. Exiting.');
       return;
     }
 
     Hooks.on('renderChatLog', this.initializeButtons.bind(this));
+    this.logger.info('TriniumChatButtonsMidi initialized');
   }
 
   static initializeButtons(chatLog, html, data) {
     const chatControls = html.find('#chat-controls');
     
     if (!chatControls.length) {
-      this.log('No chat controls found.');
+      this.logger.error('No chat controls found. Unable to initialize buttons.');
       return;
     }
+
     const buttonGroup = this.createButtonGroup();
     chatControls.parent().prepend(buttonGroup);
 
-    if (game.settings.get('trinium-chat-buttons', 'enablePolling')) {
+    if (game.settings.get(this.SETTINGS.MODULE_NAME, this.SETTINGS.ENABLE_POLLING)) {
       this.startPollingMidiStates();
     }
+
+    this.logger.info('Midi buttons initialized and added to chat controls.');
   }
 
   static createButtonGroup() {
     const buttonGroup = $('<div id="tcb-midi-button-groups"></div>');
 
-    const midiVisibility = game.settings.get('trinium-chat-buttons', 'midiButtonVisibility');
-    const isGM = game.user.isGM;
-
-    const showMidiButtons = (midiVisibility === 'everyone') ||
-                            (midiVisibility === 'players' && !isGM) ||
-                            (midiVisibility === 'gm' && isGM);
-
-    if (showMidiButtons && game.modules.get('midi-qol')?.active) {
+    if (this.shouldShowMidiButtons()) {
       const midiButtonGroup = $('<section id="tcb-midi-buttons" class="tcb-button-row"></section>');
-      this.midiFastForwardButton = $(`<button class="tcb-button" id="tcb-midi-fast-forward-toggle" title="${game.i18n.localize('TRINIUMCB.ToggleMidiFastForward')}">
-        <i class="fas fa-forward"></i>
-      </button>`);
-      this.midiRollToggleButton = $(`<button class="tcb-button" id="tcb-midi-roll-toggle" title="${game.i18n.localize('TRINIUMCB.ToggleMidiRoll')}">
-        <i class="fas fa-toggle-on"></i>
-      </button>`);
-      this.midiAdvantageButton = $(`<button class="tcb-button" id="tcb-midi-advantage-toggle" title="${game.i18n.localize('TRINIUMCB.ToggleMidiAdvantage')}">
-        <i class="fas fa-plus-circle"></i>
-      </button>`);
-      this.midiDisadvantageButton = $(`<button class="tcb-button" id="tcb-midi-disadvantage-toggle" title="${game.i18n.localize('TRINIUMCB.ToggleMidiDisadvantage')}">
-        <i class="fas fa-minus-circle"></i>
-      </button>`);
+      
+      Object.values(this.BUTTONS).forEach(button => {
+        const buttonElement = this.createButton(button);
+        midiButtonGroup.append(buttonElement);
+        this[`midi${button.id}Button`] = buttonElement;
+      });
 
-      midiButtonGroup.append(this.midiFastForwardButton);
-      midiButtonGroup.append(this.midiRollToggleButton);
-      midiButtonGroup.append(this.midiAdvantageButton);
-      midiButtonGroup.append(this.midiDisadvantageButton);
       buttonGroup.append(midiButtonGroup);
+      this.attachEventListeners(buttonGroup);
     }
-
-    buttonGroup.on('click', 'button', (event) => {
-      switch (event.currentTarget.id) {
-        case 'tcb-midi-fast-forward-toggle':
-          this.toggleMidiFastForward();
-          break;
-        case 'tcb-midi-roll-toggle':
-          this.toggleMidiRollToggle();
-          break;
-        case 'tcb-midi-advantage-toggle':
-          this.toggleMidiAdvantage();
-          break;
-        case 'tcb-midi-disadvantage-toggle':
-          this.toggleMidiDisadvantage();
-          break;
-      }
-    });
 
     return buttonGroup;
   }
 
+  static shouldShowMidiButtons() {
+    const midiVisibility = game.settings.get(this.SETTINGS.MODULE_NAME, this.SETTINGS.MIDI_BUTTON_VISIBILITY);
+    const isGM = game.user.isGM;
+    const isMidiActive = game.modules.get('midi-qol')?.active;
+
+    const shouldShow = isMidiActive && (
+      (midiVisibility === 'everyone') ||
+      (midiVisibility === 'players' && !isGM) ||
+      (midiVisibility === 'gm' && isGM)
+    );
+
+    this.logger.debug(`Midi buttons visibility: ${shouldShow}. User is GM: ${isGM}, Setting: ${midiVisibility}, Midi-QOL active: ${isMidiActive}`);
+    return shouldShow;
+  }
+
+  static createButton(button) {
+    return $(`<button class="tcb-button" id="${button.id}" title="${game.i18n.localize(button.tooltip)}">
+      <i class="fas ${button.icon}"></i>
+    </button>`);
+  }
+
+  static attachEventListeners(buttonGroup) {
+    buttonGroup.on('click', 'button', (event) => {
+      const buttonId = event.currentTarget.id;
+      const button = Object.values(this.BUTTONS).find(b => b.id === buttonId);
+      if (button) {
+        this.toggleMidiState(button.key);
+      }
+    });
+  }
+
   static updateButtonHighlight() {
-    if (this.midiFastForwardButton && this.midiRollToggleButton && this.midiAdvantageButton && this.midiDisadvantageButton) {
-      this.updateButtonState(this.midiFastForwardButton, this.midiKeyManager._fastForwardSet);
-      this.updateButtonState(this.midiRollToggleButton, this.midiKeyManager._rollToggle);
-      this.updateButtonState(this.midiAdvantageButton, this.midiKeyManager._adv);
-      this.updateButtonState(this.midiDisadvantageButton, this.midiKeyManager._dis);
-    }
+    Object.values(this.BUTTONS).forEach(button => {
+      const buttonElement = this[`midi${button.id}Button`];
+      if (buttonElement) {
+        this.updateButtonState(buttonElement, this.midiKeyManager[button.key]);
+      }
+    });
   }
 
   static updateButtonState(button, state) {
-    if (state) {
-      button.addClass('tcb-active');
-    } else {
-      button.removeClass('tcb-active');
-    }
+    button.toggleClass('tcb-active', state);
   }
 
-  static toggleMidiFastForward() {
+  static toggleMidiState(key) {
     if (this.midiKeyManager) {
-      this.midiKeyManager._fastForwardSet = !this.midiKeyManager._fastForwardSet;
+      this.midiKeyManager[key] = !this.midiKeyManager[key];
       this.updateButtonHighlight();
-      this.log('Toggled Midi Fast Forward to', this.midiKeyManager._fastForwardSet);
+      this.logger.info(`Toggled Midi ${key} to ${this.midiKeyManager[key]}`);
     } else {
-      this.log('Unable to access MidiKeyManager');
-    }
-  }
-
-  static toggleMidiRollToggle() {
-    if (this.midiKeyManager) {
-      this.midiKeyManager._rollToggle = !this.midiKeyManager._rollToggle;
-      this.updateButtonHighlight();
-      this.log('Toggled Midi Roll to', this.midiKeyManager._rollToggle);
-    } else {
-      this.log('Unable to access MidiKeyManager');
-    }
-  }
-
-  static toggleMidiAdvantage() {
-    if (this.midiKeyManager) {
-      this.midiKeyManager._adv = !this.midiKeyManager._adv;
-      this.updateButtonHighlight();
-      this.log('Toggled Midi Advantage to', this.midiKeyManager._adv);
-    } else {
-      this.log('Unable to access MidiKeyManager');
-    }
-  }
-
-  static toggleMidiDisadvantage() {
-    if (this.midiKeyManager) {
-      this.midiKeyManager._dis = !this.midiKeyManager._dis;
-      this.updateButtonHighlight();
-      this.log('Toggled Midi Disadvantage to', this.midiKeyManager._dis);
-    } else {
-      this.log('Unable to access MidiKeyManager');
+      this.logger.error('Unable to access MidiKeyManager');
     }
   }
 
   static getMidiKeyManager() {
     const midiQOL = game.modules.get('midi-qol');
-    if (midiQOL && midiQOL.active) {
-      return midiQOL.api?.MidiKeyManager ?? window.MidiKeyManager;
-    }
-    return null;
+    return midiQOL?.active ? (midiQOL.api?.MidiKeyManager ?? window.MidiKeyManager) : null;
   }
 
   static startPollingMidiStates() {
-    const pollingRate = game.settings.get('trinium-chat-buttons', 'pollingRate');
+    const pollingRate = game.settings.get(this.SETTINGS.MODULE_NAME, this.SETTINGS.POLLING_RATE);
     this.pollingInterval = setInterval(() => {
       this.updateButtonHighlight();
     }, pollingRate);
-    this.log('Started polling MidiQOL states with a rate of', pollingRate, 'ms');
-  }
-
-  static log(...args) {
-    if (game.settings.get('trinium-chat-buttons', 'debug')) {
-      console.log('TriniumChatButtonsMidi |', ...args);
-    }
+    this.logger.info(`Started polling MidiQOL states with a rate of ${pollingRate} ms`);
   }
 }
 
