@@ -223,7 +223,7 @@ class MiniCombatTracker {
         {
           this.applyClassesToFoundryTracker(c.id, classes, displayName);
         }
-  
+        
         return `
         <div class="tcb-combatant-mini ${classes}" data-combatant-id="${c.id}" data-token-id="${c.token.id}">
           <div class="tcb-combatant-mini-initiative" data-action="promptInitiative">
@@ -266,7 +266,7 @@ class MiniCombatTracker {
     // Update classes based on visibility
     if (isHidden) {
       classes += isGM ? ' tcb-combatant-hiddenGM' : ' tcb-combatant-hidden';
-    } else if (hideForPlayers && !isGM) {
+    } else if (hideForPlayers && !isGM && !isPlayer) {
       classes += ' tcb-combatant-hidden';
     } else {
       classes = classes.replace(' tcb-combatant-hiddenGM', '').replace(' tcb-combatant-hidden', '');
