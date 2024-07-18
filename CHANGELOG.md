@@ -1,5 +1,12 @@
 ## Changelog
 
+### v1.3.1
+
+#### Bug Fixes
+- Fixed typo that caused some combatants to not be properly updated in the mini combat tracker
+- Added missing string in en.json
+
+
 ### v1.3.0
 
 #### New Features

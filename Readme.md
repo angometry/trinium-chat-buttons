@@ -32,6 +32,7 @@ If [Midi QOL](https://gitlab.com/tposney/midi-qol) is active, additional buttons
 
 #### Polling Power
 Look, no (mouse) hands! If polling is enabled in the settings, Buttons also automatically update to show you which Midi modifier key you're holding.
+
 ![Midi Polling](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/buttons-midi-polling.gif)
 
 **Note:** The toggle affects the same variables as Midi: Holding Midi keybindings and then releasing them will turn off the button.
@@ -48,6 +49,7 @@ The GM gets quick and easy controls, the player gets no spoilers. Yes, it also h
 - **Health Bar:** Visual representation of combatant's health with color indicating health status.
 - **Disposition Colors:** Background colors to indicate if a combatant is an ally (green), enemy (red), neutral (yellow) or secret (purple). 
 - **Defeated Status:** Visual indication (strikethrough and red background) for defeated combatants.
+
 - **Masking:**
     - **Names:** All NPC names are set to "Creature" for non-GM players.
     - **Hidden NPCs:** Tokens set to invisible have a grey background for GM players and are hidden to non-GM players.
@@ -57,6 +59,7 @@ The GM gets quick and easy controls, the player gets no spoilers. Yes, it also h
 #### Shortcuts
 - **Click Combatant:** Select token.
 - **Double Click Combatant:** Open character sheet.
+- **Click Initiative:** Set Initiative.
 - **Right Click Combatant**:
   - Clear Initiative
   - Reroll Initiative
@@ -65,11 +68,6 @@ The GM gets quick and easy controls, the player gets no spoilers. Yes, it also h
   - Toggle Token Visibility
   - Toggle Defeated Status
   - Change Disposition (Neutral, Friendly, Enemy, Secret)
-
-#### Right-click menu.
-All it takes is one right-click to get all the quick actions the GM might want on their combatants!
-
-![Combat Tracker context menu](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/combat-tracker-menu.gif)
 
 ## Additional Buttons next to the Mini Tracker
 - **GM: Roll all NPC initiatives** 
