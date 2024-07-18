@@ -2,7 +2,7 @@
   "id": "trinium-chat-buttons",
   "title": "Trinium Chat Buttons",
   "description": "Adds several buttons below the Foundry VTT Chat with a few convenient features.",
-  "version": "1.2.1",
+  "version": "1.3.0",
   "authors": [
     {
       "name": "Andrea Gomez",
@@ -21,10 +21,14 @@
   ],
   "esmodules": [
     "scripts/logger.js",
+    "scripts/settings.js",
+
     "scripts/trinium-chat-buttons-init.js",
+
     "scripts/trinium-chat-buttons-privacy.js",
     "scripts/trinium-chat-buttons-midi.js",
-    "scripts/trinium-chat-buttons-combat-tracker.js"
+    "scripts/trinium-chat-buttons-combat-tracker.js",
+    "scripts/trinium-chat-buttons-utility.js"
   ],
   "styles": [
     "styles/trinium-chat-buttons.css",

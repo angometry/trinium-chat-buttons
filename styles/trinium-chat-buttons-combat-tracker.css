@@ -30,10 +30,6 @@
   box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
-.tcb-combatant-mini.tcb-active {
-  box-shadow: inset 0 0 10px 2px #ff5a00a0;
-}
-
 .tcb-combatant-mini-img {
   height: 40px;
   width: 40px;
@@ -58,6 +54,7 @@
   font-size: 11px;
   color: #fff;
   text-shadow: 1px 1px 1px #000, 1px 1px 2px #000, 0px 0px 2px #000;
+  cursor: pointer;
 }
 
 .tcb-combatant-mini-health {
@@ -129,39 +126,56 @@
   display: none;
 }
 
-.hidden {
+.tcb-combatant-mini.tcb-combatant-active, #combat-tracker .tcb-combatant-active {
+  box-shadow: inset 0 0 10px 2px #ff590085;
+}
+
+/* General Combatant Hidden Styles */
+.tcb-combatant-hidden,
+#combat-tracker .tcb-combatant-hidden {
   display: none;
 }
 
-.hiddenGM {
-
+/* GM Hidden Combatant Styles */
+.tcb-combatant-hiddenGM,
+#combat-tracker .tcb-combatant-hiddenGM {
   background-color: rgb(252 233 255 / 20%) !important;
 }
 
-.tcb-combatant-mini.enemy {
+/* Enemy Combatant Styles */
+.tcb-combatant-mini.tcb-combatant-enemy,
+#combat-tracker .tcb-combatant-enemy {
   background-color: rgb(255 94 94 / 22%);
 }
 
-.tcb-combatant-mini.ally {
+/* Ally Combatant Styles */
+.tcb-combatant-mini.tcb-combatant-ally,
+#combat-tracker .tcb-combatant-ally {
   background-color: rgb(114 255 114 / 20%);
 }
 
-.tcb-combatant-mini.neutral {
+/* Neutral Combatant Styles */
+.tcb-combatant-mini.tcb-combatant-neutral,
+#combat-tracker .tcb-combatant-neutral {
   background-color: rgb(255 250 97 / 20%);
 }
 
-.tcb-combatant-mini.secret {
+/* Secret Combatant Styles */
+.tcb-combatant-mini.tcb-combatant-secret,
+#combat-tracker .tcb-combatant-secret {
   background-color: rgb(238 97 255 / 25%);
 }
 
-.tcb-combatant-mini.tcb-defeated {
-  background-color: rgb(255 0 0 / 0.2);
+/* Defeated Combatant Styles */
+.tcb-combatant-mini.tcb-combatant-defeated,
+#combat-tracker .tcb-combatant-defeated {
+  background-color: rgba(99, 19, 19, 0.349);
   text-decoration: line-through;
   color: rgba(255, 0, 0, 0.6);
 }
 
-.tcb-combatant-mini.tcb-defeated .tcb-combatant-mini-img {
-  opacity: 0.75;
+.tcb-combatant-mini.tcb-combatant-defeated .tcb-combatant-mini-img {
+  opacity: 0.6;
 }
 
 @keyframes endTurnGlow {
@@ -268,4 +282,24 @@ padding: 0;
   display: flex;
   justify-content: center;
   padding: 2px;
+}
+
+.tcb-initiative-input-container .tcb-initiative-input {
+  border-color: rgb(255 255 255 / 60%);
+  background-color: rgb(21 21 21 / 60%);
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+}
+
+.tcb-initiative-input:focus {
+  border-color: #fd782f;
+  outline: none;
+  box-shadow: inset 0 0 8px #fd782f !important;
+}
+
+
+.tcb-initiative-input::placeholder {
+  color: #999;
+  opacity: 1;
 }

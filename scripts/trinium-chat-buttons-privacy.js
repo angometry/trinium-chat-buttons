@@ -1,6 +1,6 @@
 import { TriniumLogger } from './logger.js';
 
-class TriniumChatButtonsPrivacy {
+class PrivacyButtons {
   static BUTTON_TYPES = [
     { type: 'publicroll', icon: 'fa-eye', tooltip: 'TRINIUMCB.PublicRoll' },
     { type: 'gmroll', icon: 'fa-user-secret', tooltip: 'TRINIUMCB.PrivateRoll' },
@@ -120,5 +120,5 @@ class TriniumChatButtonsPrivacy {
 }
 
 export function init() {
-  TriniumChatButtonsPrivacy.init();
+  PrivacyButtons.init();
 }

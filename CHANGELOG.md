@@ -1,5 +1,23 @@
 ## Changelog
 
+### v1.3.0
+
+#### New Features
+Mini Combat Tracker:
+- You can now change initiative directly by clicking on the initiative value in the mini tracker
+- GMs also have an End Combat button next to the other turn buttons (Yes, I initially forgot about that one.)
+- Added ability to apply mini tracker styles to the main combat tracker. Can be toggled in settings.
+
+#### Improvements
+- Major refactor to improve mantainability and performance, especially with combat tracker updates and events.
+- Initiative input is now quicker, cleaner and better looking, instead of using ugly foundry dialogs.
+- Log level can now be configured in settings.
+- Combatant options right-click menu no longer closes once a button within it is pressed
+- Small CSS improvements
+
+#### Bug Fixes
+- Fixed specific token updates not updating the combat tracker.
+
 ### v1.2.1
 
 Verified foundry v11 compatibility

@@ -6,7 +6,7 @@
     "BlindRoll": "Blind Roll",
 
     "ToggleMidiFastForward": "Toggle MidiQOL Fast Forward",
-    "ToggleMidiRoll": "Toggle MidiQOL Auto Roll + d20 FF",
+    "ToggleMidiRoll": "Toggle MidiQOL Auto Roll + Fast Forward D20s ",
     "ToggleMidiAdvantage": "Toggle MidiQOL Advantage",
     "ToggleMidiDisadvantage": "Toggle MidiQOL Disadvantage",
 
@@ -38,8 +38,12 @@
 
     "EnableCSSTweaks": "Enable Sidebar CSS Tweaks",
     "EnableCSSTweaksHint": "Enable or disable custom CSS tweaks for a darker sidebar and reduced gaps.",
-    "Debug": "Enable Debug",
-    "DebugHint": "Enable or disable debug logging for Trinium Chat Buttons.",
+    "LogLevel": "Log Level",
+    "LogLevelHint": "Set the log level for the logger.",
+    "LogLevelDebug": "Debug",
+    "LogLevelInfo": "Info",
+    "LogLevelWarn": "Warn",
+    "LogLevelError": "Error",
 
     "GMOnly": "GM Only",
     "PlayersOnly": "Players Only",
@@ -56,6 +60,7 @@
     "ToggleCombatTracker": "Toggle Mini Combat Tracker",
     "RollPlayerInitiative": "Roll Player Initiative",
     "EndTurn": "Your turn! Click here to end.",
+    "EndCombat": "End Combat",
     "RollNPCInitiative": "Roll NPC Initiative",
     "SelectAllPlayerTokens": "Select All Players. Doubleclick: All NPCs",
     "SelectRandomPlayerToken": "Pick Random Token. None Selected: Pick Random Player",
@@ -79,13 +84,19 @@
     "SetCurrent": "Set as Current Turn",
     "ToggleVisibility": "Toggle Visibility",
     "MarkDefeated": "Mark Defeated",
-    
+
+    "StyleFoundryCombatTracker": "Apply combatant styles to the Foundry Combat Tracker",
+    "StyleFoundryCombatTrackerHint": "Apply the following features also to the built-in combat tracker: Name hiding, Hidden Tokens, Disposition/Hidden/Defeated styles. May conflict with other modules.",
+
     "Neutral": "Neutral",
     "Friendly": "Friendly",
     "Enemy": "Enemy",
     "Secret": "Secret",
     "Disposition": "Disposition Actions",
     "InitiativeActions": "Initiative Actions",
-    "VisibilityActions": "Visibility Actions"
+    "VisibilityActions": "Visibility Actions",
+    "InputInitiative": "Input Initiative"
+
+
   }
 }
