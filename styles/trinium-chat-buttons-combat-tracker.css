@@ -131,13 +131,13 @@
 }
 
 /* General Combatant Hidden Styles */
-.tcb-combatant-hidden,
+.tcb-combatant-mini.tcb-combatant-hidden,
 #combat-tracker .tcb-combatant-hidden {
-  display: none;
+  display: none !important;
 }
 
 /* GM Hidden Combatant Styles */
-.tcb-combatant-hiddenGM,
+.tcb-combatant-mini.tcb-combatant-hiddenGM,
 #combat-tracker .tcb-combatant-hiddenGM {
   background-color: rgb(252 233 255 / 20%) !important;
 }
