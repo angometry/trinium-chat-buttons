@@ -5,30 +5,24 @@
 
 Trinium Chat Buttons is a Foundry VTT module that adds several new buttons below the chat.
 
-## Features
 
-- **Roll Privacy Buttons**: Switch between different roll types (Public Roll, GM Roll, Self Roll, Blind Roll) using buttons instead of a dropdown.
-- **MIDI QOL Buttons**: Toggle MIDI QOL features on and off as if you held down one of its keybindings. Requires [Midi QOL](https://gitlab.com/tposney/midi-qol).
-- **Combat Tracker**: Show a mini horizontal combat tracker integrated into the chat controls for quick and easy combat management.
 
-#### GM View
-
-The GM in the following screnshot rolls privately, automatically rolls fast forwarded with advantage through midi QOL and has a nice view of the combat tracker right above the chat!
+# Features
 
 ![GM Buttons](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/buttons-GM.png)
 
-#### Player View (Collapsed Midi)
-This player on the other hand rolls publicly, doesn't need Midi Buttons and, if they want, they can open up the combat tracker or roll initiative right from the chat tab!
+- **Roll Privacy Buttons**: Switch between different roll types (Public Roll, GM Roll, Self Roll, Blind Roll) using buttons instead of a dropdown.
+- **MIDI QOL Buttons**: Toggle MIDI QOL features on and off and visualize its keybindings. Requires [Midi QOL](https://gitlab.com/tposney/midi-qol).
+- **Mini Combat Tracker**: Compact, feature-packed and easy to use. 
+- **Utility Buttons**: Player: Roll initiative, Find My Token. GM: Roll NPCs, Select all players/npcs, Select random token
 
-![Player Buttons No Midi](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/buttons-player-nomidi.png)
+# Usage
 
-## Usage
-
-### Roll Privacy Buttons
+## Roll Privacy Buttons
 
 These roll privacy buttons replace the traditional dropdown menu for selecting the roll mode, reducing necessary clicks to 1. Efficient!
 
-### MIDI QOL Buttons
+## MIDI QOL Buttons
 
 If [Midi QOL](https://gitlab.com/tposney/midi-qol) is active, additional buttons will appear for:
 - Fast Forward all rolls
@@ -37,20 +31,16 @@ If [Midi QOL](https://gitlab.com/tposney/midi-qol) is active, additional buttons
 - Disadvantage
 
 #### Polling Power
-Look, no (mouse) hands! If polling is enabled in the settings, Buttons automatically update to show you which Midi modifier key you're holding.
-Or, if you prefer, you can always toggle them on until disabled by clicking.
+Look, no (mouse) hands! If polling is enabled in the settings, Buttons also automatically update to show you which Midi modifier key you're holding.
 ![Midi Polling](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/buttons-midi-polling.gif)
 
-**Note:** The toggle affects the same variables as Midi: Holding Midi keybindings and then releasing them will turn off the button. This will be especially noticeable with Advantage and Disadvantage as their default keys are often pressed for other reasons (CTRL and LeftAlt)
+**Note:** The toggle affects the same variables as Midi: Holding Midi keybindings and then releasing them will turn off the button.
 
-### Combat Tracker
+## Combat Tracker
 
-A mini combat tracker is available within the chat controls, providing a compact view of the combat status directly in the chat interface.
+The GM gets quick and easy controls, the player gets no spoilers. Yes, it also has a glowing End Turn button!
 
-#### GM View
-Convenient, concise, compact combat. This GM is one click away from an overview of the current encounter and a button to roll initiative quickly.
-
-![Combat Tracker GM](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/combat-tracker-gm.gif)
+![Combat Tracker GM and Player View](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/combat-tracker-gm-player-view.gif)
 
 #### Features
 
@@ -63,11 +53,6 @@ Convenient, concise, compact combat. This GM is one click away from an overview 
     - **Hidden NPCs:** Tokens set to invisible have a grey background for GM players and are hidden to non-GM players.
     - **Health:** Players can't see NPC Health and Healthbar. Can be configured in settings.
     - **Hide until turn:** Before combat and on the first round, players can't see NPCs who haven't acted yet.
-
-#### GM and Player View
-While the GM on the left sees everything, the *Hidden* Zombie, ceature names and health values are hidden to the player. Yes, it also has a glowing End Turn button!
-
-![Combat Tracker GM and Player View](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/combat-tracker-gm-player-view.gif)
 
 #### Shortcuts
 - **Click Combatant:** Select token.
@@ -86,14 +71,14 @@ All it takes is one right-click to get all the quick actions the GM might want o
 
 ![Combat Tracker context menu](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/combat-tracker-menu.gif)
 
-#### Additional Buttons next to the Mini Tracker
+## Additional Buttons next to the Mini Tracker
 - **GM: Roll all NPC initiatives** 
 - **GM: Select all player tokens. Doubleclick to select all NPCs** 
 - **GM: Pick one selected token at random. If none selected, pick a random player** 
 - **Player: Find and select my token**
 - **Player: Own initiative roller**
 
-### Additional CSS Changes
+## Additional CSS Changes
 
 Additional changes that improve readability of the sidebar can be enabled in the module settings.
 
