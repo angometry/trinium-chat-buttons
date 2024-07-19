@@ -48,7 +48,7 @@
     "GMOnly": "GM Only",
     "PlayersOnly": "Players Only",
     "Everyone": "Everyone",
-    
+
     "PrivacyButtonsHeader": "Privacy Buttons",
     "MidiButtonsPollingHeader": "MIDI Buttons + Polling",
     "CombatTrackerHeader": "Combat Tracker",
@@ -85,6 +85,9 @@
     "ToggleVisibility": "Toggle Visibility",
     "MarkDefeated": "Mark Defeated",
 
+    "OnlyShowTurnControls": "Show only turn controls",
+    "OnlyShowTurnControlsHint": "Instead of the whole tracker, only show combat controls  ",
+
     "StyleFoundryCombatTracker": "Apply combatant styles to the Foundry Combat Tracker",
     "StyleFoundryCombatTrackerHint": "Apply the following features also to the built-in combat tracker: Name hiding, Hidden Tokens, Disposition/Hidden/Defeated styles. May conflict with other modules.",
 
@@ -95,8 +98,35 @@
     "Disposition": "Disposition Actions",
     "InitiativeActions": "Initiative Actions",
     "VisibilityActions": "Visibility Actions",
-    "InputInitiative": "Input Initiative"
+    "InputInitiative": "Input Initiative",
 
-
+    "EnableGMScreen": "Enable GM Screen",
+    "EnableGMScreenHint": "Enable or disable the GM Screen button.",
+    "GMScreenContentMenu": "GM Screen Content",
+    "GMScreenContentMenuLabel": "Edit GM Screen Content",
+    "GMScreenContentMenuHint": "Edit the HTML content of the GM Screen",
+    "Tab1": "Tab 1",
+    "Tab2": "Tab 2",
+    "Tab3": "Tab 3",
+    "Tab4": "Tab 4",
+    "GMScreenContentTab1": "GM Screen Tab 1 Content",
+    "GMScreenContentTab2": "GM Screen Tab 2 Content",
+    "GMScreenContentTab3": "GM Screen Tab 3 Content",
+    "GMScreenContentTab4": "GM Screen Tab 4 Content",
+    "NumberOfSubscreens": "Number of Subscreens",
+    "NumberOfSubscreensHint": "Choose how many subscreens to display (1-4)",
+    "SubscreenWidth": "Subscreen Width (Side Mode)",
+    "SubscreenWidthHint": "Set the width of each subscreen in pixels",
+    "GMScreenHeight": "Height (Bottom Mode)",
+    "GMScreenHeightHint": "Set the height of the GM Screen in bottom mode (% of total screen height)",
+    "GMScreenMode": "GM Screen Mode",
+    "GMScreenModeHint": "Choose whether the screen expands from the left side of the screen, chat or bottom.",
+    "LeftSideMode": "Left Side Mode",
+    "RightSideMode": "Right Side Mode",
+    "BottomMode": "Bottom Mode",
+    "GMScreenLeftMargin": "Left Margin (Bottom Mode)",
+    "GMScreenLeftMarginHint": "Set the left margin of the GM Screen in bottom mode (in pixels)",
+    "GMScreenRightMargin": "Right Margin (Bottom Mode)",
+    "GMScreenRightMarginHint": "Set the right margin of the GM Screen in bottom mode (in pixels)"
   }
 }

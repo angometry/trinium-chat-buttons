@@ -1,8 +1,9 @@
-import { SETTINGS, registerSettings } from './settings.js';
+import { SETTINGS, registerSettings, registerGmScreenSettings } from './settings.js';
 import { TriniumLogger } from './logger.js';
 
 class TriniumChatButtonsInit {
   static init() {
+    registerGmScreenSettings();
     registerSettings();
     
     this.logger = new TriniumLogger(SETTINGS.MODULE_NAME);
@@ -25,7 +26,7 @@ class TriniumChatButtonsInit {
       $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.PrivacyButtonsHeader')).insertBefore($('[name="trinium-chat-buttons.enablePrivacyButtons"]').closest('div.form-group'));
       $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.MidiButtonsPollingHeader')).insertBefore($('[name="trinium-chat-buttons.enableMidiButtons"]').closest('div.form-group'));
       $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.CombatTrackerHeader')).insertBefore($('[name="trinium-chat-buttons.enableCombatTrackerButtons"]').closest('div.form-group'));
-      $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.DebugHeader')).insertBefore($('[name="trinium-chat-buttons.logLevel"]').closest('div.form-group'));
+      $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.DebugHeader')).insertBefore($('[name="trinium-chat-buttons.enableCSSTweaks"]').closest('div.form-group'));
     });
   }
 }
@@ -39,6 +40,10 @@ Hooks.once('init', () => {
 
   if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_MIDI_BUTTONS) && game.modules.get('midi-qol')?.active) {
     import('./trinium-chat-buttons-midi.js').then((module) => module.init());
+  }
+
+  if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_GM_SCREEN)) {
+    import('./trinium-chat-buttons-gm-screen.js').then((module) => module.init());
   }
 
   if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_COMBAT_TRACKER_BUTTONS) && (game.system.id === 'dnd5e' || game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.OVERRIDE_DND5E_CHECK))) {

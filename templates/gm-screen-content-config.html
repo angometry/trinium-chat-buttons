@@ -1,0 +1,41 @@
+<form>
+    <nav class="tabs" data-group="sections">
+      <a class="item" data-tab="tab1">{{ localize 'TRINIUMCB.Tab1' }}</a>
+      <a class="item" data-tab="tab2">{{ localize 'TRINIUMCB.Tab2' }}</a>
+      <a class="item" data-tab="tab3">{{ localize 'TRINIUMCB.Tab3' }}</a>
+      <a class="item" data-tab="tab4">{{ localize 'TRINIUMCB.Tab4' }}</a>
+    </nav>
+  
+    <section class="content">  
+      <div class="tab" data-tab="tab1" data-group="sections">
+        <div class="form-group">
+          <textarea name="tab1" rows="20">{{tab1}}</textarea>
+        </div>
+      </div>
+  
+      <div class="tab" data-tab="tab2" data-group="sections">
+        <div class="form-group">
+          <textarea name="tab2" rows="20">{{tab2}}</textarea>
+        </div>
+      </div>
+  
+      <div class="tab" data-tab="tab3" data-group="sections">
+        <div class="form-group">
+          <textarea name="tab3" rows="20">{{tab3}}</textarea>
+        </div>
+      </div>
+  
+      <div class="tab" data-tab="tab4" data-group="sections">
+        <div class="form-group">
+          <textarea name="tab4" rows="20">{{tab4}}</textarea>
+        </div>
+      </div>
+    </section>
+  
+    <footer class="sheet-footer flexrow">
+      <button type="submit" name="submit">
+        <i class="fas fa-save"></i> {{ localize 'TRINIUMCB.SaveChanges' }}
+      </button>
+    </footer>
+  </form>
+  
