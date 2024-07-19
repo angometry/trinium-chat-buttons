@@ -28,13 +28,13 @@ class GMScreen {
 
   static createGMScreen() {
     const numberOfSubscreens = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.NUMBER_OF_SUBSCREENS);
-  const mode = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_MODE);
-  const subscreenWidth = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.SUBSCREEN_WIDTH);
-  const gmScreenHeight = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_HEIGHT);
-  const leftMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LEFT_MARGIN);
-  const rightMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_RIGHT_MARGIN);
+    const mode = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_MODE);
+    const subscreenWidth = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.SUBSCREEN_WIDTH);
+    const gmScreenHeight = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_HEIGHT);
+    const leftMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LEFT_MARGIN);
+    const rightMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_RIGHT_MARGIN);
 
-  let gmScreenHtml = `<div id="tcb-gm-screen" class="tcb-app tcb-${mode}-mode" style="--subscreen-width: ${subscreenWidth}px; --gm-screen-height: ${gmScreenHeight}%; --number-of-subscreens: ${numberOfSubscreens}; --left-margin: ${leftMargin}px; --right-margin: ${rightMargin}px;">`;
+    let gmScreenHtml = `<div id="tcb-gm-screen" class="tcb-app tcb-${mode}-mode" style="--subscreen-width: ${subscreenWidth}px; --gm-screen-height: ${gmScreenHeight}%; --number-of-subscreens: ${numberOfSubscreens}; --left-margin: ${leftMargin}px; --right-margin: ${rightMargin}px;">`;
     for (let i = 1; i <= numberOfSubscreens; i++) {
       gmScreenHtml += `
         <div class="tcb-subscreen">
@@ -83,7 +83,15 @@ class GMScreen {
 
   static refreshGMScreen(setting, data) {
     const tabPattern = new RegExp(`${SETTINGS.MODULE_NAME}\.gmScreenContent_tab[1-4]`);
-    if (tabPattern.test(setting.key) || [SETTINGS.NUMBER_OF_SUBSCREENS, SETTINGS.GM_SCREEN_MODE, SETTINGS.SUBSCREEN_WIDTH, SETTINGS.GM_SCREEN_HEIGHT].includes(setting.key)) {
+    if (
+      tabPattern.test(setting.key) ||
+      [
+        SETTINGS.NUMBER_OF_SUBSCREENS,
+        SETTINGS.GM_SCREEN_MODE,
+        SETTINGS.SUBSCREEN_WIDTH,
+        SETTINGS.GM_SCREEN_HEIGHT,
+      ].includes(setting.key)
+    ) {
       $('#tcb-gm-screen').remove();
       if ($('#tcb-gm-screen').hasClass('tcb-visible')) {
         this.createGMScreen();
@@ -96,7 +104,9 @@ class GMScreen {
     const content = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${tab}`);
     $(`#tcb-gm-screen .tcb-subscreen:nth-child(${subscreen}) .tcb-window-content`).html(content);
     $(`#tcb-gm-screen .tcb-subscreen:nth-child(${subscreen}) .tcb-tab-button`).removeClass('tcb-active');
-    $(`#tcb-gm-screen .tcb-subscreen:nth-child(${subscreen}) .tcb-tab-button[data-tab="${tab}"]`).addClass('tcb-active');
+    $(`#tcb-gm-screen .tcb-subscreen:nth-child(${subscreen}) .tcb-tab-button[data-tab="${tab}"]`).addClass(
+      'tcb-active'
+    );
   }
 }
 
