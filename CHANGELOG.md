@@ -1,5 +1,24 @@
 ## Changelog
 
+### v1.4.0
+
+#### Improvements
+- Added Combat Tracker setting to remove the actual combat tracker and leave only turn controls.
+- The right-click menu buttons in the combat tracker will now show the token's current disposition, visibility and defeated status.
+- Added small indicator above the combatant targeted by the right-click menu.
+
+#### New Features: CUSTOMIZABLE GM SCREEN
+
+REJOICE! The GM Screen button is now available!
+
+- The GM Screen expands from the left or right as a sidebar, or the bottom as a screen.
+- It has 4 different tabs, allowing you to switch between multiple sets of information.
+- You can configure the content of each tab in the settings! The content supports HTML at this time
+- Various other
+  - Number of subscreens: Allows you to open a maximum of 4 different tabs at once. Default 1.
+  - Side mode settings: Change subscreen width, in pixels.
+  - Bottom mode settings: Change right and left margin and GM screen height as % of the entire canvas.
+
 ### v1.3.1
 
 #### Bug Fixes

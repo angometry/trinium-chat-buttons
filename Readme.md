@@ -11,6 +11,7 @@ Trinium Chat Buttons is a Foundry VTT module that adds several new buttons below
 
 ![GM Buttons](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/buttons-GM.png)
 
+- **GM Screen**: Show a customizable, tabbed, highly configurable, editable GM Screen. Expands as a sidebar or large screen and Supports HTML.
 - **Roll Privacy Buttons**: Switch between different roll types (Public Roll, GM Roll, Self Roll, Blind Roll) using buttons instead of a dropdown.
 - **MIDI QOL Buttons**: Toggle MIDI QOL features on and off and visualize its keybindings. Requires [Midi QOL](https://gitlab.com/tposney/midi-qol).
 - **Mini Combat Tracker**: Compact, feature-packed and easy to use. 
@@ -18,11 +19,21 @@ Trinium Chat Buttons is a Foundry VTT module that adds several new buttons below
 
 # Usage
 
-## Roll Privacy Buttons
+## GM Screen
+
+Everything you need to know at the click of a single button! Try it in Sidebar mode or Bottom Mode as seen here:
+
+![GM Screen Bottom mode](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/gm-screen.png)
+
+#### Features
+
+- **Editable Content:** Fully editable to keep exactly the information you want at your fingertips. Fully supports HTML.
+- **Tabs:** 4 different tabs let you organize your content while keeping the screen compact. You can also have up to 4 "Subscreens", to have all tabs (or multiple of the same scrolled at different heights) at once.
+- **Customizable:** Open from the right, left or bottom, with customizable sizes!
+
+## Roll Privacy and MIDI Buttons
 
 These roll privacy buttons replace the traditional dropdown menu for selecting the roll mode, reducing necessary clicks to 1. Efficient!
-
-## MIDI QOL Buttons
 
 If [Midi QOL](https://gitlab.com/tposney/midi-qol) is active, additional buttons will appear for:
 - Fast Forward all rolls
