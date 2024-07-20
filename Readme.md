@@ -5,13 +5,11 @@
 
 Trinium Chat Buttons is a Foundry VTT module that adds several new buttons below the chat.
 
-
-
 # Features
 
 ![GM Buttons](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/buttons-GM.png)
 
-- **GM Screen**: Show a customizable, tabbed, highly configurable, editable GM Screen. Expands as a sidebar or large screen and Supports HTML.
+- **GM Screen**: Show a customizable, tabbed, highly configurable, editable GM Screen. Expands as a sidebar or large screen. Supports Markdown and HTML with live preview.
 - **Roll Privacy Buttons**: Switch between different roll types (Public Roll, GM Roll, Self Roll, Blind Roll) using buttons instead of a dropdown.
 - **MIDI QOL Buttons**: Toggle MIDI QOL features on and off and visualize its keybindings. Requires [Midi QOL](https://gitlab.com/tposney/midi-qol).
 - **Mini Combat Tracker**: Compact, feature-packed and easy to use. 
@@ -27,7 +25,7 @@ Everything you need to know at the click of a single button! Try it in Sidebar m
 
 #### Features
 
-- **Editable Content:** Fully editable to keep exactly the information you want at your fingertips. Fully supports HTML.
+- **Editable Content:** Fully editable to keep exactly the information you want at your fingertips. Supports Markdown and HTML with live preview.
 - **Tabs:** 4 different tabs let you organize your content while keeping the screen compact. You can also have up to 4 "Subscreens", to have all tabs (or multiple of the same scrolled at different heights) at once.
 - **Customizable:** Open from the right, left or bottom, with customizable sizes!
 
@@ -108,6 +106,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 The roll privacy buttons are Inspired by [DF Chat Enhancements](https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-chat-enhance).
 Special thanks to Tim Posney for creating [Midi QOL](https://gitlab.com/tposney/midi-qol).
 
-This project uses the following third-party libraries:
+This project includes the following third-party libraries:
 
-- **Marked** - A Markdown parser and compiler. Built for speed. You can find more information about it [here](https://github.com/markedjs/marked).
+- **Marked** - A Markdown parser and compiler. Built for speed. Used for Markdown to HTML parsing in the GM screen. You can find more information about it [here](https://github.com/markedjs/marked).
