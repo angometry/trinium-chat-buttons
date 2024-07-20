@@ -135,6 +135,7 @@
     "RestoreDefault": "Restore Default",
     "GMScreenSettings": "GM Screen Settings",
     "SaveSettings": "Save Settings",
+    "SettingsSaved": "GM Screen settings have been successfully applied.",
     "ExpandBottomMode": "Expand Screen in Bottom Mode",
     "ExpandBottomModeHint": "Enable to ignore the Subscreen Width settings in Bottom Mode, expanding to fill all available horizontal space instead",
     "right-side": "Right Side",

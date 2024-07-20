@@ -194,10 +194,10 @@ class GMScreen {
       </div>
         <textarea id="tcb-editor-textarea">${content}</textarea>
         <div class="tcb-editor-buttons">
-          <button id="tcb-editor-save">${game.i18n.localize('TRINIUMCB.Save')}</button>
           <button id="tcb-editor-save-close">${game.i18n.localize('TRINIUMCB.SaveAndClose')}</button>
-          <button id="tcb-editor-cancel">${game.i18n.localize('TRINIUMCB.Cancel')}</button>
+          <button id="tcb-editor-save">${game.i18n.localize('TRINIUMCB.Save')}</button>
           <button id="tcb-editor-restore">${game.i18n.localize('TRINIUMCB.RestoreDefault')}</button>
+          <button id="tcb-editor-cancel">${game.i18n.localize('TRINIUMCB.Cancel')}</button>
         </div>
       </div>
     </div>
@@ -251,10 +251,11 @@ class GMScreen {
           <form id="tcb-gm-screen-settings-form">
             ${this.generateSettingsFields()}
             <div class="form-group buttons">
-              <button type="button" id="tcb-save-settings">${game.i18n.localize('TRINIUMCB.Save')}</button>
-              <button type="button" id="tcb-save-close-settings">${game.i18n.localize(
+                          <button type="button" id="tcb-save-close-settings">${game.i18n.localize(
                 'TRINIUMCB.SaveAndClose'
               )}</button>
+              <button type="button" id="tcb-save-settings">${game.i18n.localize('TRINIUMCB.Save')}</button>
+
               <button type="button" class="tcb-close-settings">${game.i18n.localize('TRINIUMCB.Cancel')}</button>
             </div>
           </form>
