@@ -73,19 +73,53 @@
 /*/ Subscreen Styling /*/
 
 .tcb-subscreen {
-  flex: 1;
   display: flex;
   flex-direction: column;
   border-right: 2px solid #7f7f7f;
+  flex: 1 1 0; /* Allow growth and shrinking */
+  min-width: 0; /* Allow shrinking below content width */
 }
 
-.tcb-subscreen:last-child {
-  border-right: none;
+.tcb-subscreen[data-width="0"] {
+  flex: 1 1 0; /* For subscreens with width 0, allow them to grow and shrink */
 }
+
+.tcb-subscreen[data-width]:not([data-width="0"]) {
+  flex: 0 0 auto; /* For subscreens with explicit width, don't grow or shrink */
+}
+
+.tcb-subscreen-row {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 0; /* Grow but don't shrink */
+  min-height: 0; /* Allow content to determine height */
+}
+
+/*/ Content and editor preview/*/
+
+.tcb-subscreen-row .tcb-window-content {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  min-height: 0; /* Allow scrolling */
+}
+
+.tcb-subscreen-row .tcb-window-content, .tcb-editor-preview  {
+  overflow-y: auto;
+  padding: 10px;
+  background-color: #dfdbd3;
+}
+
+.tcb-window-content h1, .tcb-editor-preview h1 { margin-top: 1em; }
+.tcb-window-content h2, .tcb-editor-preview h2 { margin-top: .75em; }
+.tcb-window-content h3, .tcb-editor-preview h3 { margin-top: .75em; }
+.tcb-window-content h4, .tcb-editor-preview h4 { font-size: medium; font-weight: bold; margin-top: 0.65em; }
+.tcb-window-content h5, .tcb-editor-preview h5 { font-size: 1em; margin-top: .5em }
+.tcb-window-content h6, .tcb-editor-preview h6 { font-size: smaller; margin: 0.5em 0; }
 
 /*/ Header /*/
 
 .tcb-window-header {
+  flex: 0 0 auto;
   background: #2a2a2a;
   color: #fff;
   padding: 5px;
@@ -126,25 +160,17 @@
   box-shadow: none !important;
 }
 
-
-/*/ Content and editor preview/*/
-
-.tcb-window-content  {
-  flex: 1;
+/* New: Styles for subscreen settings button */
+.tcb-subscreen-settings-button {
+  background: none;
+  color: white;
+  border: none;
+  cursor: pointer;
 }
 
-.tcb-window-content, .tcb-editor-preview  {
-  overflow-y: auto;
-  padding: 10px;
-  background-color: #dfdbd3;
+.tcb-subscreen-settings-button:hover {
+  color: #f39c12;
 }
-
-.tcb-window-content h1, .tcb-editor-preview h1 { margin-top: 1em; }
-.tcb-window-content h2, .tcb-editor-preview h2 { margin-top: .75em; }
-.tcb-window-content h3, .tcb-editor-preview h3 { margin-top: .75em; }
-.tcb-window-content h4, .tcb-editor-preview h4 { font-size: medium; font-weight: bold; margin-top: 0.65em; }
-.tcb-window-content h5, .tcb-editor-preview h5 { font-size: 1em; margin-top: .5em }
-.tcb-window-content h6, .tcb-editor-preview h6 { font-size: smaller; margin: 0.5em 0; }
 
 /* Editor Styling */
 #tcb-gm-screen-editor {
@@ -173,7 +199,7 @@
 }
 
 #tcb-editor-textarea {
-    color:#f9f9f9;
+  color:#f9f9f9;
   flex: 1;
   margin-bottom: 10px;
   font-family: Lato;
@@ -204,12 +230,11 @@
 
 #tcb-editor-save {
   border-color: #4CAF50;
-    max-width: 250px;
+  max-width: 250px;
 }
 
 #tcb-editor-save-close {
   border-color: #4CAF50;
-
 }
 
 #tcb-editor-cancel {
@@ -243,13 +268,14 @@
 /* Settings Modal */
 #tcb-gm-screen-settings {
   position: fixed;
-  top: 30%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   border: 1px solid rgba(0, 0, 0, 0.75);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.75);
   z-index: 200;
   max-width: 500px;
+
 }
 
 #tcb-gm-screen-settings .tcb-window-header {
@@ -269,6 +295,22 @@
   line-height: 24px;
 }
 
+#tcb-gm-screen-settings .tcb-settings-scrollable {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 450px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  
+}
+
+#tcb-gm-screen-settings .tcb-settings-buttons {
+  padding: .5em;
+  display: flex;
+  justify-content: flex-end;
+
+}
+
 .tcb-window-header .tcb-close-settings {
   background: none;
   border: none;
@@ -286,7 +328,22 @@
 }
 
 #tcb-gm-screen-settings .tcb-window-content {
-  padding: 1.5em;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 0;
+  background: #eadfdf;
+}
+
+#tcb-gm-screen-settings .tcb-settings-scroll-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1em;
+  max-height: 600px;
+}
+
+#tcb-gm-screen-settings fieldset {
+margin-top: 1em;
 }
 
 #tcb-gm-screen-settings .form-group {

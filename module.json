@@ -26,6 +26,7 @@
     "scripts/logger.js",
     "scripts/settings.js",
     "scripts/gmScreenDefaultContent.js",
+    "scripts/utils/Draggable.js",
 
     "scripts/trinium-chat-buttons-init.js",
 

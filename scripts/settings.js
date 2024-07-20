@@ -31,9 +31,35 @@ export const SETTINGS = {
   GM_SCREEN_LEFT_MARGIN: 'gmScreenLeftMargin',
   GM_SCREEN_RIGHT_MARGIN: 'gmScreenRightMargin',
   EXPAND_BOTTOM_MODE: 'expandBottomMode',
+  GM_SCREEN_LAYOUT: 'gmScreenLayout',
+  GM_SCREEN_DEFAULT_TABS: 'gmScreenDefaultTabs',
 };
 
+export const DEFAULT_SUBSCREEN = {
+  rows: 1,
+  width: 0,
+};
+
+
 export function registerGmScreenSettings() {
+    game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT, {
+    name: 'TRINIUMCB.GMScreenLayout',
+    hint: 'TRINIUMCB.GMScreenLayoutHint',
+    scope: 'world',
+    config: false,
+    type: Object,
+    default: {},
+  });
+
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_DEFAULT_TABS, {
+    name: 'TRINIUMCB.GMScreenLayout',
+    hint: 'TRINIUMCB.GMScreenLayoutHint',
+    scope: 'world',
+    config: false,
+    type: Object,
+    default: {},
+  });
+
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_GM_SCREEN, {
     name: game.i18n.localize('TRINIUMCB.EnableGMScreen'),
     hint: game.i18n.localize('TRINIUMCB.EnableGMScreenHint'),
