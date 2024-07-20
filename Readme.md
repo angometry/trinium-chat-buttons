@@ -2,6 +2,7 @@
 
 [![Latest Release](https://img.shields.io/github/v/release/thedarktongo/trinium-chat-buttons)](https://github.com/thedarktongo/trinium-chat-buttons/releases/latest)
 [![License](https://img.shields.io/github/license/thedarktongo/trinium-chat-buttons)](https://github.com/thedarktongo/trinium-chat-buttons/blob/main/LICENSE)
+[![Discord](https://img.shields.io/discord/1264218090061955132?label=Discord)](https://discord.gg/6KUmpqef)
 
 Trinium Chat Buttons is a Foundry VTT module that adds several new buttons below the chat.
 
