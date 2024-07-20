@@ -3,8 +3,9 @@ import { TriniumLogger } from './logger.js';
 
 class TriniumChatButtonsInit {
   static init() {
-    registerGmScreenSettings();
+
     registerSettings();
+    registerGmScreenSettings();
     
     this.logger = new TriniumLogger(SETTINGS.MODULE_NAME);
     this.addSettingsHeaders();
@@ -23,6 +24,7 @@ class TriniumChatButtonsInit {
 
   static addSettingsHeaders() {
     Hooks.on('renderSettingsConfig', (app, html, data) => {
+      $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.GmScrenHeader')).insertBefore($('[name="trinium-chat-buttons.enableGMScreen"]').closest('div.form-group'));
       $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.PrivacyButtonsHeader')).insertBefore($('[name="trinium-chat-buttons.enablePrivacyButtons"]').closest('div.form-group'));
       $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.MidiButtonsPollingHeader')).insertBefore($('[name="trinium-chat-buttons.enableMidiButtons"]').closest('div.form-group'));
       $('<div>').addClass('form-group group-header trinium-settings-header').html(game.i18n.localize('TRINIUMCB.CombatTrackerHeader')).insertBefore($('[name="trinium-chat-buttons.enableCombatTrackerButtons"]').closest('div.form-group'));
