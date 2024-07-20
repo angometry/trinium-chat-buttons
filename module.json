@@ -19,6 +19,9 @@
       "flags": {}
     }
   ],
+  "scripts": [
+    "lib/marked-min.js"
+  ],
   "esmodules": [
     "scripts/logger.js",
     "scripts/settings.js",

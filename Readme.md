@@ -106,5 +106,8 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Acknowledgements
 
 The roll privacy buttons are Inspired by [DF Chat Enhancements](https://github.com/flamewave000/dragonflagon-fvtt/tree/master/df-chat-enhance).
-
 Special thanks to Tim Posney for creating [Midi QOL](https://gitlab.com/tposney/midi-qol).
+
+This project uses the following third-party libraries:
+
+- **Marked** - A Markdown parser and compiler. Built for speed. You can find more information about it [here](https://github.com/markedjs/marked).
