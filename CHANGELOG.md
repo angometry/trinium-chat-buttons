@@ -1,5 +1,22 @@
 ## Changelog
 
+### v1.4.1
+
+#### New Features
+
+- Added markdown support in the GM Screen through the [marked](https://github.com/markedjs/marked) library. HTML is still supported.
+- Added a dedicated GM Screen editor with live preview on tab that respects your Subscreen width settings. GM Screen content can no longer be edited through the foundry settings.
+- Added a settings window to configure the GM screen without going through foundry settings.
+
+#### Improvements
+
+- The GM Screen is instantly rebuilt with the correct settings whenever you edit any of them.
+- Added setting to expand the Bottom Mode GM Screen horizontally, ignoring Subscreen width.
+- Minor GM screen style improvements
+
+#### Bug fixes
+- Fixes rare GM Screen sizing issues. 
+
 ### v1.4.0
 
 #### Improvements
