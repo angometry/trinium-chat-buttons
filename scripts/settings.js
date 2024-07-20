@@ -32,37 +32,6 @@ export const SETTINGS = {
   GM_SCREEN_RIGHT_MARGIN: 'gmScreenRightMargin',
 };
 
-class GMScreenContentConfig extends FormApplication {
-  static get defaultOptions() {
-    return mergeObject(super.defaultOptions, {
-      title: game.i18n.localize('TRINIUMCB.GMScreenSettingsTitle'),
-      id: 'gm-screen-content-config',
-      template: 'modules/trinium-chat-buttons/templates/gm-screen-content-config.html',
-      width: 1200,
-      height: '1000',
-      tabs: [
-        { navSelector: '.tabs', contentSelector: '.content', initial: 'tab1' }
-      ]
-    });
-  }
-
-  getData() {
-    return {
-      tab1: game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB1),
-      tab2: game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB2),
-      tab3: game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB3),
-      tab4: game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB4),
-    };
-  }
-
-  async _updateObject(event, formData) {
-    await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB1, formData.tab1);
-    await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB2, formData.tab2);
-    await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB3, formData.tab3);
-    await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB4, formData.tab4);
-  }
-}
-
 export function registerGmScreenSettings() {
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_GM_SCREEN, {
     name: game.i18n.localize('TRINIUMCB.EnableGMScreen'),
@@ -71,47 +40,6 @@ export function registerGmScreenSettings() {
     config: true,
     type: Boolean,
     default: true,
-  });
-
-  game.settings.registerMenu(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_MENU, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentMenu'),
-    label: game.i18n.localize('TRINIUMCB.GMScreenContentMenuLabel'),
-    hint: game.i18n.localize('TRINIUMCB.GMScreenContentMenuHint'),
-    icon: 'fas fa-edit',
-    type: GMScreenContentConfig,
-    restricted: true,
-  });
-
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB1, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab1'),
-    scope: 'world',
-    config: false,
-    type: String,
-    default: GM_SCREEN_TAB1_CONTENT,
-  });
-
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB2, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab2'),
-    scope: 'world',
-    config: false,
-    type: String,
-    default: GM_SCREEN_TAB2_CONTENT,
-  });
-
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB3, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab3'),
-    scope: 'world',
-    config: false,
-    type: String,
-    default: GM_SCREEN_TAB3_CONTENT,
-  });
-
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB4, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
-    scope: 'world',
-    config: false,
-    type: String,
-    default: GM_SCREEN_TAB4_CONTENT,
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.NUMBER_OF_SUBSCREENS, {
@@ -181,6 +109,40 @@ export function registerGmScreenSettings() {
     config: true,
     type: Number,
     default: 20,
+  });
+
+  // Hidden
+
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB1, {
+    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab1'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: GM_SCREEN_TAB1_CONTENT,
+  });
+
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB2, {
+    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab2'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: GM_SCREEN_TAB2_CONTENT,
+  });
+
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB3, {
+    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab3'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: GM_SCREEN_TAB3_CONTENT,
+  });
+
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB4, {
+    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: GM_SCREEN_TAB4_CONTENT,
   });
 }
 
