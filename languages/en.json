@@ -115,8 +115,8 @@
     "GMScreenContentTab4": "GM Screen Tab 4 Content",
     "NumberOfSubscreens": "Number of Subscreens",
     "NumberOfSubscreensHint": "Choose how many subscreens to display (1-4)",
-    "SubscreenWidth": "Subscreen Width (Side Mode)",
-    "SubscreenWidthHint": "Set the width of each subscreen in pixels",
+    "SubscreenWidth": "Subscreen Width",
+    "SubscreenWidthHint": "Set the width of each subscreen (in pixels). A value above 200 is highly recommended",
     "GMScreenHeight": "Height (Bottom Mode)",
     "GMScreenHeightHint": "Set the height of the GM Screen in bottom mode (% of total screen height)",
     "GMScreenMode": "GM Screen Mode",
@@ -127,6 +127,18 @@
     "GMScreenLeftMargin": "Left Margin (Bottom Mode)",
     "GMScreenLeftMarginHint": "Set the left margin of the GM Screen in bottom mode (in pixels)",
     "GMScreenRightMargin": "Right Margin (Bottom Mode)",
-    "GMScreenRightMarginHint": "Set the right margin of the GM Screen in bottom mode (in pixels)"
+    "GMScreenRightMarginHint": "Set the right margin of the GM Screen in bottom mode (in pixels)",
+    "ToggleGMScreen": "Toggle GM Screen",
+    "Save": "Save",
+    "SaveAndClose": "Save & Close",
+    "Cancel": "Cancel",
+    "RestoreDefault": "Restore Default",
+    "GMScreenSettings": "GM Screen Settings",
+    "SaveSettings": "Save Settings",
+    "ExpandBottomMode": "Expand Screen in Bottom Mode",
+    "ExpandBottomModeHint": "Enable to ignore the Subscreen Width settings in Bottom Mode, expanding to fill all available horizontal space instead",
+    "right-side": "Right Side",
+    "left-side": "Left Side",
+    "bottom": "Bottom"
   }
 }

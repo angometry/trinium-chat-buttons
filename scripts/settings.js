@@ -30,6 +30,7 @@ export const SETTINGS = {
   GM_SCREEN_HEIGHT: 'gmScreenHeight',
   GM_SCREEN_LEFT_MARGIN: 'gmScreenLeftMargin',
   GM_SCREEN_RIGHT_MARGIN: 'gmScreenRightMargin',
+  EXPAND_BOTTOM_MODE: 'expandBottomMode',
 };
 
 export function registerGmScreenSettings() {
@@ -109,6 +110,15 @@ export function registerGmScreenSettings() {
     config: true,
     type: Number,
     default: 20,
+  });
+
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.EXPAND_BOTTOM_MODE, {
+    name: game.i18n.localize('TRINIUMCB.ExpandBottomMode'),
+    hint: game.i18n.localize('TRINIUMCB.ExpandBottomModeHint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: true,
   });
 
   // Hidden
