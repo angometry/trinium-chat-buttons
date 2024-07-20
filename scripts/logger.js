@@ -9,7 +9,9 @@ export class TriniumLogger {
       const currentLevel = levels.indexOf(this.logLevel);
       const messageLevel = levels.indexOf(level);
   
+      if (messageLevel >= currentLevel) {
         console[level](`${this.moduleName} | ${message}`, ...args);
+      }
     }
   
     info(message, ...args) {
