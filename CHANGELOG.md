@@ -1,3 +1,36 @@
+## v1.5.0
+
+### New Features
+
+#### GM SCREEN
+
+- The GM Screen now supports journal pages! Paste only the journal UUID into the editor and it'll be loaded in place of HTML/Markdown. Currently, only text and image pages are fully supported.
+- The GM Screen now supports enrichers, both in Journal and HTML/Markdown form.
+- Each Subscreen can now be split into up to 3 rows. Each row has its own tab selector.
+- Each Subscreen can be set to a custom width, ignoring the Subscreen Width setting. (the first Subscreen is always on the left)
+- The Tab editor now features a tab selector. It will warn you if you try to change tabs with unsaved changes.
+
+### Improvements
+
+- The combat tracker now automatically opens for you when the page is loaded.
+
+#### GM SCREEN
+- The GM Screen now supports 10 tabs instead of 4. The tab selector has been changed to a floating dropdown to avoid cluttering the header.
+- The Tab editor now shows the exact sizing of the subscreen you opened it from, including height, so you know exactly what's in view with no scrolling. It also informs you.
+- More style improvements
+- Localization improvements (Still only english)
+
+### Bug fixes
+- Fixes more GM Screen Sizing issues
+
+### Known Issues
+- There is currently no default content for tab 5 to 10. The "Restore Default" button will eventually will be replaced with a "Choose preset" button. You are welcome to submit content!
+- Opening the GM screen for the first time is extremely laggy if journal pages with images are loaded. This only happens if the image has not been loaded before e.g. the actual journal.
+
+### Planned features
+
+- In the GM  screen, 
+
 ## v1.4.1
 
 ### New Features

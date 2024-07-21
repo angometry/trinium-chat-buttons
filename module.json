@@ -1,8 +1,8 @@
 {
   "id": "trinium-chat-buttons",
   "title": "Trinium Chat Buttons",
-  "description": "Adds buttons below the chat with a few convenient features: roll modifiers, a mini combat tracker and customizable GM screen!",
-  "version": "1.4.1",
+  "description": "Adds compact buttons below the chat with a few convenient features: roll modifiers, a mini combat tracker and customizable GM screen!",
+  "version": "1.5.0",
   "authors": [
     {
       "name": "Andrea Gomez",
