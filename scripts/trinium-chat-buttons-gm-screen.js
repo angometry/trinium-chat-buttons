@@ -278,7 +278,7 @@ class GMScreen {
                 .join('')}
             </div>
             <div class="tcb-tab-row">
-              ${Array.from({ length: 6 }, (_, i) => i + 6)
+              ${Array.from({ length: 6 }, (_, i) => i + 7)
                 .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`)
                 .join('')}
             </div>
@@ -578,6 +578,7 @@ class GMScreen {
 
   static closeEditor() {
     $(CSS.EDITOR).remove();
+    this.refreshGMScreen();
   }
 
   static restoreDefaultContent() {
