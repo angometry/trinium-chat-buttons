@@ -33,8 +33,8 @@ export const SETTINGS = {
   GM_SCREEN_CONTENT_MENU: 'gmScreenContentMenu',
   NUMBER_OF_SUBSCREENS: 'numberOfSubscreens',
   GM_SCREEN_MODE: 'gmScreenMode',
-  SUBSCREEN_WIDTH: 'subscreenWidth',
-  GM_SCREEN_HEIGHT: 'gmScreenHeight',
+  DEFAULT_SUBSCREEN_WIDTH: 'defaultSubscreenWidth',
+   GM_SCREEN_HEIGHT: 'gmScreenHeight',
   GM_SCREEN_LEFT_MARGIN: 'gmScreenLeftMargin',
   GM_SCREEN_RIGHT_MARGIN: 'gmScreenRightMargin',
   EXPAND_BOTTOM_MODE: 'expandBottomMode',
@@ -49,7 +49,7 @@ export const DEFAULT_SUBSCREEN = {
 
 
 export function registerGmScreenSettings() {
-    game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT, {
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT, {
       name: game.i18n.localize('TCB_SETTINGS.GMScreenLayout'),
       hint: game.i18n.localize('TCB_SETTINGS.GMScreenLayoutHint'),
     scope: 'world',
@@ -90,9 +90,9 @@ export function registerGmScreenSettings() {
     default: 1,
   });
 
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.SUBSCREEN_WIDTH, {
-    name: game.i18n.localize('TCB_SETTINGS.SubscreenWidth'),
-    hint: game.i18n.localize('TCB_SETTINGS.SubscreenWidthHint'),
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.DEFAULT_SUBSCREEN_WIDTH, {
+    name: game.i18n.localize('TCB_SETTINGS.DefaultSubscreenWidth'),
+    hint: game.i18n.localize('TCB_SETTINGS.DefaultSubscreenWidthHint'),
     scope: 'world',
     config: true,
     type: Number,
