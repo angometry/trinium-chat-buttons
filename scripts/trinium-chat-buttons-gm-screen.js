@@ -265,14 +265,15 @@ class GMScreen {
     const editorHtml = `
       <div id="tcb-gm-screen-editor" class="tcb-app">
         <div class="tcb-editor-preview" style="width: ${rowWidth}px; position: relative;">
-        <br>
           <div class="tcb-editor-preview-content"></div>
           <div class="tcb-editor-preview-line" style="position: absolute; top: ${rowHeight}px; left: 0; right: 0;"></div>
         </div>
         <div class="tcb-editor-input">
           <div class="tcb-editor-header">
+            <div class="tcb-editor-header-text">
           Note: The size of the preview tab is currently set to the size of Subscreen ${subscreenIndex}, Row ${rowIndex}. Select tab to edit:
-                      <div class="tcb-editor-tabs">
+            </div>
+          <div class="tcb-editor-tabs">
         ${Array.from({length: 10}, (_, i) => i + 1).map(tab => 
           `<button class="tcb-editor-tab-button ${tab === activeTab ? 'tcb-active' : ''}" data-tab="${tab}">${tab}</button>`
         ).join('')}
@@ -306,39 +307,55 @@ class GMScreen {
     const savedContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${currentTab}`);
   
     if (currentContent !== savedContent) {
-      const confirmation = await new Promise((resolve) => {
-        new Dialog({
-          title: game.i18n.localize('TRINIUMCB.UnsavedChanges'),
-          content: game.i18n.localize('TRINIUMCB.UnsavedChangesConfirmation'),
-          buttons: {
-            yes: {
-              icon: '<i class="fas fa-check"></i>',
-              label: game.i18n.localize('Yes'),
-              callback: () => resolve(true)
-            },
-            no: {
-              icon: '<i class="fas fa-times"></i>',
-              label: game.i18n.localize('No'),
-              callback: () => resolve(false)
-            }
-          },
-          default: 'no',
-          render: (html) => {
-            html.parent().css('z-index', 1050);
-          }
-        }).render(true);
+      // Create the confirmation dialog HTML
+      const confirmationHtml = `
+      <div class="tcb-editor-confirmation-dialog">
+        <p>${game.i18n.localize('TRINIUMCB.UnsavedChangesConfirmation')}</p>
+        <div class="button-container">
+          <button class="confirm-yes">${game.i18n.localize('Yes')}</button>
+          <button class="confirm-no">${game.i18n.localize('No')}</button>
+        </div>
+      </div>
+    `;
+      
+      // Append the confirmation dialog to the editor
+      $('#tcb-gm-screen-editor').prepend(confirmationHtml);
+      const $dialog = $('.tcb-editor-confirmation-dialog');
+  
+      // Show the dialog
+      $dialog.show();
+  
+      return new Promise((resolve) => {
+        $dialog.find('.confirm-yes').on('click', () => {
+          $dialog.remove();
+          resolve(true);
+        });
+  
+        $dialog.find('.confirm-no').on('click', () => {
+          $dialog.remove();
+          resolve(false);
+        });
+      }).then((confirmation) => {
+        if (!confirmation) return;
+  
+        $activeTab.removeClass('tcb-active');
+        $button.addClass('tcb-active');
+  
+        const newContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${newTab}`);
+        $(CSS.EDITOR_TEXTAREA).val(newContent);
+        this.updateEditorPreview();
       });
+    } else {
+      $activeTab.removeClass('tcb-active');
+      $button.addClass('tcb-active');
   
-      if (!confirmation) return;
+      const newContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${newTab}`);
+      $(CSS.EDITOR_TEXTAREA).val(newContent);
+      this.updateEditorPreview();
     }
-  
-    $activeTab.removeClass('tcb-active');
-    $button.addClass('tcb-active');
-  
-    const newContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${newTab}`);
-    $(CSS.EDITOR_TEXTAREA).val(newContent);
-    this.updateEditorPreview();
   }
+  
+  
   
   
   // Update the updateEditorPreview method
