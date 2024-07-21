@@ -208,24 +208,41 @@ class GMScreen {
     const gmScreenHeight = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_HEIGHT);
     const leftMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LEFT_MARGIN);
     const rightMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_RIGHT_MARGIN);
-    const defaultSubscreenWidth = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.DEFAULT_SUBSCREEN_WIDTH);
+    let defaultSubscreenWidth = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.DEFAULT_SUBSCREEN_WIDTH);
     const expandBottomMode = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.EXPAND_BOTTOM_MODE);
+  
+    const layout = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT);
+  
+    // Calculate combined width of subscreens with width > 0 within the limit of numberOfSubscreens
+    let combinedWidth = 0;
+    for (let i = 1; i <= numberOfSubscreens; i++) {
+      let subscreenWidth = layout[i]?.width || defaultSubscreenWidth;
+      if (subscreenWidth <= 0) {
+        subscreenWidth = defaultSubscreenWidth;
+      }
+      combinedWidth += subscreenWidth;
+    }
 
+  
+    // Adjust defaultSubscreenWidth if necessary
+    const averageSubscreenWidth = combinedWidth / numberOfSubscreens;
+    if (averageSubscreenWidth < defaultSubscreenWidth) {
+      defaultSubscreenWidth = averageSubscreenWidth;
+    }
+  
     let gmScreenHtml = `<div id="tcb-gm-screen" class="tcb-app tcb-${mode}-mode" style="--gm-screen-height: ${gmScreenHeight}%; --number-of-subscreens: ${numberOfSubscreens}; --left-margin: ${leftMargin}px; --right-margin: ${rightMargin}px; --default-subscreen-width: ${defaultSubscreenWidth}px; --expand-bottom-mode: ${
       expandBottomMode ? 'true' : 'false'
     };">`;
-
-    const layout = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT);
-
+  
     for (let i = 1; i <= numberOfSubscreens; i++) {
       const subscreen = layout[i] || DEFAULT_SUBSCREEN;
       gmScreenHtml += this.createSubscreenHTML(i, subscreen);
     }
-
+  
     gmScreenHtml += '</div>';
-
+  
     $('#interface').append($(gmScreenHtml));
-
+  
     // Initialize content for all subscreens
     for (let i = 1; i <= numberOfSubscreens; i++) {
       const subscreen = layout[i] || DEFAULT_SUBSCREEN;
@@ -234,15 +251,17 @@ class GMScreen {
         this.switchTab(defaultTab, i, row);
       }
     }
-
+  
     // Apply width to subscreens
-    Object.entries(layout).forEach(([index, subscreen]) => {
+    for (let i = 1; i <= numberOfSubscreens; i++) {
+      const subscreen = layout[i] || DEFAULT_SUBSCREEN;
       const subscreenWidth = subscreen.width && subscreen.width > 0 ? subscreen.width : defaultSubscreenWidth;
       if (subscreenWidth) {
-        $(`#tcb-gm-screen .tcb-subscreen[data-subscreen="${index}"]`).css('width', `${subscreen.width}px`);
+        $(`#tcb-gm-screen .tcb-subscreen[data-subscreen="${i}"]`).css('width', `${subscreenWidth}px`);
       }
-    });
+    }
   }
+  
 
   static createSubscreenHTML(subscreenIndex, subscreen) {
     let html = `<div class="tcb-subscreen" data-subscreen="${subscreenIndex}" data-width="${subscreen.width}" style="width: ${subscreen.width ? subscreen.width + 'px' : 'auto'}">`;
