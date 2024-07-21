@@ -1,5 +1,5 @@
 import { TriniumLogger } from './logger.js';
-import { SETTINGS, DEFAULT_SUBSCREEN } from './settings.js';
+import { SETTINGS, DEFAULT_COLUMN } from './settings.js';
 
 export class Draggable {
   constructor(element, handle) {
@@ -203,76 +203,76 @@ class GMScreen {
 
   static createGMScreen() {
     this.logger.debug('Creating GM Screen');
-    const numberOfSubscreens = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.NUMBER_OF_SUBSCREENS);
+    const numberOfColumns = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.NUMBER_OF_COLUMNS);
     const mode = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_MODE);
     const gmScreenHeight = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_HEIGHT);
     const leftMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LEFT_MARGIN);
     const rightMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_RIGHT_MARGIN);
-    let defaultSubscreenWidth = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.DEFAULT_SUBSCREEN_WIDTH);
+    let defaultColumnWidth = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.DEFAULT_COLUMN_WIDTH);
     const expandBottomMode = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.EXPAND_BOTTOM_MODE);
   
     const layout = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT);
   
-    // Calculate combined width of subscreens with width > 0 within the limit of numberOfSubscreens
+    // Calculate combined width of columns with width > 0 within the limit of numberOfColumns
     let combinedWidth = 0;
-    for (let i = 1; i <= numberOfSubscreens; i++) {
-      let subscreenWidth = layout[i]?.width || defaultSubscreenWidth;
-      if (subscreenWidth <= 0) {
-        subscreenWidth = defaultSubscreenWidth;
+    for (let i = 1; i <= numberOfColumns; i++) {
+      let columnWidth = layout[i]?.width || defaultColumnWidth;
+      if (columnWidth <= 0) {
+        columnWidth = defaultColumnWidth;
       }
-      combinedWidth += subscreenWidth;
+      combinedWidth += columnWidth;
     }
 
   
-    // Adjust defaultSubscreenWidth if necessary
-    const averageSubscreenWidth = combinedWidth / numberOfSubscreens;
-    if (averageSubscreenWidth < defaultSubscreenWidth) {
-      defaultSubscreenWidth = averageSubscreenWidth;
+    // Adjust defaultColumnWidth if necessary
+    const averageColumnWidth = combinedWidth / numberOfColumns;
+    if (averageColumnWidth < defaultColumnWidth) {
+      defaultColumnWidth = averageColumnWidth;
     }
   
-    let gmScreenHtml = `<div id="tcb-gm-screen" class="tcb-app tcb-${mode}-mode" style="--gm-screen-height: ${gmScreenHeight}%; --number-of-subscreens: ${numberOfSubscreens}; --left-margin: ${leftMargin}px; --right-margin: ${rightMargin}px; --default-subscreen-width: ${defaultSubscreenWidth}px; --expand-bottom-mode: ${
+    let gmScreenHtml = `<div id="tcb-gm-screen" class="tcb-app tcb-${mode}-mode" style="--gm-screen-height: ${gmScreenHeight}%; --number-of-columns: ${numberOfColumns}; --left-margin: ${leftMargin}px; --right-margin: ${rightMargin}px; --default-column-width: ${defaultColumnWidth}px; --expand-bottom-mode: ${
       expandBottomMode ? 'true' : 'false'
     };">`;
   
-    for (let i = 1; i <= numberOfSubscreens; i++) {
-      const subscreen = layout[i] || DEFAULT_SUBSCREEN;
-      gmScreenHtml += this.createSubscreenHTML(i, subscreen);
+    for (let i = 1; i <= numberOfColumns; i++) {
+      const column = layout[i] || DEFAULT_COLUMN;
+      gmScreenHtml += this.createColumnHTML(i, column);
     }
   
     gmScreenHtml += '</div>';
   
     $('#interface').append($(gmScreenHtml));
   
-    // Initialize content for all subscreens
-    for (let i = 1; i <= numberOfSubscreens; i++) {
-      const subscreen = layout[i] || DEFAULT_SUBSCREEN;
-      for (let row = 1; row <= subscreen.rows; row++) {
+    // Initialize content for all columns
+    for (let i = 1; i <= numberOfColumns; i++) {
+      const column = layout[i] || DEFAULT_COLUMN;
+      for (let row = 1; row <= column.rows; row++) {
         const defaultTab = this.getDefaultTab(i, row);
         this.switchTab(defaultTab, i, row);
       }
     }
   
-    // Apply width to subscreens
-    for (let i = 1; i <= numberOfSubscreens; i++) {
-      const subscreen = layout[i] || DEFAULT_SUBSCREEN;
-      const subscreenWidth = subscreen.width && subscreen.width > 0 ? subscreen.width : defaultSubscreenWidth;
-      if (subscreenWidth) {
-        $(`#tcb-gm-screen .tcb-subscreen[data-subscreen="${i}"]`).css('width', `${subscreenWidth}px`);
+    // Apply width to columns
+    for (let i = 1; i <= numberOfColumns; i++) {
+      const column = layout[i] || DEFAULT_COLUMN;
+      const columnWidth = column.width && column.width > 0 ? column.width : defaultColumnWidth;
+      if (columnWidth) {
+        $(`#tcb-gm-screen .tcb-column[data-column="${i}"]`).css('width', `${columnWidth}px`);
       }
     }
   }
   
 
-  static createSubscreenHTML(subscreenIndex, subscreen) {
-    let html = `<div class="tcb-subscreen" data-subscreen="${subscreenIndex}" data-width="${subscreen.width}" style="width: ${subscreen.width ? subscreen.width + 'px' : 'auto'}">`;
+  static createColumnHTML(columnIndex, column) {
+    let html = `<div class="tcb-column" data-column="${columnIndex}" data-width="${column.width}" style="width: ${column.width ? column.width + 'px' : 'auto'}">`;
 
-    for (let row = 1; row <= subscreen.rows; row++) {
-      const defaultTab = this.getDefaultTab(subscreenIndex, row);
+    for (let row = 1; row <= column.rows; row++) {
+      const defaultTab = this.getDefaultTab(columnIndex, row);
       html += `
-        <div class="tcb-subscreen-row" data-row="${row}">
+        <div class="tcb-column-row" data-row="${row}">
           <header class="tcb-window-header">
             <div class="tcb-gm-screen-controls">
-              ${subscreenIndex === 1 && row === 1 ? `<button class="tcb-settings-button" title="${game.i18n.localize('TCB_GMSCREEN.OpenSettings')}"><i class="fas fa-cog"></i></button>` : ''}
+              ${columnIndex === 1 && row === 1 ? `<button class="tcb-settings-button" title="${game.i18n.localize('TCB_GMSCREEN.OpenSettings')}"><i class="fas fa-cog"></i></button>` : ''}
               <button class="tcb-tab-toggle" title="${game.i18n.localize('TCB_GMSCREEN.ChangeTab')}"><i class="fas fa-chevron-down"></i> ${game.i18n.localize('TCB_GMSCREEN.Tab')} #${defaultTab}</button>
               <button class="tcb-edit-button" title="${game.i18n.localize('TCB_GMSCREEN.EditCurrentTab')}"><i class="fas fa-edit"></i></button>
             </div>
@@ -301,7 +301,7 @@ class GMScreen {
 
   static toggleTabContainer(event) {
     const $button = $(event.currentTarget);
-    const $row = $button.closest('.tcb-subscreen-row');
+    const $row = $button.closest('.tcb-column-row');
     const $tabContainer = $row.find('.tcb-tab-container');
     
     if ($tabContainer.is(':visible')) {
@@ -342,7 +342,7 @@ class GMScreen {
   static handleTabClick(event) {
     const $button = $(event.currentTarget);
     const tab = $button.data('tab');
-    const $row = $button.closest('.tcb-subscreen-row');
+    const $row = $button.closest('.tcb-column-row');
     
     // Slide up the tab container
     const $tabContainer = $row.find('.tcb-tab-container');
@@ -350,12 +350,12 @@ class GMScreen {
       $tabContainer.css('display', 'none');
       
       // Proceed with tab switch after the tab container has slid up
-      const $subscreen = $button.closest('.tcb-subscreen');
-      const subscreenIndex = $subscreen.data('subscreen');
+      const $column = $button.closest('.tcb-column');
+      const columnIndex = $column.data('column');
       const rowIndex = $row.data('row');
       
-      this.switchTab(tab, subscreenIndex, rowIndex);
-      this.setDefaultTab(subscreenIndex, rowIndex, tab);
+      this.switchTab(tab, columnIndex, rowIndex);
+      this.setDefaultTab(columnIndex, rowIndex, tab);
       
       // Update active state in the tab container
       $row.find('.tcb-tab-button').removeClass('tcb-active');
@@ -363,20 +363,20 @@ class GMScreen {
     });
 }
 
-  static async setDefaultTab(subscreenIndex, rowIndex, tab) {
+  static async setDefaultTab(columnIndex, rowIndex, tab) {
     const defaultTabs = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_DEFAULT_TABS);
-    if (!defaultTabs[subscreenIndex]) defaultTabs[subscreenIndex] = {};
-    defaultTabs[subscreenIndex][rowIndex] = tab;
+    if (!defaultTabs[columnIndex]) defaultTabs[columnIndex] = {};
+    defaultTabs[columnIndex][rowIndex] = tab;
     await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_DEFAULT_TABS, defaultTabs);
   }
 
-  static getDefaultTab(subscreenIndex, rowIndex) {
+  static getDefaultTab(columnIndex, rowIndex) {
     const defaultTabs = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_DEFAULT_TABS);
-    return defaultTabs[subscreenIndex]?.[rowIndex] || 1;
+    return defaultTabs[columnIndex]?.[rowIndex] || 1;
   }
 
-  static async switchTab(tab, subscreenIndex, rowIndex) {
-    this.logger.debug(`Switching to tab ${tab} in subscreen ${subscreenIndex}, row ${rowIndex}`);
+  static async switchTab(tab, columnIndex, rowIndex) {
+    this.logger.debug(`Switching to tab ${tab} in column ${columnIndex}, row ${rowIndex}`);
     const content = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${tab}`);
     
     let renderedContent;
@@ -397,13 +397,13 @@ class GMScreen {
     }
 
     const $content = $(
-      `${CSS.GM_SCREEN} .tcb-subscreen[data-subscreen="${subscreenIndex}"] .tcb-subscreen-row[data-row="${rowIndex}"] .tcb-window-content`
+      `${CSS.GM_SCREEN} .tcb-column[data-column="${columnIndex}"] .tcb-column-row[data-row="${rowIndex}"] .tcb-window-content`
     );
     $content.html(renderedContent);
 
     // Update active state in the tab container
     const $row = $(
-      `${CSS.GM_SCREEN} .tcb-subscreen[data-subscreen="${subscreenIndex}"] .tcb-subscreen-row[data-row="${rowIndex}"]`
+      `${CSS.GM_SCREEN} .tcb-column[data-column="${columnIndex}"] .tcb-column-row[data-row="${rowIndex}"]`
     );
     $row.find('.tcb-tab-button').removeClass('tcb-active');
     $row.find(`.tcb-tab-button[data-tab="${tab}"]`).addClass('tcb-active');
@@ -423,9 +423,9 @@ class GMScreen {
 
   static openEditor(event) {
     const $button = $(event.currentTarget);
-    const $subscreen = $button.closest('.tcb-subscreen');
-    const subscreenIndex = $subscreen.data('subscreen');
-    const $row = $button.closest('.tcb-subscreen-row');
+    const $column = $button.closest('.tcb-column');
+    const columnIndex = $column.data('column');
+    const $row = $button.closest('.tcb-column-row');
     const rowIndex = $row.data('row');
     const activeTab = $row.find(`${CSS.TAB_BUTTON}.tcb-active`).data('tab');
 
@@ -443,7 +443,7 @@ class GMScreen {
         <div class="tcb-editor-input">
           <div class="tcb-editor-header">
             <div class="tcb-editor-header-text">
-          ${game.i18n.localize('TCB_GMSCREEN.EditorNote')} ${subscreenIndex}, ${rowIndex}. ${game.i18n.localize('TCB_GMSCREEN.SelectTabToEdit')}:
+          ${game.i18n.localize('TCB_GMSCREEN.EditorNote')} ${columnIndex} - ${rowIndex}. ${game.i18n.localize('TCB_GMSCREEN.SelectTabToEdit')}:
             </div>
           <div class="tcb-editor-tabs">
         ${Array.from({ length: 10 }, (_, i) => i + 1)
@@ -576,7 +576,7 @@ class GMScreen {
     const content = $(CSS.EDITOR_TEXTAREA).val();
     const activeTab = $(`${CSS.GM_SCREEN} ${CSS.TAB_BUTTON}.tcb-active`).data('tab');
     await game.settings.set(SETTINGS.MODULE_NAME, `gmScreenContent_tab${activeTab}`, content);
-    this.switchTab(activeTab, 1); // Assuming we're always editing the first subscreen
+    this.switchTab(activeTab, 1); // Assuming we're always editing the first column
     if (close) {
       this.closeEditor();
     }
@@ -611,21 +611,21 @@ class GMScreen {
             <div class="tcb-settings-scrollable">
               ${this.generateGeneralSettingsFields()}
               <hr>
-              <h3>${game.i18n.localize('TCB_GMSCREEN.SubscreenSettings')}</h3>
+              <h3>${game.i18n.localize('TCB_GMSCREEN.ColumnSettings')}</h3>
               ${[1, 2, 3, 4]
                 .map(
                   (i) => `
                 <fieldset>
-                  <legend>${game.i18n.localize('TCB_GMSCREEN.Subscreen')} ${i}</legend>
+                  <legend>${game.i18n.localize('TCB_GMSCREEN.Column')} ${i}</legend>
                   <div class="form-group">
-                    <label for="tcb-subscreen-rows-${i}">${game.i18n.localize('TCB_GMSCREEN.NumberOfRows')}</label>
-                    <input type="number" id="tcb-subscreen-rows-${i}" name="subscreen[${i}].rows" value="${
+                    <label for="tcb-column-rows-${i}">${game.i18n.localize('TCB_GMSCREEN.NumberOfRows')}</label>
+                    <input type="number" id="tcb-column-rows-${i}" name="column[${i}].rows" value="${
                     layout[i]?.rows || 1
                   }" min="1" max="3" required>
                   </div>
                   <div class="form-group">
-                    <label for="tcb-subscreen-width-${i}">${game.i18n.localize('TCB_GMSCREEN.SubscreenWidth')}</label>
-                    <input type="number" id="tcb-subscreen-width-${i}" name="subscreen[${i}].width" value="${
+                    <label for="tcb-column-width-${i}">${game.i18n.localize('TCB_GMSCREEN.ColumnWidth')}</label>
+                    <input type="number" id="tcb-column-width-${i}" name="column[${i}].width" value="${
                     layout[i]?.width || 0
                   }" min="0" max="1000" step="10" required>
                   </div>
@@ -676,10 +676,10 @@ class GMScreen {
   static generateGeneralSettingsFields() {
     const settings = [
       {
-        key: SETTINGS.NUMBER_OF_SUBSCREENS,
+        key: SETTINGS.NUMBER_OF_COLUMNS,
         type: 'number',
-        label: 'TCB_SETTINGS.NumberOfSubscreens',
-        hint: 'TCB_SETTINGS.NumberOfSubscreensHint',
+        label: 'TCB_SETTINGS.NumberOfColumns',
+        hint: 'TCB_SETTINGS.NumberOfColumnsHint',
         min: 1,
         max: 4,
         step: 1,
@@ -692,10 +692,10 @@ class GMScreen {
         options: ['right-side', 'left-side', 'bottom'],
       },
       {
-        key: SETTINGS.DEFAULT_SUBSCREEN_WIDTH,
+        key: SETTINGS.DEFAULT_COLUMN_WIDTH,
         type: 'number',
-        label: 'TCB_SETTINGS.DefaultSubscreenWidth',
-        hint: 'TCB_SETTINGS.DefaultSubscreenWidthHint',
+        label: 'TCB_SETTINGS.DefaultColumnWidth',
+        hint: 'TCB_SETTINGS.DefaultColumnWidthHint',
         min: 100,
         max: 1000,
         step: 10,
@@ -794,12 +794,12 @@ class GMScreen {
   
     // Save general settings
     const generalSettings = [
-      SETTINGS.NUMBER_OF_SUBSCREENS,
+      SETTINGS.NUMBER_OF_COLUMNS,
       SETTINGS.GM_SCREEN_MODE,
       SETTINGS.GM_SCREEN_HEIGHT,
       SETTINGS.GM_SCREEN_LEFT_MARGIN,
       SETTINGS.GM_SCREEN_RIGHT_MARGIN,
-      SETTINGS.DEFAULT_SUBSCREEN_WIDTH,
+      SETTINGS.DEFAULT_COLUMN_WIDTH,
 
     ];
   
@@ -818,12 +818,12 @@ class GMScreen {
     // Save layout settings
     const newLayout = {};
     for (let [key, value] of formData.entries()) {
-      if (key.startsWith('subscreen')) {
-        const match = key.match(/subscreen\[(\d+)\]\.(\w+)/);
+      if (key.startsWith('column')) {
+        const match = key.match(/column\[(\d+)\]\.(\w+)/);
         if (match) {
-          const [, subscreenIndex, property] = match;
-          newLayout[subscreenIndex] = newLayout[subscreenIndex] || {};
-          newLayout[subscreenIndex][property] = parseInt(value);
+          const [, columnIndex, property] = match;
+          newLayout[columnIndex] = newLayout[columnIndex] || {};
+          newLayout[columnIndex][property] = parseInt(value);
         }
       }
     }

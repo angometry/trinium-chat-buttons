@@ -31,9 +31,9 @@ export const SETTINGS = {
   GM_SCREEN_CONTENT_TAB10: 'gmScreenContent_tab10',
 
   GM_SCREEN_CONTENT_MENU: 'gmScreenContentMenu',
-  NUMBER_OF_SUBSCREENS: 'numberOfSubscreens',
+  NUMBER_OF_COLUMNS: 'numberOfColumns',
   GM_SCREEN_MODE: 'gmScreenMode',
-  DEFAULT_SUBSCREEN_WIDTH: 'defaultSubscreenWidth',
+  DEFAULT_COLUMN_WIDTH: 'defaultColumnWidth',
    GM_SCREEN_HEIGHT: 'gmScreenHeight',
   GM_SCREEN_LEFT_MARGIN: 'gmScreenLeftMargin',
   GM_SCREEN_RIGHT_MARGIN: 'gmScreenRightMargin',
@@ -42,7 +42,7 @@ export const SETTINGS = {
   GM_SCREEN_DEFAULT_TABS: 'gmScreenDefaultTabs',
 };
 
-export const DEFAULT_SUBSCREEN = {
+export const DEFAULT_COLUMN = {
   rows: 1,
   width: 0,
 };
@@ -76,9 +76,9 @@ export function registerGmScreenSettings() {
     default: true,
   });
 
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.NUMBER_OF_SUBSCREENS, {
-    name: game.i18n.localize('TCB_SETTINGS.NumberOfSubscreens'),
-    hint: game.i18n.localize('TCB_SETTINGS.NumberOfSubscreensHint'),
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.NUMBER_OF_COLUMNS, {
+    name: game.i18n.localize('TCB_SETTINGS.NumberOfColumns'),
+    hint: game.i18n.localize('TCB_SETTINGS.NumberOfColumnsHint'),
     scope: 'world',
     config: true,
     type: Number,
@@ -90,9 +90,9 @@ export function registerGmScreenSettings() {
     default: 1,
   });
 
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.DEFAULT_SUBSCREEN_WIDTH, {
-    name: game.i18n.localize('TCB_SETTINGS.DefaultSubscreenWidth'),
-    hint: game.i18n.localize('TCB_SETTINGS.DefaultSubscreenWidthHint'),
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.DEFAULT_COLUMN_WIDTH, {
+    name: game.i18n.localize('TCB_SETTINGS.DefaultColumnWidth'),
+    hint: game.i18n.localize('TCB_SETTINGS.DefaultColumnWidthHint'),
     scope: 'world',
     config: true,
     type: Number,

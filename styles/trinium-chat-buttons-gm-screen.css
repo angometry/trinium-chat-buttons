@@ -31,18 +31,18 @@
 #tcb-gm-screen.tcb-left-side-mode {
   left: 0;
   width: 0;
-  max-width: min(calc(var(--default-subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px)));
+  max-width: min(calc(var(--default-column-width, 300px) * var(--number-of-columns, 1)), calc(100% - var(--sidebar-width, 300px)));
 }
 
 #tcb-gm-screen.tcb-right-side-mode {
   right: var(--sidebar-width, 300px);
   width: 0;
-  max-width: min(calc(var(--default-subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px)));
+  max-width: min(calc(var(--default-column-width, 300px) * var(--number-of-columns, 1)), calc(100% - var(--sidebar-width, 300px)));
 }
 
 #tcb-gm-screen.tcb-visible.tcb-left-side-mode,
 #tcb-gm-screen.tcb-visible.tcb-right-side-mode {
-  width: min(calc(var(--default-subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px)));
+  width: min(calc(var(--default-column-width, 300px) * var(--number-of-columns, 1)), calc(100% - var(--sidebar-width, 300px)));
 }
 
 #tcb-gm-screen.tcb-bottom-mode {
@@ -55,7 +55,7 @@
 }
 
 #tcb-gm-screen.tcb-bottom-mode[style*="--expand-bottom-mode:false"] {
-  width: min(calc(var(--default-subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px) - var(--left-margin, 20px) - var(--right-margin, 20px)));
+  width: min(calc(var(--default-column-width, 300px) * var(--number-of-columns, 1)), calc(100% - var(--sidebar-width, 300px) - var(--left-margin, 20px) - var(--right-margin, 20px)));
 }
 
 #tcb-gm-screen.tcb-visible.tcb-bottom-mode {
@@ -67,12 +67,12 @@
 }
 
 #tcb-gm-screen.tcb-bottom-mode[style*="--expand-bottom-mode: false"] {
-  width: min(calc(var(--default-subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px) - var(--left-margin, 20px) - var(--right-margin, 20px)));
+  width: min(calc(var(--default-column-width, 300px) * var(--number-of-columns, 1)), calc(100% - var(--sidebar-width, 300px) - var(--left-margin, 20px) - var(--right-margin, 20px)));
 }
 
-/*/ Subscreen Styling /*/
+/*/ Column Styling /*/
 
-.tcb-subscreen {
+.tcb-column {
   display: flex;
   flex-direction: column;
   border-right: 2px solid #7f7f7f;
@@ -80,15 +80,15 @@
   min-width: 0; /* Allow shrinking below content width */
 }
 
-.tcb-subscreen[data-width="0"] {
-  flex: 1 1 0; /* For subscreens with width 0, allow them to grow and shrink */
+.tcb-column[data-width="0"] {
+  flex: 1 1 0; /* For columns with width 0, allow them to grow and shrink */
 }
 
-.tcb-subscreen[data-width]:not([data-width="0"]) {
-  flex: 0 0 auto; /* For subscreens with explicit width, don't grow or shrink */
+.tcb-column[data-width]:not([data-width="0"]) {
+  flex: 0 0 auto; /* For columns with explicit width, don't grow or shrink */
 }
 
-.tcb-subscreen-row {
+.tcb-column-row {
   display: flex;
   flex-direction: column;
   flex: 1 0 0; /* Grow but don't shrink */
@@ -97,13 +97,13 @@
 
 /*/ Content and editor preview/*/
 
-.tcb-subscreen-row .tcb-window-content {
+.tcb-column-row .tcb-window-content {
   flex: 1 1 auto;
   overflow-y: auto;
   min-height: 0; /* Allow scrolling */
 }
 
-.tcb-subscreen-row .tcb-window-content, .tcb-editor-preview  {
+.tcb-column-row .tcb-window-content, .tcb-editor-preview  {
   overflow-y: auto;
   padding: 10px;
   background-color: #dfdbd3;
@@ -168,7 +168,7 @@
 
 /*/ Tab Container /*/
 
-.tcb-subscreen-row {
+.tcb-column-row {
   position: relative;
 }
 
@@ -218,15 +218,15 @@
   box-shadow: none !important;
 }
 
-/* New: Styles for subscreen settings button */
-.tcb-subscreen-settings-button {
+/* New: Styles for column settings button */
+.tcb-column-settings-button {
   background: none;
   color: white;
   border: none;
   cursor: pointer;
 }
 
-.tcb-subscreen-settings-button:hover {
+.tcb-column-settings-button:hover {
   color: #f39c12;
 }
 
@@ -235,7 +235,7 @@
   position: fixed;
   top: 0em;
   left: 0em;
-  right: 0em;
+  right: 300px;
   bottom: 0em;
   background: #0d1117;
   display: flex;
@@ -502,7 +502,7 @@ box-shadow: inset 0 0 10px #faa9ff;
 }
 
 .tcb-editor-preview-line::after {
-  content: "subscreen height cutoff";
+  content: "column height cutoff";
   position: absolute;
   top: 100%;
   right: 0;

@@ -28,7 +28,7 @@ Everything you need to know at the click of a single button! Try it in Sidebar m
 #### Features
 
 - **Editable Content:** Fully editable to keep exactly the information you want at your fingertips. Supports Markdown and HTML with live preview.
-- **Tabs:** 4 different tabs let you organize your content while keeping the screen compact. You can also have up to 4 "Subscreens", to have all tabs (or multiple of the same scrolled at different heights) at once.
+- **Tabs:** 4 different tabs let you organize your content while keeping the screen compact. You can also have up to 4 "Columns", to have all tabs (or multiple of the same scrolled at different heights) at once.
 - **Customizable:** Open from the right, left or bottom, with customizable sizes!
 
 ## Roll Privacy and MIDI Buttons
