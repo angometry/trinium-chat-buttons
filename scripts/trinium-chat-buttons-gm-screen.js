@@ -309,14 +309,14 @@ class GMScreen {
     if (currentContent !== savedContent) {
       // Create the confirmation dialog HTML
       const confirmationHtml = `
-      <div class="tcb-editor-confirmation-dialog">
-        <p>${game.i18n.localize('TRINIUMCB.UnsavedChangesConfirmation')}</p>
-        <div class="button-container">
-          <button class="confirm-yes">${game.i18n.localize('Yes')}</button>
-          <button class="confirm-no">${game.i18n.localize('No')}</button>
+        <div class="tcb-editor-confirmation-dialog">
+          <p>${game.i18n.localize('TRINIUMCB.UnsavedChangesConfirmation')}</p>
+          <div class="button-container">
+            <button class="confirm-yes">${game.i18n.localize('Yes')}</button>
+            <button class="confirm-no">${game.i18n.localize('No')}</button>
+          </div>
         </div>
-      </div>
-    `;
+      `;
       
       // Append the confirmation dialog to the editor
       $('#tcb-gm-screen-editor').prepend(confirmationHtml);
@@ -326,15 +326,23 @@ class GMScreen {
       $dialog.show();
   
       return new Promise((resolve) => {
-        $dialog.find('.confirm-yes').on('click', () => {
-          $dialog.remove();
+        const confirmYesHandler = () => {
+          cleanup();
           resolve(true);
-        });
-  
-        $dialog.find('.confirm-no').on('click', () => {
-          $dialog.remove();
+        };
+        const confirmNoHandler = () => {
+          cleanup();
           resolve(false);
-        });
+        };
+        
+        const cleanup = () => {
+          $dialog.find('.confirm-yes').off('click', confirmYesHandler);
+          $dialog.find('.confirm-no').off('click', confirmNoHandler);
+          $dialog.remove();
+        };
+  
+        $dialog.find('.confirm-yes').on('click', confirmYesHandler);
+        $dialog.find('.confirm-no').on('click', confirmNoHandler);
       }).then((confirmation) => {
         if (!confirmation) return;
   
@@ -354,6 +362,7 @@ class GMScreen {
       this.updateEditorPreview();
     }
   }
+  
   
   
   
