@@ -44,6 +44,67 @@ export class Draggable {
   }
 }
 
+class JournalEntryRenderer {
+  constructor(journalEntry) {
+    this.journalEntry = journalEntry;
+  }
+
+  async render() {
+    const content = await this.getRenderedContent();
+    return this.wrapContent(content);
+  }
+
+  async getRenderedContent() {
+    if (this.journalEntry.pages.size === 1) {
+      return this.renderSinglePage(this.journalEntry.pages.contents[0]);
+    } else {
+      return this.renderMultiplePages();
+    }
+  }
+
+  async renderSinglePage(page) {
+    return this.renderPage(page);
+  }
+
+  async renderMultiplePages() {
+    const pageElements = await Promise.all(this.journalEntry.pages.contents.map(async (page, index) => {
+      const pageContent = await this.renderPage(page);
+      return `<section class="journal-page" data-page-number="${index + 1}">${pageContent}</section>`;
+    }));
+    return pageElements.join('');
+  }
+
+  async renderPage(page) {
+    let content;
+    switch (page.type) {
+      case 'text':
+        content = await TextEditor.enrichHTML(page.text.content, {async: true, secrets: this.journalEntry.isOwner});
+        break;
+      case 'image':
+        content = `<img src="${page.src}" alt="${page.name}" style="max-width: 100%; height: auto;">`;
+        break;
+      // Add cases for other page types as needed
+      default:
+        content = `<p>Trinium GM Screen does not support page type "${page.type}". Trying to render text...</p>`;
+        if (page.text && page.text.content) {
+          const enrichedText = await TextEditor.enrichHTML(page.text.content, {async: true, secrets: this.journalEntry.isOwner});
+          content += `<div>${enrichedText}</div>`;
+        }
+    }
+    return `<h2>${page.name}</h2>${content}`;
+  }
+
+  wrapContent(content) {
+    return `
+      <div class="journal-entry-content" data-entry-id="${this.journalEntry.id}">
+        <h1>${this.journalEntry.name}</h1>
+        ${content}
+      </div>
+    `;
+  }
+}
+
+
 // Define constants for CSS selectors
 const CSS = {
   GM_SCREEN: '#tcb-gm-screen',
@@ -301,13 +362,31 @@ class GMScreen {
     return defaultTabs[subscreenIndex]?.[rowIndex] || 1;
   }
 
-  static switchTab(tab, subscreenIndex, rowIndex) {
+  static async switchTab(tab, subscreenIndex, rowIndex) {
     this.logger.debug(`Switching to tab ${tab} in subscreen ${subscreenIndex}, row ${rowIndex}`);
     const content = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${tab}`);
-    const renderedContent = window.marked.parse(content);
-    $(
+    
+    let renderedContent;
+    if (this.isJournalEntryUUID(content)) {
+      try {
+        const journalEntry = await this.getJournalEntryByUUID(content);
+        if (journalEntry) {
+          renderedContent = await this.renderJournalEntry(journalEntry);
+        }
+      } catch (error) {
+        console.error("Error rendering Journal Entry:", error);
+      }
+    }
+    
+    // If not a Journal Entry UUID or if there was an error, render as normal markdown
+    if (!renderedContent) {
+      renderedContent = await TextEditor.enrichHTML(marked.parse(content), {async: true});
+    }
+
+    const $content = $(
       `${CSS.GM_SCREEN} .tcb-subscreen[data-subscreen="${subscreenIndex}"] .tcb-subscreen-row[data-row="${rowIndex}"] .tcb-window-content`
-    ).html(renderedContent);
+    );
+    $content.html(renderedContent);
 
     // Update active state in the tab container
     const $row = $(
@@ -315,6 +394,18 @@ class GMScreen {
     );
     $row.find('.tcb-tab-button').removeClass('tcb-active');
     $row.find(`.tcb-tab-button[data-tab="${tab}"]`).addClass('tcb-active');
+  }
+
+  static async getJournalEntryByUUID(uuid) {
+    try {
+      const entry = await fromUuid(uuid);
+      if (entry instanceof JournalEntry) {
+        return entry;
+      }
+    } catch (error) {
+      console.error("Error fetching Journal Entry:", error);
+    }
+    return null;
   }
 
   static openEditor(event) {
@@ -437,10 +528,34 @@ class GMScreen {
   }
 
   // Update the updateEditorPreview method
-  static updateEditorPreview() {
+  static async updateEditorPreview() {
     const content = $(CSS.EDITOR_TEXTAREA).val();
-    const renderedContent = window.marked.parse(content);
+    
+    if (this.isJournalEntryUUID(content)) {
+      try {
+        const journalEntry = await this.getJournalEntryByUUID(content);
+        if (journalEntry) {
+          const renderedContent = await this.renderJournalEntry(journalEntry);
+          $(`${CSS.EDITOR} .tcb-editor-preview-content`).html(renderedContent);
+          return;
+        }
+      } catch (error) {
+        console.error("Error rendering Journal Entry:", error);
+      }
+    }
+    
+    // If not a Journal Entry UUID or if there was an error, render as normal markdown
+    const renderedContent = await TextEditor.enrichHTML(marked.parse(content), {async: true});
     $(`${CSS.EDITOR} .tcb-editor-preview-content`).html(renderedContent);
+  }
+
+  static async renderJournalEntry(journalEntry) {
+    const renderer = new JournalEntryRenderer(journalEntry);
+    return renderer.render();
+  }
+
+  static isJournalEntryUUID(content) {
+    return /^JournalEntry\.[a-zA-Z0-9]{16}$/.test(content.trim());
   }
 
   static async saveEditor(close) {

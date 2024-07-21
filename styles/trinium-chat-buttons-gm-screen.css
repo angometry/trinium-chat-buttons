@@ -535,3 +535,17 @@ margin-top: 1em;
   margin-bottom: .25em;
 }
 
+.gm-screen-journal .journal-entry-content {
+  padding: 10px;
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.gm-screen-journal .journal-entry-pages {
+  border: none;
+}
+
+.gm-screen-journal .journal-entry-page {
+  padding: 0;
+  border: none;
+}
