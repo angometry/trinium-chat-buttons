@@ -6,17 +6,18 @@
 
 - The GM Screen now supports journal pages! Paste only the journal UUID into the editor and it'll be loaded in place of HTML/Markdown. Currently, only text and image pages are fully supported.
 - The GM Screen now supports enrichers, both in Journal and HTML/Markdown form.
-- Each Subscreen can now be split into up to 3 rows. Each row has its own tab selector.
-- Each Subscreen can be set to a custom width, ignoring the Subscreen Width setting. (the first Subscreen is always on the left)
+- Each Subscreen (Column) can now be split into up to 3 rows. Each row has its own tab selector.
+- Each Subscreen (Column) can be set to a custom width, ignoring the Subscreen Width setting. (the first Subscreen is always on the left)
+
 - The Tab editor now features a tab selector. It will warn you if you try to change tabs with unsaved changes.
 
 ### Improvements
-
+- Subscreens are now called Columns, because we now have rows and Subscreen is a terrible name.
 - The combat tracker now automatically opens for you when the page is loaded.
 
 #### GM SCREEN
 - The GM Screen now supports 10 tabs instead of 4. The tab selector has been changed to a floating dropdown to avoid cluttering the header.
-- The Tab editor now shows the exact sizing of the subscreen you opened it from, including height, so you know exactly what's in view with no scrolling. It also informs you.
+- The Tab editor now shows the exact sizing of the Column you opened it from, including height, so you know exactly what's in view with no scrolling. It also informs you.
 - More style improvements
 - Localization improvements (Still only english)
 
