@@ -31,18 +31,18 @@
 #tcb-gm-screen.tcb-left-side-mode {
   left: 0;
   width: 0;
-  max-width: min(calc(var(--subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px)));
+  max-width: min(calc(var(--default-subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px)));
 }
 
 #tcb-gm-screen.tcb-right-side-mode {
   right: var(--sidebar-width, 300px);
   width: 0;
-  max-width: min(calc(var(--subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px)));
+  max-width: min(calc(var(--default-subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px)));
 }
 
 #tcb-gm-screen.tcb-visible.tcb-left-side-mode,
 #tcb-gm-screen.tcb-visible.tcb-right-side-mode {
-  width: min(calc(var(--subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px)));
+  width: min(calc(var(--default-subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px)));
 }
 
 #tcb-gm-screen.tcb-bottom-mode {
@@ -55,7 +55,7 @@
 }
 
 #tcb-gm-screen.tcb-bottom-mode[style*="--expand-bottom-mode:false"] {
-  width: min(calc(var(--subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px) - var(--left-margin, 20px) - var(--right-margin, 20px)));
+  width: min(calc(var(--default-subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px) - var(--left-margin, 20px) - var(--right-margin, 20px)));
 }
 
 #tcb-gm-screen.tcb-visible.tcb-bottom-mode {
@@ -67,7 +67,7 @@
 }
 
 #tcb-gm-screen.tcb-bottom-mode[style*="--expand-bottom-mode: false"] {
-  width: min(calc(var(--subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px) - var(--left-margin, 20px) - var(--right-margin, 20px)));
+  width: min(calc(var(--default-subscreen-width, 300px) * var(--number-of-subscreens, 1)), calc(100% - var(--sidebar-width, 300px) - var(--left-margin, 20px) - var(--right-margin, 20px)));
 }
 
 /*/ Subscreen Styling /*/

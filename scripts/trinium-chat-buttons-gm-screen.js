@@ -208,9 +208,10 @@ class GMScreen {
     const gmScreenHeight = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_HEIGHT);
     const leftMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LEFT_MARGIN);
     const rightMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_RIGHT_MARGIN);
+    const defaultSubscreenWidth = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.DEFAULT_SUBSCREEN_WIDTH);
     const expandBottomMode = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.EXPAND_BOTTOM_MODE);
 
-    let gmScreenHtml = `<div id="tcb-gm-screen" class="tcb-app tcb-${mode}-mode" style="--gm-screen-height: ${gmScreenHeight}%; --number-of-subscreens: ${numberOfSubscreens}; --left-margin: ${leftMargin}px; --right-margin: ${rightMargin}px; --expand-bottom-mode: ${
+    let gmScreenHtml = `<div id="tcb-gm-screen" class="tcb-app tcb-${mode}-mode" style="--gm-screen-height: ${gmScreenHeight}%; --number-of-subscreens: ${numberOfSubscreens}; --left-margin: ${leftMargin}px; --right-margin: ${rightMargin}px; --default-subscreen-width: ${defaultSubscreenWidth}px; --expand-bottom-mode: ${
       expandBottomMode ? 'true' : 'false'
     };">`;
 
@@ -236,7 +237,8 @@ class GMScreen {
 
     // Apply width to subscreens
     Object.entries(layout).forEach(([index, subscreen]) => {
-      if (subscreen.width) {
+      const subscreenWidth = subscreen.width && subscreen.width > 0 ? subscreen.width : defaultSubscreenWidth;
+      if (subscreenWidth) {
         $(`#tcb-gm-screen .tcb-subscreen[data-subscreen="${index}"]`).css('width', `${subscreen.width}px`);
       }
     });
@@ -671,10 +673,10 @@ class GMScreen {
         options: ['right-side', 'left-side', 'bottom'],
       },
       {
-        key: SETTINGS.SUBSCREEN_WIDTH,
+        key: SETTINGS.DEFAULT_SUBSCREEN_WIDTH,
         type: 'number',
-        label: 'TCB_SETTINGS.SubscreenWidth',
-        hint: 'TCB_SETTINGS.SubscreenWidthHint',
+        label: 'TCB_SETTINGS.DefaultSubscreenWidth',
+        hint: 'TCB_SETTINGS.DefaultSubscreenWidthHint',
         min: 100,
         max: 1000,
         step: 10,
@@ -767,22 +769,33 @@ class GMScreen {
   static async saveSettings(event) {
     event.preventDefault();
     this.logger.debug('Saving GM Screen settings');
-
+  
     const form = document.getElementById('tcb-gm-screen-settings-form');
     const formData = new FormData(form);
-
+  
     // Save general settings
-    for (let [key, value] of formData.entries()) {
-      if (!key.startsWith('subscreen')) {
-        if (key === SETTINGS.EXPAND_BOTTOM_MODE) {
-          value = value === 'on';
-        } else if (key !== SETTINGS.GM_SCREEN_MODE) {
-          value = Number(value);
-        }
-        await game.settings.set(SETTINGS.MODULE_NAME, key, value);
-      }
-    }
+    const generalSettings = [
+      SETTINGS.NUMBER_OF_SUBSCREENS,
+      SETTINGS.GM_SCREEN_MODE,
+      SETTINGS.GM_SCREEN_HEIGHT,
+      SETTINGS.GM_SCREEN_LEFT_MARGIN,
+      SETTINGS.GM_SCREEN_RIGHT_MARGIN,
+      SETTINGS.DEFAULT_SUBSCREEN_WIDTH,
 
+    ];
+  
+    for (const setting of generalSettings) {
+      let value = formData.get(setting);
+      if (setting !== SETTINGS.GM_SCREEN_MODE) {
+        value = Number(value);
+      }
+      await game.settings.set(SETTINGS.MODULE_NAME, setting, value);
+    }
+  
+    // Handle Expand Bottom Mode checkbox
+    const expandBottomMode = formData.get(SETTINGS.EXPAND_BOTTOM_MODE) === 'on';
+    await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.EXPAND_BOTTOM_MODE, expandBottomMode);
+  
     // Save layout settings
     const newLayout = {};
     for (let [key, value] of formData.entries()) {
@@ -796,10 +809,10 @@ class GMScreen {
       }
     }
     await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT, newLayout);
-
+  
     this.refreshGMScreen();
     ui.notifications.info(game.i18n.localize('TCB_GMSCREEN.SettingsSaved'));
-
+  
     return newLayout;
   }
 
