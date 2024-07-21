@@ -50,8 +50,8 @@ export const DEFAULT_SUBSCREEN = {
 
 export function registerGmScreenSettings() {
     game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT, {
-      name: game.i18n.localize('TRINIUMCB.GMScreenLayout'),
-      hint: game.i18n.localize('TRINIUMCB.GMScreenLayoutHint'),
+      name: game.i18n.localize('TCB_SETTINGS.GMScreenLayout'),
+      hint: game.i18n.localize('TCB_SETTINGS.GMScreenLayoutHint'),
     scope: 'world',
     config: false,
     type: Object,
@@ -59,8 +59,8 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_DEFAULT_TABS, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenDefaultTabs'),
-    hint: game.i18n.localize('TRINIUMCB.GMScreenDefaultTabs'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenDefaultTabs'),
+    hint: game.i18n.localize('TCB_SETTINGS.GMScreenDefaultTabs'),
     scope: 'world',
     config: false,
     type: Object,
@@ -68,8 +68,8 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_GM_SCREEN, {
-    name: game.i18n.localize('TRINIUMCB.EnableGMScreen'),
-    hint: game.i18n.localize('TRINIUMCB.EnableGMScreenHint'),
+    name: game.i18n.localize('TCB_SETTINGS.EnableGMScreen'),
+    hint: game.i18n.localize('TCB_SETTINGS.EnableGMScreenHint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -77,8 +77,8 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.NUMBER_OF_SUBSCREENS, {
-    name: game.i18n.localize('TRINIUMCB.NumberOfSubscreens'),
-    hint: game.i18n.localize('TRINIUMCB.NumberOfSubscreensHint'),
+    name: game.i18n.localize('TCB_SETTINGS.NumberOfSubscreens'),
+    hint: game.i18n.localize('TCB_SETTINGS.NumberOfSubscreensHint'),
     scope: 'world',
     config: true,
     type: Number,
@@ -91,8 +91,8 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.SUBSCREEN_WIDTH, {
-    name: game.i18n.localize('TRINIUMCB.SubscreenWidth'),
-    hint: game.i18n.localize('TRINIUMCB.SubscreenWidthHint'),
+    name: game.i18n.localize('TCB_SETTINGS.SubscreenWidth'),
+    hint: game.i18n.localize('TCB_SETTINGS.SubscreenWidthHint'),
     scope: 'world',
     config: true,
     type: Number,
@@ -100,8 +100,8 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_HEIGHT, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenHeight'),
-    hint: game.i18n.localize('TRINIUMCB.GMScreenHeightHint'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenHeight'),
+    hint: game.i18n.localize('TCB_SETTINGS.GMScreenHeightHint'),
     scope: 'world',
     config: true,
     type: Number,
@@ -114,22 +114,22 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_MODE, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenMode'),
-    hint: game.i18n.localize('TRINIUMCB.GMScreenModeHint'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenMode'),
+    hint: game.i18n.localize('TCB_SETTINGS.GMScreenModeHint'),
     scope: 'world',
     config: true,
     type: String,
     choices: {
-      'right-side': game.i18n.localize('TRINIUMCB.RightSideMode'),
-      'left-side': game.i18n.localize('TRINIUMCB.LeftSideMode'),
-      'bottom': game.i18n.localize('TRINIUMCB.BottomMode')
+      'right-side': game.i18n.localize('TCB_SETTINGS.RightSideMode'),
+      'left-side': game.i18n.localize('TCB_SETTINGS.LeftSideMode'),
+      'bottom': game.i18n.localize('TCB_SETTINGS.BottomMode')
     },
     default: 'right-side',
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LEFT_MARGIN, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenLeftMargin'),
-    hint: game.i18n.localize('TRINIUMCB.GMScreenLeftMarginHint'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenLeftMargin'),
+    hint: game.i18n.localize('TCB_SETTINGS.GMScreenLeftMarginHint'),
     scope: 'world',
     config: true,
     type: Number,
@@ -137,8 +137,8 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_RIGHT_MARGIN, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenRightMargin'),
-    hint: game.i18n.localize('TRINIUMCB.GMScreenRightMarginHint'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenRightMargin'),
+    hint: game.i18n.localize('TCB_SETTINGS.GMScreenRightMarginHint'),
     scope: 'world',
     config: true,
     type: Number,
@@ -146,8 +146,8 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.EXPAND_BOTTOM_MODE, {
-    name: game.i18n.localize('TRINIUMCB.ExpandBottomMode'),
-    hint: game.i18n.localize('TRINIUMCB.ExpandBottomModeHint'),
+    name: game.i18n.localize('TCB_SETTINGS.ExpandBottomMode'),
+    hint: game.i18n.localize('TCB_SETTINGS.ExpandBottomModeHint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -157,7 +157,7 @@ export function registerGmScreenSettings() {
   // Hidden
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB1, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab1'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab1'),
     scope: 'world',
     config: false,
     type: String,
@@ -165,7 +165,7 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB2, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab2'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab2'),
     scope: 'world',
     config: false,
     type: String,
@@ -173,7 +173,7 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB3, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab3'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab3'),
     scope: 'world',
     config: false,
     type: String,
@@ -181,44 +181,44 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB4, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
     scope: 'world',
     config: false,
     type: String,
     default: GM_SCREEN_TAB4_CONTENT,
   });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB5, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
     scope: 'world',
     config: false,
     type: String,
     default: '',  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB6, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
     scope: 'world',
     config: false,
     type: String,
     default: '',  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB7, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
     scope: 'world',
     config: false,
     type: String,
     default: '',  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB8, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
     scope: 'world',
     config: false,
     type: String,
     default: '',  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB9, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
     scope: 'world',
     config: false,
     type: String,
     default: '',  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB10, {
-    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
     scope: 'world',
     config: false,
     type: String,
@@ -229,8 +229,8 @@ export function registerGmScreenSettings() {
 
 export function registerSettings() {
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_PRIVACY_BUTTONS, {
-    name: game.i18n.localize('TRINIUMCB.EnablePrivacyButtons'),
-    hint: game.i18n.localize('TRINIUMCB.EnablePrivacyButtonsHint'),
+    name: game.i18n.localize('TCB_SETTINGS.EnablePrivacyButtons'),
+    hint: game.i18n.localize('TCB_SETTINGS.EnablePrivacyButtonsHint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -238,22 +238,22 @@ export function registerSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.PRIVACY_VISIBILITY, {
-    name: game.i18n.localize('TRINIUMCB.PrivacyButtonVisibility'),
-    hint: game.i18n.localize('TRINIUMCB.PrivacyButtonVisibilityHint'),
+    name: game.i18n.localize('TCB_SETTINGS.PrivacyButtonVisibility'),
+    hint: game.i18n.localize('TCB_SETTINGS.PrivacyButtonVisibilityHint'),
     scope: 'world',
     config: true,
     type: String,
     choices: {
-      gm: game.i18n.localize('TRINIUMCB.GMOnly'),
-      players: game.i18n.localize('TRINIUMCB.PlayersOnly'),
-      everyone: game.i18n.localize('TRINIUMCB.Everyone'),
+      gm: game.i18n.localize('TCB_SETTINGS.GMOnly'),
+      players: game.i18n.localize('TCB_SETTINGS.PlayersOnly'),
+      everyone: game.i18n.localize('TCB_SETTINGS.Everyone'),
     },
     default: 'everyone',
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_MIDI_BUTTONS, {
-    name: game.i18n.localize('TRINIUMCB.EnableMidiButtons'),
-    hint: game.i18n.localize('TRINIUMCB.EnableMidiButtonsHint'),
+    name: game.i18n.localize('TCB_SETTINGS.EnableMidiButtons'),
+    hint: game.i18n.localize('TCB_SETTINGS.EnableMidiButtonsHint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -261,22 +261,22 @@ export function registerSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.MIDI_BUTTON_VISIBILITY, {
-    name: game.i18n.localize('TRINIUMCB.MidiButtonVisibility'),
-    hint: game.i18n.localize('TRINIUMCB.MidiButtonVisibilityHint'),
+    name: game.i18n.localize('TCB_SETTINGS.MidiButtonVisibility'),
+    hint: game.i18n.localize('TCB_SETTINGS.MidiButtonVisibilityHint'),
     scope: 'world',
     config: true,
     type: String,
     choices: {
-      gm: game.i18n.localize('TRINIUMCB.GMOnly'),
-      players: game.i18n.localize('TRINIUMCB.PlayersOnly'),
-      everyone: game.i18n.localize('TRINIUMCB.Everyone'),
+      gm: game.i18n.localize('TCB_SETTINGS.GMOnly'),
+      players: game.i18n.localize('TCB_SETTINGS.PlayersOnly'),
+      everyone: game.i18n.localize('TCB_SETTINGS.Everyone'),
     },
     default: 'gm',
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_POLLING, {
-    name: game.i18n.localize('TRINIUMCB.EnablePolling'),
-    hint: game.i18n.localize('TRINIUMCB.EnablePollingHint'),
+    name: game.i18n.localize('TCB_SETTINGS.EnablePolling'),
+    hint: game.i18n.localize('TCB_SETTINGS.EnablePollingHint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -284,8 +284,8 @@ export function registerSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.POLLING_RATE, {
-    name: game.i18n.localize('TRINIUMCB.PollingRate'),
-    hint: game.i18n.localize('TRINIUMCB.PollingRateHint'),
+    name: game.i18n.localize('TCB_SETTINGS.PollingRate'),
+    hint: game.i18n.localize('TCB_SETTINGS.PollingRateHint'),
     scope: 'world',
     config: true,
     type: Number,
@@ -293,8 +293,8 @@ export function registerSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_COMBAT_TRACKER_BUTTONS, {
-    name: game.i18n.localize('TRINIUMCB.EnableCombatTrackerButtons'),
-    hint: game.i18n.localize('TRINIUMCB.EnableCombatTrackerButtonsHint'),
+    name: game.i18n.localize('TCB_SETTINGS.EnableCombatTrackerButtons'),
+    hint: game.i18n.localize('TCB_SETTINGS.EnableCombatTrackerButtonsHint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -302,36 +302,36 @@ export function registerSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.COMBAT_TRACKER_VISIBILITY, {
-    name: game.i18n.localize('TRINIUMCB.CombatTrackerButtonVisibility'),
-    hint: game.i18n.localize('TRINIUMCB.CombatTrackerButtonVisibilityHint'),
+    name: game.i18n.localize('TCB_SETTINGS.CombatTrackerButtonVisibility'),
+    hint: game.i18n.localize('TCB_SETTINGS.CombatTrackerButtonVisibilityHint'),
     scope: 'world',
     config: true,
     type: String,
     choices: {
-      gm: game.i18n.localize('TRINIUMCB.GMOnly'),
-      players: game.i18n.localize('TRINIUMCB.PlayersOnly'),
-      everyone: game.i18n.localize('TRINIUMCB.Everyone'),
+      gm: game.i18n.localize('TCB_SETTINGS.GMOnly'),
+      players: game.i18n.localize('TCB_SETTINGS.PlayersOnly'),
+      everyone: game.i18n.localize('TCB_SETTINGS.Everyone'),
     },
     default: 'everyone',
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.HEALTH_PRIVACY, {
-    name: game.i18n.localize('TRINIUMCB.HealthPrivacy'),
-    hint: game.i18n.localize('TRINIUMCB.HealthPrivacyHint'),
+    name: game.i18n.localize('TCB_SETTINGS.HealthPrivacy'),
+    hint: game.i18n.localize('TCB_SETTINGS.HealthPrivacyHint'),
     scope: 'world',
     config: true,
     type: String,
     choices: {
-      all: game.i18n.localize('TRINIUMCB.HealthPrivacyAll'),
-      healthbar: game.i18n.localize('TRINIUMCB.HealthPrivacyHealthbar'),
-      nothing: game.i18n.localize('TRINIUMCB.HealthPrivacyNothing'),
+      all: game.i18n.localize('TCB_SETTINGS.HealthPrivacyAll'),
+      healthbar: game.i18n.localize('TCB_SETTINGS.HealthPrivacyHealthbar'),
+      nothing: game.i18n.localize('TCB_SETTINGS.HealthPrivacyNothing'),
     },
     default: 'nothing',
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ONLY_SHOW_TURN_CONTROLS, {
-    name: game.i18n.localize('TRINIUMCB.OnlyShowTurnControls'),
-    hint: game.i18n.localize('TRINIUMCB.OnlyShowTurnControlsHint'),
+    name: game.i18n.localize('TCB_SETTINGS.OnlyShowTurnControls'),
+    hint: game.i18n.localize('TCB_SETTINGS.OnlyShowTurnControlsHint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -339,8 +339,8 @@ export function registerSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.STYLE_FOUNDRY_COMBAT_TRACKER, {
-    name: game.i18n.localize('TRINIUMCB.StyleFoundryCombatTracker'),
-    hint: game.i18n.localize('TRINIUMCB.StyleFoundryCombatTrackerHint'),
+    name: game.i18n.localize('TCB_SETTINGS.StyleFoundryCombatTracker'),
+    hint: game.i18n.localize('TCB_SETTINGS.StyleFoundryCombatTrackerHint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -348,8 +348,8 @@ export function registerSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.OVERRIDE_DND5E_CHECK, {
-    name: game.i18n.localize('TRINIUMCB.OverrideDnD5eCheck'),
-    hint: game.i18n.localize('TRINIUMCB.OverrideDnD5eCheckHint'),
+    name: game.i18n.localize('TCB_SETTINGS.OverrideDnD5eCheck'),
+    hint: game.i18n.localize('TCB_SETTINGS.OverrideDnD5eCheckHint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -357,8 +357,8 @@ export function registerSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_CSS_TWEAKS, {
-    name: game.i18n.localize('TRINIUMCB.EnableCSSTweaks'),
-    hint: game.i18n.localize('TRINIUMCB.EnableCSSTweaksHint'),
+    name: game.i18n.localize('TCB_SETTINGS.EnableCSSTweaks'),
+    hint: game.i18n.localize('TCB_SETTINGS.EnableCSSTweaksHint'),
     scope: 'world',
     config: true,
     type: Boolean,
@@ -366,16 +366,16 @@ export function registerSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.LOG_LEVEL, {
-    name: game.i18n.localize('TRINIUMCB.LogLevel'),
-    hint: game.i18n.localize('TRINIUMCB.LogLevelHint'),
+    name: game.i18n.localize('TCB_SETTINGS.LogLevel'),
+    hint: game.i18n.localize('TCB_SETTINGS.LogLevelHint'),
     scope: 'client',
     config: true,
     type: String,
     choices: {
-      debug: game.i18n.localize('TRINIUMCB.LogLevelDebug'),
-      info: game.i18n.localize('TRINIUMCB.LogLevelInfo'),
-      warn: game.i18n.localize('TRINIUMCB.LogLevelWarn'),
-      error: game.i18n.localize('TRINIUMCB.LogLevelError'),
+      debug: game.i18n.localize('TCB_SETTINGS.LogLevelDebug'),
+      info: game.i18n.localize('TCB_SETTINGS.LogLevelInfo'),
+      warn: game.i18n.localize('TCB_SETTINGS.LogLevelWarn'),
+      error: game.i18n.localize('TCB_SETTINGS.LogLevelError'),
     },
     default: 'warn',
   });

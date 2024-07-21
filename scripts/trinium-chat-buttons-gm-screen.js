@@ -85,7 +85,7 @@ class JournalEntryRenderer {
         break;
       // Add cases for other page types as needed
       default:
-        content = `<p>${game.i18n.localize('TRINIUMCB.UnsupportedPageType')} "${page.type}". ${game.i18n.localize('TRINIUMCB.TryingToRenderText')}...</p>`;
+        content = `<p>${game.i18n.localize('TCB_GMSCREEN.UnsupportedPageType')} "${page.type}". ${game.i18n.localize('TCB_GMSCREEN.TryingToRenderText')}</p>`;
         if (page.text && page.text.content) {
           const enrichedText = await TextEditor.enrichHTML(page.text.content, {async: true, secrets: this.journalEntry.isOwner});
           content += `<div>${enrichedText}</div>`;
@@ -123,7 +123,6 @@ const CSS = {
   SAVE_SETTINGS: '.tcb-close-settings',
   SAVE_CLOSE_SETTINGS: '.tcb-close-settings',
   CLOSE_SETTINGS: '.tcb-close-settings',
-  TAB_BUTTON: '.tcb-tab-button',
 };
 
 class GMScreen {
@@ -195,7 +194,7 @@ class GMScreen {
       return;
     }
 
-    const gmScreenBtn = $(`<a class="tcb-gm-screen-button" title="${game.i18n.localize('TRINIUMCB.ToggleGMScreen')}">
+    const gmScreenBtn = $(`<a class="tcb-gm-screen-button" title="${game.i18n.localize('TCB_GMSCREEN.ToggleGMScreen')}">
       <i class="fas fa-book-open"></i>
     </a>`);
 
@@ -252,20 +251,20 @@ class GMScreen {
         <div class="tcb-subscreen-row" data-row="${row}">
           <header class="tcb-window-header">
             <div class="tcb-gm-screen-controls">
-              ${subscreenIndex === 1 && row === 1 ? `<button class="tcb-settings-button" title="${game.i18n.localize('TRINIUMCB.OpenSettings')}"><i class="fas fa-cog"></i></button>` : ''}
-              <button class="tcb-tab-toggle" title="${game.i18n.localize('TRINIUMCB.ChangeTab')}"><i class="fas fa-chevron-down"></i> ${game.i18n.localize('TRINIUMCB.Tab')} #${defaultTab}</button>
-              <button class="tcb-edit-button" title="${game.i18n.localize('TRINIUMCB.EditCurrentTab')}"><i class="fas fa-edit"></i></button>
+              ${subscreenIndex === 1 && row === 1 ? `<button class="tcb-settings-button" title="${game.i18n.localize('TCB_GMSCREEN.OpenSettings')}"><i class="fas fa-cog"></i></button>` : ''}
+              <button class="tcb-tab-toggle" title="${game.i18n.localize('TCB_GMSCREEN.ChangeTab')}"><i class="fas fa-chevron-down"></i> ${game.i18n.localize('TCB_GMSCREEN.Tab')} #${defaultTab}</button>
+              <button class="tcb-edit-button" title="${game.i18n.localize('TCB_GMSCREEN.EditCurrentTab')}"><i class="fas fa-edit"></i></button>
             </div>
           </header>
           <div class="tcb-tab-container" style="display: none; position: absolute; width: 100%; z-index: 100;">
             <div class="tcb-tab-row">
               ${Array.from({ length: 5 }, (_, i) => i + 1)
-                .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${game.i18n.localize('TRINIUMCB.Tab')} ${tab}</button>`)
+                .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`)
                 .join('')}
             </div>
             <div class="tcb-tab-row">
               ${Array.from({ length: 5 }, (_, i) => i + 6)
-                .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${game.i18n.localize('TRINIUMCB.Tab')} ${tab}</button>`)
+                .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`)
                 .join('')}
             </div>
           </div>
@@ -423,7 +422,7 @@ class GMScreen {
         <div class="tcb-editor-input">
           <div class="tcb-editor-header">
             <div class="tcb-editor-header-text">
-          ${game.i18n.localize('TRINIUMCB.EditorNote')} ${subscreenIndex}, ${rowIndex}. ${game.i18n.localize('TRINIUMCB.SelectTabToEdit')}:
+          ${game.i18n.localize('TCB_GMSCREEN.EditorNote')} ${subscreenIndex}, ${rowIndex}. ${game.i18n.localize('TCB_GMSCREEN.SelectTabToEdit')}:
             </div>
           <div class="tcb-editor-tabs">
         ${Array.from({ length: 10 }, (_, i) => i + 1)
@@ -431,17 +430,17 @@ class GMScreen {
             (tab) =>
               `<button class="tcb-editor-tab-button ${
                 tab === activeTab ? 'tcb-active' : ''
-              }" data-tab="${tab}">${game.i18n.localize('TRINIUMCB.Tab')} ${tab}</button>`
+              }" data-tab="${tab}">${game.i18n.localize('TCB_GMSCREEN.Tab')} ${tab}</button>`
           )
           .join('')}
       </div>
           </div>
           <textarea id="tcb-editor-textarea">${content}</textarea>
           <div class="tcb-editor-buttons">
-            <button id="tcb-editor-save-close">${game.i18n.localize('TRINIUMCB.SaveAndClose')}</button>
-            <button id="tcb-editor-save">${game.i18n.localize('TRINIUMCB.Save')}</button>
-            <button id="tcb-editor-restore">${game.i18n.localize('TRINIUMCB.RestoreDefault')}</button>
-            <button id="tcb-editor-cancel">${game.i18n.localize('TRINIUMCB.Cancel')}</button>
+            <button id="tcb-editor-save-close">${game.i18n.localize('TCB_GMSCREEN.SaveAndClose')}</button>
+            <button id="tcb-editor-save">${game.i18n.localize('TCB_GMSCREEN.Save')}</button>
+            <button id="tcb-editor-restore">${game.i18n.localize('TCB_GMSCREEN.RestoreDefault')}</button>
+            <button id="tcb-editor-cancel">${game.i18n.localize('TCB_GMSCREEN.Cancel')}</button>
           </div>
         </div>
       </div>
@@ -467,10 +466,10 @@ class GMScreen {
       // Create the confirmation dialog HTML
       const confirmationHtml = `
         <div class="tcb-editor-confirmation-dialog">
-          <p>${game.i18n.localize('TRINIUMCB.UnsavedChangesConfirmation')}</p>
+          <p>${game.i18n.localize('TCB_GMSCREEN.UnsavedChangesConfirmation')}</p>
           <div class="button-container">
-            <button class="confirm-yes">${game.i18n.localize('TRINIUMCB.Yes')}</button>
-            <button class="confirm-no">${game.i18n.localize('TRINIUMCB.No')}</button>
+            <button class="confirm-yes">${game.i18n.localize('TCB_GMSCREEN.Yes')}</button>
+            <button class="confirm-no">${game.i18n.localize('TCB_GMSCREEN.No')}</button>
           </div>
         </div>
       `;
@@ -583,7 +582,7 @@ class GMScreen {
     const settingsHtml = `
       <div id="tcb-gm-screen-settings">
         <header class="tcb-window-header">
-          <h2>${game.i18n.localize('TRINIUMCB.GMScreenSettings')}</h2>
+          <h2>${game.i18n.localize('TCB_GMSCREEN.GMScreenSettings')}</h2>
           <button class="tcb-close-settings">&times;</button>
         </header>
         <div class="tcb-window-content">
@@ -591,20 +590,20 @@ class GMScreen {
             <div class="tcb-settings-scrollable">
               ${this.generateGeneralSettingsFields()}
               <hr>
-              <h3>${game.i18n.localize('TRINIUMCB.SubscreenSettings')}</h3>
+              <h3>${game.i18n.localize('TCB_GMSCREEN.SubscreenSettings')}</h3>
               ${[1, 2, 3, 4]
                 .map(
                   (i) => `
                 <fieldset>
-                  <legend>${game.i18n.localize('TRINIUMCB.Subscreen')} ${i}</legend>
+                  <legend>${game.i18n.localize('TCB_GMSCREEN.Subscreen')} ${i}</legend>
                   <div class="form-group">
-                    <label for="tcb-subscreen-rows-${i}">${game.i18n.localize('TRINIUMCB.NumberOfRows')}</label>
+                    <label for="tcb-subscreen-rows-${i}">${game.i18n.localize('TCB_GMSCREEN.NumberOfRows')}</label>
                     <input type="number" id="tcb-subscreen-rows-${i}" name="subscreen[${i}].rows" value="${
                     layout[i]?.rows || 1
                   }" min="1" max="3" required>
                   </div>
                   <div class="form-group">
-                    <label for="tcb-subscreen-width-${i}">${game.i18n.localize('TRINIUMCB.SubscreenWidth')}</label>
+                    <label for="tcb-subscreen-width-${i}">${game.i18n.localize('TCB_GMSCREEN.SubscreenWidth')}</label>
                     <input type="number" id="tcb-subscreen-width-${i}" name="subscreen[${i}].width" value="${
                     layout[i]?.width || 0
                   }" min="0" max="1000" step="10" required>
@@ -615,9 +614,9 @@ class GMScreen {
                 .join('')}
             </div>
             <div class="tcb-settings-buttons">
-              <button type="submit" id="tcb-save-close-settings">${game.i18n.localize('TRINIUMCB.SaveAndClose')}</button>
-              <button type="button" id="tcb-save-settings">${game.i18n.localize('TRINIUMCB.Save')}</button>
-              <button type="button" class="tcb-close-settings">${game.i18n.localize('TRINIUMCB.Cancel')}</button>
+              <button type="submit" id="tcb-save-close-settings">${game.i18n.localize('TCB_GMSCREEN.SaveAndClose')}</button>
+              <button type="button" id="tcb-save-settings">${game.i18n.localize('TCB_GMSCREEN.Save')}</button>
+              <button type="button" class="tcb-close-settings">${game.i18n.localize('TCB_GMSCREEN.Cancel')}</button>
             </div>
           </form>
         </div>
@@ -658,8 +657,8 @@ class GMScreen {
       {
         key: SETTINGS.NUMBER_OF_SUBSCREENS,
         type: 'number',
-        label: 'TRINIUMCB.NumberOfSubscreens',
-        hint: 'TRINIUMCB.NumberOfSubscreensHint',
+        label: 'TCB_SETTINGS.NumberOfSubscreens',
+        hint: 'TCB_SETTINGS.NumberOfSubscreensHint',
         min: 1,
         max: 4,
         step: 1,
@@ -667,15 +666,15 @@ class GMScreen {
       {
         key: SETTINGS.GM_SCREEN_MODE,
         type: 'select',
-        label: 'TRINIUMCB.GMScreenMode',
-        hint: 'TRINIUMCB.GMScreenModeHint',
+        label: 'TCB_SETTINGS.GMScreenMode',
+        hint: 'TCB_SETTINGS.GMScreenModeHint',
         options: ['right-side', 'left-side', 'bottom'],
       },
       {
         key: SETTINGS.SUBSCREEN_WIDTH,
         type: 'number',
-        label: 'TRINIUMCB.SubscreenWidth',
-        hint: 'TRINIUMCB.SubscreenWidthHint',
+        label: 'TCB_SETTINGS.SubscreenWidth',
+        hint: 'TCB_SETTINGS.SubscreenWidthHint',
         min: 100,
         max: 1000,
         step: 10,
@@ -683,8 +682,8 @@ class GMScreen {
       {
         key: SETTINGS.GM_SCREEN_HEIGHT,
         type: 'number',
-        label: 'TRINIUMCB.GMScreenHeight',
-        hint: 'TRINIUMCB.GMScreenHeightHint',
+        label: 'TCB_SETTINGS.GMScreenHeight',
+        hint: 'TCB_SETTINGS.GMScreenHeightHint',
         min: 10,
         max: 100,
         step: 5,
@@ -692,8 +691,8 @@ class GMScreen {
       {
         key: SETTINGS.GM_SCREEN_LEFT_MARGIN,
         type: 'number',
-        label: 'TRINIUMCB.GMScreenLeftMargin',
-        hint: 'TRINIUMCB.GMScreenLeftMarginHint',
+        label: 'TCB_SETTINGS.GMScreenLeftMargin',
+        hint: 'TCB_SETTINGS.GMScreenLeftMarginHint',
         min: 0,
         max: 100,
         step: 1,
@@ -701,8 +700,8 @@ class GMScreen {
       {
         key: SETTINGS.GM_SCREEN_RIGHT_MARGIN,
         type: 'number',
-        label: 'TRINIUMCB.GMScreenRightMargin',
-        hint: 'TRINIUMCB.GMScreenRightMarginHint',
+        label: 'TCB_SETTINGS.GMScreenRightMargin',
+        hint: 'TCB_SETTINGS.GMScreenRightMarginHint',
         min: 0,
         max: 100,
         step: 1,
@@ -710,8 +709,8 @@ class GMScreen {
       {
         key: SETTINGS.EXPAND_BOTTOM_MODE,
         type: 'checkbox',
-        label: 'TRINIUMCB.ExpandBottomMode',
-        hint: 'TRINIUMCB.ExpandBottomModeHint',
+        label: 'TCB_SETTINGS.ExpandBottomMode',
+        hint: 'TCB_SETTINGS.ExpandBottomModeHint',
       },
     ];
 
@@ -727,7 +726,7 @@ class GMScreen {
               .map(
                 (option) =>
                   `<option value="${option}" ${value === option ? 'selected' : ''}>${game.i18n.localize(
-                    `TRINIUMCB.${option}`
+                    `TCB_GMSCREEN.${option}`
                   )}</option>`
               )
               .join('')}
@@ -799,7 +798,7 @@ class GMScreen {
     await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT, newLayout);
 
     this.refreshGMScreen();
-    ui.notifications.info(game.i18n.localize('TRINIUMCB.SettingsSaved'));
+    ui.notifications.info(game.i18n.localize('TCB_GMSCREEN.SettingsSaved'));
 
     return newLayout;
   }
