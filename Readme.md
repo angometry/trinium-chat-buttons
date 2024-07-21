@@ -1,7 +1,7 @@
 # Trinium Chat Buttons
 
 [![Latest Release](https://img.shields.io/github/v/release/thedarktongo/trinium-chat-buttons)](https://github.com/thedarktongo/trinium-chat-buttons/releases/latest)
-[![License](https://img.shields.io/github/license/thedarktongo/trinium-chat-buttons)](https://github.com/thedarktongo/trinium-chat-buttons/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/thedarktongo/trinium-chat-buttons)](https://github.com/thedarktongo/trinium-chat-buttons/blob/main/LICENSE.md)
 [![Discord](https://img.shields.io/discord/1264218090061955132?label=Discord)](https://discord.gg/6KUmpqef)
 
 
@@ -11,7 +11,7 @@ Trinium Chat Buttons is a Foundry VTT module that adds several new buttons below
 
 ![GM Buttons](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/buttons-GM.png)
 
-- **GM Screen**: Show a customizable, tabbed, highly configurable, editable GM Screen. Expands as a sidebar or large screen. Supports Markdown and HTML with live preview.
+- **GM Screen**: Show a customizable, tabbed, highly configurable, editable GM Screen. Expands as a sidebar or large screen. Supports Markdown, HTML, Journals and Enrichers with live preview.
 - **Roll Privacy Buttons**: Switch between different roll types (Public Roll, GM Roll, Self Roll, Blind Roll) using buttons instead of a dropdown.
 - **MIDI QOL Buttons**: Toggle MIDI QOL features on and off and visualize its keybindings. Requires [Midi QOL](https://gitlab.com/tposney/midi-qol).
 - **Mini Combat Tracker**: Compact, feature-packed and easy to use. 
@@ -21,15 +21,21 @@ Trinium Chat Buttons is a Foundry VTT module that adds several new buttons below
 
 ## GM Screen
 
-Everything you need to know at the click of a single button! Try it in Sidebar mode or Bottom Mode as seen here:
+Everything you need to know at the click of a single button! Try it in the super-compact Sidebar mode or Bottom Mode as seen here:
 
 ![GM Screen Bottom mode](https://github.com/TheDarkTongo/trinium-chat-buttons/blob/main/media/examples/gm-screen.png)
 
 #### Features
 
-- **Editable Content:** Fully editable to keep exactly the information you want at your fingertips. Supports Markdown and HTML with live preview.
-- **Tabs:** 4 different tabs let you organize your content while keeping the screen compact. You can also have up to 4 "Columns", to have all tabs (or multiple of the same scrolled at different heights) at once.
-- **Customizable:** Open from the right, left or bottom, with customizable sizes!
+- **Build-in Editor:** Fully editable content to keep exactly the information you want at your fingertips. Supports Markdown and HTML with live preview.
+- **Sections:** Up to 4 columns and 3 rows for a total of up to 12 sections! 
+- **Tabs:** Each section can show one of 12 tabs. You can have multiple sections on the same tab (scrolled to different heights maybe) or, like me, use a very compact screen that can switch between a ton of different content quickly.
+- **Customizable Sizes:** Open from the right, left or bottom and customize the width, height and more.
+
+#### Journals and Enrichers:
+
+- **Journals:** To render a journal, delete all content of a tab and set it to the journal's UUID. You can copy it by clicking the icon in the top-left of a journal. Looks like this: "JournalEntry.HRNRygUvR91F8BOB". Currently, Text and Images are fully supported, but images may cause some lag upon first load.
+- **Enrichers:** Enrichers should be automatically rendered for content supported by your game system. To use them in HTML/Markdown, you must paste the enricher string directly in the editor. Drag-drop will be supported at a later time.
 
 ## Roll Privacy and MIDI Buttons
 
