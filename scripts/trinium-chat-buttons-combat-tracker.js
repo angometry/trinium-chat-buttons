@@ -47,6 +47,7 @@ class MiniCombatTracker {
 
     this.initialized = true;
     this.logger.info('Combat tracker initialized');
+    this.toggleCombatTracker();
   }
 
   static bindEvents() {
@@ -125,7 +126,7 @@ class MiniCombatTracker {
       combatTracker.slideDown(350);
     }
 
-    combatTrackerButton.toggleClass('tcb-combatant-active', combatTracker.is(':visible'));
+    combatTrackerButton.toggleClass('tcb-active', combatTracker.is(':visible'));
     this.logger.debug('Combat tracker visibility toggled');
   }
 
