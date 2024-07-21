@@ -65,6 +65,7 @@ const CSS = {
   SAVE_SETTINGS: '.tcb-close-settings',
   SAVE_CLOSE_SETTINGS: '.tcb-close-settings',
   CLOSE_SETTINGS: '.tcb-close-settings',
+  TAB_BUTTON: '.tcb-tab-button'
 };
 
 class GMScreen {
@@ -173,10 +174,9 @@ class GMScreen {
               ${subscreenIndex === 1 && row === 1 ? `
                 <button class="tcb-settings-button"><i class="fas fa-cog"></i></button>
               ` : ''}
-              <button class="tcb-tab-button" data-tab="1">1</button>
-              <button class="tcb-tab-button" data-tab="2">2</button>
-              <button class="tcb-tab-button" data-tab="3">3</button>
-              <button class="tcb-tab-button" data-tab="4">4</button>
+              ${Array.from({length: 10}, (_, i) => i + 1).map(tab => 
+                `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`
+              ).join('')}
               <button class="tcb-edit-button"><i class="fas fa-edit"></i></button>
             </div>
           </header>
@@ -184,7 +184,7 @@ class GMScreen {
         </div>
       `;
     }
-
+  
     html += '</div>';
     return html;
   }
@@ -258,27 +258,24 @@ class GMScreen {
   
     const content = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${activeTab}`);
   
-    const mode = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_MODE);
-    const subscreenWidth = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.SUBSCREEN_WIDTH);
-    const numberOfSubscreens = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.NUMBER_OF_SUBSCREENS);
-    const expandBottomMode = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.EXPAND_BOTTOM_MODE);
-  
-    let previewWidth;
-    if (mode === 'bottom' && expandBottomMode) {
-      const gmScreenWidth = $(CSS.GM_SCREEN).outerWidth();
-      previewWidth = `${gmScreenWidth / numberOfSubscreens}px`;
-      this.logger.debug('Set preview width to calculated expanded width:', previewWidth);
-    } else {
-      previewWidth = `${subscreenWidth}px`;
-      this.logger.debug('Set preview width to subscreen width:', previewWidth);
-    }
+    const rowHeight = $row.height();
+    const rowWidth = $row.width();
   
     const editorHtml = `
       <div id="tcb-gm-screen-editor" class="tcb-app">
-        <div class="tcb-editor-preview" style="width: ${previewWidth};"></div>
+        <div class="tcb-editor-preview" style="width: ${rowWidth}px; position: relative;">
+        The size of this preview tab is exactly the size of Subscreen ${subscreenIndex}, Row ${rowIndex} with the current settings.
+        <br>
+          <div class="tcb-editor-preview-content"></div>
+          <div class="tcb-editor-preview-line" style="position: absolute; top: ${rowHeight}px; left: 0; right: 0; height: 10px; background-color: red;"></div>
+        </div>
         <div class="tcb-editor-input">
           <div class="tcb-editor-header">
-            You are editing Tab Number ${activeTab} of Subscreen ${subscreenIndex}, Row ${rowIndex}
+                      <div class="tcb-editor-tabs">
+        ${Array.from({length: 10}, (_, i) => i + 1).map(tab => 
+          `<button class="tcb-editor-tab-button ${tab === activeTab ? 'tcb-active' : ''}" data-tab="${tab}">${tab}</button>`
+        ).join('')}
+      </div>
           </div>
           <textarea id="tcb-editor-textarea">${content}</textarea>
           <div class="tcb-editor-buttons">
@@ -293,13 +290,51 @@ class GMScreen {
   
     $('body').append(editorHtml);
   
+    this.initializeEditorTabSwitcher();
     this.updateEditorPreview();
   }
 
+  static initializeEditorTabSwitcher() {
+    $(document).on('click', '#tcb-gm-screen-editor .tcb-editor-tab-button', this.handleEditorTabClick.bind(this));
+  }
+
+  static async handleEditorTabClick(event) {
+    const $button = $(event.currentTarget);
+    const newTab = $button.data('tab');
+    const $activeTab = $('#tcb-gm-screen-editor .tcb-editor-tab-button.tcb-active');
+    const currentTab = $activeTab.data('tab');
+  
+    if (newTab === currentTab) return;
+  
+    const currentContent = $(CSS.EDITOR_TEXTAREA).val();
+    const savedContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${currentTab}`);
+  
+    if (currentContent !== savedContent) {
+      const confirmation = await Dialog.confirm({
+        title: game.i18n.localize('TRINIUMCB.UnsavedChanges'),
+        content: game.i18n.localize('TRINIUMCB.UnsavedChangesConfirmation'),
+        yes: () => true,
+        no: () => false,
+        defaultYes: false
+      });
+  
+      if (!confirmation) return;
+    }
+  
+    $activeTab.removeClass('tcb-active');
+    $button.addClass('tcb-active');
+  
+    const newContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${newTab}`);
+    $(CSS.EDITOR_TEXTAREA).val(newContent);
+    this.updateEditorPreview();
+  }
+  
+  
+  // Update the updateEditorPreview method
   static updateEditorPreview() {
     const content = $(CSS.EDITOR_TEXTAREA).val();
     const renderedContent = window.marked.parse(content);
-    $(CSS.EDITOR_PREVIEW).html(renderedContent);
+    $(`${CSS.EDITOR} .tcb-editor-preview-content`).html(renderedContent);
   }
 
   static async saveEditor(close) {
