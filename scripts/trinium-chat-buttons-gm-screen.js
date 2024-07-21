@@ -98,6 +98,7 @@ class GMScreen {
     $(document).on('click', CSS.EDITOR_SAVE_CLOSE, () => this.saveEditor(true));
     $(document).on('click', CSS.EDITOR_CANCEL, this.closeEditor.bind(this));
     $(document).on('click', CSS.EDITOR_RESTORE, this.restoreDefaultContent.bind(this));
+    $(document).on('click', '#tcb-gm-screen-editor .tcb-editor-tab-button', this.handleEditorTabClick.bind(this));
     
     // Foundry hooks
     Hooks.on('renderChatLog', this.initializeGMScreenButton.bind(this));
@@ -264,13 +265,13 @@ class GMScreen {
     const editorHtml = `
       <div id="tcb-gm-screen-editor" class="tcb-app">
         <div class="tcb-editor-preview" style="width: ${rowWidth}px; position: relative;">
-        The size of this preview tab is exactly the size of Subscreen ${subscreenIndex}, Row ${rowIndex} with the current settings.
         <br>
           <div class="tcb-editor-preview-content"></div>
-          <div class="tcb-editor-preview-line" style="position: absolute; top: ${rowHeight}px; left: 0; right: 0; height: 10px; background-color: red;"></div>
+          <div class="tcb-editor-preview-line" style="position: absolute; top: ${rowHeight}px; left: 0; right: 0;"></div>
         </div>
         <div class="tcb-editor-input">
           <div class="tcb-editor-header">
+          Note: The size of the preview tab is currently set to the size of Subscreen ${subscreenIndex}, Row ${rowIndex}. Select tab to edit:
                       <div class="tcb-editor-tabs">
         ${Array.from({length: 10}, (_, i) => i + 1).map(tab => 
           `<button class="tcb-editor-tab-button ${tab === activeTab ? 'tcb-active' : ''}" data-tab="${tab}">${tab}</button>`
@@ -290,12 +291,7 @@ class GMScreen {
   
     $('body').append(editorHtml);
   
-    this.initializeEditorTabSwitcher();
     this.updateEditorPreview();
-  }
-
-  static initializeEditorTabSwitcher() {
-    $(document).on('click', '#tcb-gm-screen-editor .tcb-editor-tab-button', this.handleEditorTabClick.bind(this));
   }
 
   static async handleEditorTabClick(event) {
@@ -310,12 +306,27 @@ class GMScreen {
     const savedContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${currentTab}`);
   
     if (currentContent !== savedContent) {
-      const confirmation = await Dialog.confirm({
-        title: game.i18n.localize('TRINIUMCB.UnsavedChanges'),
-        content: game.i18n.localize('TRINIUMCB.UnsavedChangesConfirmation'),
-        yes: () => true,
-        no: () => false,
-        defaultYes: false
+      const confirmation = await new Promise((resolve) => {
+        new Dialog({
+          title: game.i18n.localize('TRINIUMCB.UnsavedChanges'),
+          content: game.i18n.localize('TRINIUMCB.UnsavedChangesConfirmation'),
+          buttons: {
+            yes: {
+              icon: '<i class="fas fa-check"></i>',
+              label: game.i18n.localize('Yes'),
+              callback: () => resolve(true)
+            },
+            no: {
+              icon: '<i class="fas fa-times"></i>',
+              label: game.i18n.localize('No'),
+              callback: () => resolve(false)
+            }
+          },
+          default: 'no',
+          render: (html) => {
+            html.parent().css('z-index', 1050);
+          }
+        }).render(true);
       });
   
       if (!confirmation) return;

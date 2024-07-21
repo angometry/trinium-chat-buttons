@@ -23,6 +23,13 @@ export const SETTINGS = {
   GM_SCREEN_CONTENT_TAB2: 'gmScreenContent_tab2',
   GM_SCREEN_CONTENT_TAB3: 'gmScreenContent_tab3',
   GM_SCREEN_CONTENT_TAB4: 'gmScreenContent_tab4',
+  GM_SCREEN_CONTENT_TAB5: 'gmScreenContent_tab5',
+  GM_SCREEN_CONTENT_TAB6: 'gmScreenContent_tab6',
+  GM_SCREEN_CONTENT_TAB7: 'gmScreenContent_tab7',
+  GM_SCREEN_CONTENT_TAB8: 'gmScreenContent_tab8',
+  GM_SCREEN_CONTENT_TAB9: 'gmScreenContent_tab9',
+  GM_SCREEN_CONTENT_TAB10: 'gmScreenContent_tab10',
+
   GM_SCREEN_CONTENT_MENU: 'gmScreenContentMenu',
   NUMBER_OF_SUBSCREENS: 'numberOfSubscreens',
   GM_SCREEN_MODE: 'gmScreenMode',
@@ -180,6 +187,44 @@ export function registerGmScreenSettings() {
     type: String,
     default: GM_SCREEN_TAB4_CONTENT,
   });
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB5, {
+    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: '',  });
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB6, {
+    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: '',  });
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB7, {
+    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: '',  });
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB8, {
+    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: '',  });
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB9, {
+    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: '',  });
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB10, {
+    name: game.i18n.localize('TRINIUMCB.GMScreenContentTab4'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: '',
+  });
+  
 }
 
 export function registerSettings() {
