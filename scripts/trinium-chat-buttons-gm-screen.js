@@ -220,17 +220,11 @@ class GMScreen {
       if (columnWidth <= 0) {
         columnWidth = defaultColumnWidth;
       }
+      this.logger.debug('Added column to width calculation', columnWidth, combinedWidth);
       combinedWidth += columnWidth;
     }
-
   
-    // Adjust defaultColumnWidth if necessary
-    const averageColumnWidth = combinedWidth / numberOfColumns;
-    if (averageColumnWidth < defaultColumnWidth) {
-      defaultColumnWidth = averageColumnWidth;
-    }
-  
-    let gmScreenHtml = `<div id="tcb-gm-screen" class="tcb-app tcb-${mode}-mode" style="--gm-screen-height: ${gmScreenHeight}%; --number-of-columns: ${numberOfColumns}; --left-margin: ${leftMargin}px; --right-margin: ${rightMargin}px; --default-column-width: ${defaultColumnWidth}px; --expand-bottom-mode: ${
+    let gmScreenHtml = `<div id="tcb-gm-screen" class="tcb-app tcb-${mode}-mode" style="--gm-screen-height: ${gmScreenHeight}%; --number-of-columns: ${numberOfColumns}; --left-margin: ${leftMargin}px; --right-margin: ${rightMargin}px; --total-width: ${combinedWidth}px; --expand-bottom-mode: ${
       expandBottomMode ? 'true' : 'false'
     };">`;
   
@@ -279,12 +273,12 @@ class GMScreen {
           </header>
           <div class="tcb-tab-container" style="display: none; position: absolute; width: 100%; z-index: 100;">
             <div class="tcb-tab-row">
-              ${Array.from({ length: 5 }, (_, i) => i + 1)
+              ${Array.from({ length: 6 }, (_, i) => i + 1)
                 .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`)
                 .join('')}
             </div>
             <div class="tcb-tab-row">
-              ${Array.from({ length: 5 }, (_, i) => i + 6)
+              ${Array.from({ length: 6 }, (_, i) => i + 6)
                 .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`)
                 .join('')}
             </div>
@@ -446,7 +440,7 @@ class GMScreen {
           ${game.i18n.localize('TCB_GMSCREEN.EditorNote')} ${columnIndex} - ${rowIndex}. ${game.i18n.localize('TCB_GMSCREEN.SelectTabToEdit')}:
             </div>
           <div class="tcb-editor-tabs">
-        ${Array.from({ length: 10 }, (_, i) => i + 1)
+        ${Array.from({ length: 12 }, (_, i) => i + 1)
           .map(
             (tab) =>
               `<button class="tcb-editor-tab-button ${

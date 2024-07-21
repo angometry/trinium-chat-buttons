@@ -29,6 +29,8 @@ export const SETTINGS = {
   GM_SCREEN_CONTENT_TAB8: 'gmScreenContent_tab8',
   GM_SCREEN_CONTENT_TAB9: 'gmScreenContent_tab9',
   GM_SCREEN_CONTENT_TAB10: 'gmScreenContent_tab10',
+  GM_SCREEN_CONTENT_TAB11: 'gmScreenContent_tab11',
+  GM_SCREEN_CONTENT_TAB12: 'gmScreenContent_tab12',
 
   GM_SCREEN_CONTENT_MENU: 'gmScreenContentMenu',
   NUMBER_OF_COLUMNS: 'numberOfColumns',
@@ -80,7 +82,7 @@ export function registerGmScreenSettings() {
     name: game.i18n.localize('TCB_SETTINGS.NumberOfColumns'),
     hint: game.i18n.localize('TCB_SETTINGS.NumberOfColumnsHint'),
     scope: 'world',
-    config: true,
+    config: false,
     type: Number,
     range: {
       min: 1,
@@ -94,7 +96,7 @@ export function registerGmScreenSettings() {
     name: game.i18n.localize('TCB_SETTINGS.DefaultColumnWidth'),
     hint: game.i18n.localize('TCB_SETTINGS.DefaultColumnWidthHint'),
     scope: 'world',
-    config: true,
+    config: false,
     type: Number,
     default: 300,
   });
@@ -103,7 +105,7 @@ export function registerGmScreenSettings() {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenHeight'),
     hint: game.i18n.localize('TCB_SETTINGS.GMScreenHeightHint'),
     scope: 'world',
-    config: true,
+    config: false,
     type: Number,
     range: {
       min: 10,
@@ -117,7 +119,7 @@ export function registerGmScreenSettings() {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenMode'),
     hint: game.i18n.localize('TCB_SETTINGS.GMScreenModeHint'),
     scope: 'world',
-    config: true,
+    config: false,
     type: String,
     choices: {
       'right-side': game.i18n.localize('TCB_SETTINGS.RightSideMode'),
@@ -131,7 +133,7 @@ export function registerGmScreenSettings() {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenLeftMargin'),
     hint: game.i18n.localize('TCB_SETTINGS.GMScreenLeftMarginHint'),
     scope: 'world',
-    config: true,
+    config: false,
     type: Number,
     default: 20,
   });
@@ -140,7 +142,7 @@ export function registerGmScreenSettings() {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenRightMargin'),
     hint: game.i18n.localize('TCB_SETTINGS.GMScreenRightMarginHint'),
     scope: 'world',
-    config: true,
+    config: false,
     type: Number,
     default: 20,
   });
@@ -149,7 +151,7 @@ export function registerGmScreenSettings() {
     name: game.i18n.localize('TCB_SETTINGS.ExpandBottomMode'),
     hint: game.i18n.localize('TCB_SETTINGS.ExpandBottomModeHint'),
     scope: 'world',
-    config: true,
+    config: false,
     type: Boolean,
     default: true,
   });
@@ -188,37 +190,51 @@ export function registerGmScreenSettings() {
     default: GM_SCREEN_TAB4_CONTENT,
   });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB5, {
-    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab5'),
     scope: 'world',
     config: false,
     type: String,
     default: '',  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB6, {
-    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab6'),
     scope: 'world',
     config: false,
     type: String,
     default: '',  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB7, {
-    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab7'),
     scope: 'world',
     config: false,
     type: String,
     default: '',  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB8, {
-    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab8'),
     scope: 'world',
     config: false,
     type: String,
     default: '',  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB9, {
-    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab9'),
     scope: 'world',
     config: false,
     type: String,
     default: '',  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB10, {
-    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab4'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab10'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: '',
+  });
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB11, {
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab11'),
+    scope: 'world',
+    config: false,
+    type: String,
+    default: '',
+  });
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB12, {
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab12'),
     scope: 'world',
     config: false,
     type: String,
