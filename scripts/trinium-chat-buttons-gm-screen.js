@@ -85,7 +85,7 @@ class JournalEntryRenderer {
         break;
       // Add cases for other page types as needed
       default:
-        content = `<p>Trinium GM Screen does not support page type "${page.type}". Trying to render text...</p>`;
+        content = `<p>${game.i18n.localize('TRINIUMCB.UnsupportedPageType')} "${page.type}". ${game.i18n.localize('TRINIUMCB.TryingToRenderText')}...</p>`;
         if (page.text && page.text.content) {
           const enrichedText = await TextEditor.enrichHTML(page.text.content, {async: true, secrets: this.journalEntry.isOwner});
           content += `<div>${enrichedText}</div>`;
@@ -252,20 +252,20 @@ class GMScreen {
         <div class="tcb-subscreen-row" data-row="${row}">
           <header class="tcb-window-header">
             <div class="tcb-gm-screen-controls">
-              ${subscreenIndex === 1 && row === 1 ? `<button class="tcb-settings-button" title="Open settings"><i class="fas fa-cog"></i></button>` : ''}
-              <button class="tcb-tab-toggle" title="Change tab"><i class="fas fa-chevron-down"></i> Tab #${defaultTab}</button>
-              <button class="tcb-edit-button" title="Edit current tab"><i class="fas fa-edit"></i></button>
+              ${subscreenIndex === 1 && row === 1 ? `<button class="tcb-settings-button" title="${game.i18n.localize('TRINIUMCB.OpenSettings')}"><i class="fas fa-cog"></i></button>` : ''}
+              <button class="tcb-tab-toggle" title="${game.i18n.localize('TRINIUMCB.ChangeTab')}"><i class="fas fa-chevron-down"></i> ${game.i18n.localize('TRINIUMCB.Tab')} #${defaultTab}</button>
+              <button class="tcb-edit-button" title="${game.i18n.localize('TRINIUMCB.EditCurrentTab')}"><i class="fas fa-edit"></i></button>
             </div>
           </header>
           <div class="tcb-tab-container" style="display: none; position: absolute; width: 100%; z-index: 100;">
             <div class="tcb-tab-row">
               ${Array.from({ length: 5 }, (_, i) => i + 1)
-                .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`)
+                .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${game.i18n.localize('TRINIUMCB.Tab')} ${tab}</button>`)
                 .join('')}
             </div>
             <div class="tcb-tab-row">
               ${Array.from({ length: 5 }, (_, i) => i + 6)
-                .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`)
+                .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${game.i18n.localize('TRINIUMCB.Tab')} ${tab}</button>`)
                 .join('')}
             </div>
           </div>
@@ -423,7 +423,7 @@ class GMScreen {
         <div class="tcb-editor-input">
           <div class="tcb-editor-header">
             <div class="tcb-editor-header-text">
-          Note: The size of the preview tab is currently set to the size of Subscreen ${subscreenIndex}, Row ${rowIndex}. Select tab to edit:
+          ${game.i18n.localize('TRINIUMCB.EditorNote')} ${subscreenIndex}, ${rowIndex}. ${game.i18n.localize('TRINIUMCB.SelectTabToEdit')}:
             </div>
           <div class="tcb-editor-tabs">
         ${Array.from({ length: 10 }, (_, i) => i + 1)
@@ -431,7 +431,7 @@ class GMScreen {
             (tab) =>
               `<button class="tcb-editor-tab-button ${
                 tab === activeTab ? 'tcb-active' : ''
-              }" data-tab="${tab}">${tab}</button>`
+              }" data-tab="${tab}">${game.i18n.localize('TRINIUMCB.Tab')} ${tab}</button>`
           )
           .join('')}
       </div>
@@ -469,8 +469,8 @@ class GMScreen {
         <div class="tcb-editor-confirmation-dialog">
           <p>${game.i18n.localize('TRINIUMCB.UnsavedChangesConfirmation')}</p>
           <div class="button-container">
-            <button class="confirm-yes">${game.i18n.localize('Yes')}</button>
-            <button class="confirm-no">${game.i18n.localize('No')}</button>
+            <button class="confirm-yes">${game.i18n.localize('TRINIUMCB.Yes')}</button>
+            <button class="confirm-no">${game.i18n.localize('TRINIUMCB.No')}</button>
           </div>
         </div>
       `;
@@ -615,9 +615,7 @@ class GMScreen {
                 .join('')}
             </div>
             <div class="tcb-settings-buttons">
-              <button type="submit" id="tcb-save-close-settings">${game.i18n.localize(
-                'TRINIUMCB.SaveAndClose'
-              )}</button>
+              <button type="submit" id="tcb-save-close-settings">${game.i18n.localize('TRINIUMCB.SaveAndClose')}</button>
               <button type="button" id="tcb-save-settings">${game.i18n.localize('TRINIUMCB.Save')}</button>
               <button type="button" class="tcb-close-settings">${game.i18n.localize('TRINIUMCB.Cancel')}</button>
             </div>

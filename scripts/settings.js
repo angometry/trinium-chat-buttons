@@ -50,8 +50,8 @@ export const DEFAULT_SUBSCREEN = {
 
 export function registerGmScreenSettings() {
     game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT, {
-    name: 'TRINIUMCB.GMScreenLayout',
-    hint: 'TRINIUMCB.GMScreenLayoutHint',
+      name: game.i18n.localize('TRINIUMCB.GMScreenLayout'),
+      hint: game.i18n.localize('TRINIUMCB.GMScreenLayoutHint'),
     scope: 'world',
     config: false,
     type: Object,
@@ -59,8 +59,8 @@ export function registerGmScreenSettings() {
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_DEFAULT_TABS, {
-    name: 'TRINIUMCB.GMScreenLayout',
-    hint: 'TRINIUMCB.GMScreenLayoutHint',
+    name: game.i18n.localize('TRINIUMCB.GMScreenDefaultTabs'),
+    hint: game.i18n.localize('TRINIUMCB.GMScreenDefaultTabs'),
     scope: 'world',
     config: false,
     type: Object,
