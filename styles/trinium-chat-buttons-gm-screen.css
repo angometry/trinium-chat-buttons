@@ -143,6 +143,29 @@
   font-size: 12px;
 }
 
+.tcb-gm-screen-controls .tcb-settings-button {
+  background: none;
+  text-align: center;
+  cursor: pointer;
+  width: 25px;
+  color: white;
+}
+
+.tcb-gm-screen-controls .tcb-settings-button:hover {
+  color: #f39c12;
+  box-shadow: none !important;
+}
+
+.tcb-tab-toggle {
+  width: 80px;
+  margin-left: auto;
+}
+
+.tcb-edit-button {
+  width: 40px;
+  text-align: center;
+}
+
 /*/ Tab Container /*/
 
 .tcb-subscreen-row {
@@ -402,19 +425,6 @@ box-shadow: inset 0 0 10px #faa9ff;
   font-weight: bold;
 }
 
-/* Settings Button */
-.tcb-gm-screen-controls .tcb-settings-button {
-  background: none;
-  text-align: center;
-  cursor: pointer;
-  width: 25px;
-  color: white;
-}
-
-.tcb-gm-screen-controls .tcb-settings-button:hover {
-  color: #f39c12;
-  box-shadow: none !important;
-}
 
 /* Settings Modal */
 #tcb-gm-screen-settings {
@@ -535,17 +545,12 @@ margin-top: 1em;
   margin-bottom: .25em;
 }
 
-.gm-screen-journal .journal-entry-content {
-  padding: 10px;
-  overflow-y: auto;
-  max-height: 100%;
-}
+/*/ Journal Specific /*/
 
-.gm-screen-journal .journal-entry-pages {
-  border: none;
-}
-
-.gm-screen-journal .journal-entry-page {
-  padding: 0;
-  border: none;
+.tcb-window-content .journal-entry-content h1 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 0.5em;
+  color: #333;
 }

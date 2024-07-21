@@ -244,24 +244,17 @@ class GMScreen {
   }
 
   static createSubscreenHTML(subscreenIndex, subscreen) {
-    let html = `<div class="tcb-subscreen" data-subscreen="${subscreenIndex}" data-width="${
-      subscreen.width
-    }" style="width: ${subscreen.width ? subscreen.width + 'px' : 'auto'}">`;
+    let html = `<div class="tcb-subscreen" data-subscreen="${subscreenIndex}" data-width="${subscreen.width}" style="width: ${subscreen.width ? subscreen.width + 'px' : 'auto'}">`;
 
     for (let row = 1; row <= subscreen.rows; row++) {
+      const defaultTab = this.getDefaultTab(subscreenIndex, row);
       html += `
         <div class="tcb-subscreen-row" data-row="${row}">
           <header class="tcb-window-header">
             <div class="tcb-gm-screen-controls">
-              ${
-                subscreenIndex === 1 && row === 1
-                  ? `
-                <button class="tcb-settings-button"><i class="fas fa-cog"></i></button>
-              `
-                  : ''
-              }
-              <button class="tcb-tab-toggle"><i class="fas fa-chevron-down"></i></button>
-              <button class="tcb-edit-button">Edit Tab #1 <i class="fas fa-edit"></i></button>
+              ${subscreenIndex === 1 && row === 1 ? `<button class="tcb-settings-button" title="Open settings"><i class="fas fa-cog"></i></button>` : ''}
+              <button class="tcb-tab-toggle" title="Change tab"><i class="fas fa-chevron-down"></i> Tab #${defaultTab}</button>
+              <button class="tcb-edit-button" title="Edit current tab"><i class="fas fa-edit"></i></button>
             </div>
           </header>
           <div class="tcb-tab-container" style="display: none; position: absolute; width: 100%; z-index: 100;">
@@ -284,6 +277,7 @@ class GMScreen {
     html += '</div>';
     return html;
   }
+
 
   static toggleTabContainer(event) {
     const $button = $(event.currentTarget);
@@ -328,27 +322,26 @@ class GMScreen {
   static handleTabClick(event) {
     const $button = $(event.currentTarget);
     const tab = $button.data('tab');
-    const $subscreen = $button.closest('.tcb-subscreen');
-    const subscreenIndex = $subscreen.data('subscreen');
     const $row = $button.closest('.tcb-subscreen-row');
-    const rowIndex = $row.data('row');
     
-    this.switchTab(tab, subscreenIndex, rowIndex);
-    this.setDefaultTab(subscreenIndex, rowIndex, tab);
-    
-    // Update active state in the tab container
-    $row.find('.tcb-tab-button').removeClass('tcb-active');
-    $button.addClass('tcb-active');
-  
-    // Update edit button text
-    $row.find('.tcb-edit-button').html(`Edit Tab #${tab} <i class="fas fa-edit"></i>`);
-  
     // Slide up the tab container
-    $row.find('.tcb-tab-container').slideUp(100, () => {
-      $row.find('.tcb-tab-container').css('display', 'none');
+    const $tabContainer = $row.find('.tcb-tab-container');
+    $tabContainer.slideUp(100, () => {
+      $tabContainer.css('display', 'none');
+      
+      // Proceed with tab switch after the tab container has slid up
+      const $subscreen = $button.closest('.tcb-subscreen');
+      const subscreenIndex = $subscreen.data('subscreen');
+      const rowIndex = $row.data('row');
+      
+      this.switchTab(tab, subscreenIndex, rowIndex);
+      this.setDefaultTab(subscreenIndex, rowIndex, tab);
+      
+      // Update active state in the tab container
+      $row.find('.tcb-tab-button').removeClass('tcb-active');
+      $button.addClass('tcb-active');
     });
-    $row.find('.tcb-tab-toggle i').removeClass('fa-chevron-up').addClass('fa-chevron-down');
-  }
+}
 
   static async setDefaultTab(subscreenIndex, rowIndex, tab) {
     const defaultTabs = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_DEFAULT_TABS);
