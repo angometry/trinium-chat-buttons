@@ -14,7 +14,7 @@
     "MidiButtonsPollingHeader": "MIDI Buttons + Polling",
     "CombatTrackerHeader": "Combat Tracker",
     "DebugHeader": "Misc Settings",
-    "GmScreenHeader": "GM Screen (More settings are configurable from the GM screen itself)",
+    "GMScreenHeader": "GM Screen (More settings are configurable from the GM screen itself)",
 
     "UpdateCombatant": "Update Combatant",
     "RemoveCombatant": "Remove Combatant",

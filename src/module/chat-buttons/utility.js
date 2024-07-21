@@ -1,21 +1,19 @@
-import { TriniumLogger } from './logger.js';
-import { SETTINGS } from './settings.js';
-
+import { TriniumLogger } from '../logger.js';
+import { SETTINGS } from '../settings.js';
 
 class UtilityButtons {
-
   static logger;
 
   static init() {
     this.logger = new TriniumLogger(SETTINGS.MODULE_NAME);
     this.logger.info('Initializing Trinium Chat Buttons Utility Buttons');
-    Hooks.on("renderChatLog", this.onRenderChatLog.bind(this));
+    Hooks.on('renderChatLog', this.onRenderChatLog.bind(this));
   }
 
   static onRenderChatLog(chatLog, html, data) {
-    const combatTrackerButtonGroup = html.find("#tcb-combat-tracker-button-groups");
+    const combatTrackerButtonGroup = html.find('#tcb-combat-tracker-button-groups');
     if (!combatTrackerButtonGroup.length) {
-      this.logger.debug("No combat tracker button found.");
+      this.logger.debug('No combat tracker button found.');
       return;
     }
 
@@ -25,23 +23,20 @@ class UtilityButtons {
   }
 
   static shouldShowUtilityButtons() {
-    const combatTrackerVisibility = game.settings.get(
-      SETTINGS.MODULE_NAME,
-      SETTINGS.COMBAT_TRACKER_VISIBILITY
-    );
+    const combatTrackerVisibility = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.COMBAT_TRACKER_VISIBILITY);
 
     return (
-      combatTrackerVisibility === "everyone" ||
-      (combatTrackerVisibility === "players" && !game.user.isGM) ||
-      (combatTrackerVisibility === "gm" && game.user.isGM)
+      combatTrackerVisibility === 'everyone' ||
+      (combatTrackerVisibility === 'players' && !game.user.isGM) ||
+      (combatTrackerVisibility === 'gm' && game.user.isGM)
     );
   }
 
   static initializeCombatTracker(combatTrackerButtonGroup) {
-      this.addCombatTrackerButtons(combatTrackerButtonGroup);
-      this.addUtilityButtonsListeners();
+    this.addCombatTrackerButtons(combatTrackerButtonGroup);
+    this.addUtilityButtonsListeners();
 
-      this.logger.info('Utility Buttons initialized');
+    this.logger.info('Utility Buttons initialized');
   }
 
   static addCombatTrackerButtons(combatTrackerButtonGroup) {
@@ -66,13 +61,19 @@ class UtilityButtons {
 
   static createGMControlIcons() {
     return `
-      <button class="tcb-button" id="tcb-roll-npc-initiative" title="${game.i18n.localize("TRINIUMCB.RollNPCInitiative")}">
+      <button class="tcb-button" id="tcb-roll-npc-initiative" title="${game.i18n.localize(
+        'TRINIUMCB.RollNPCInitiative'
+      )}">
         <i class="fas fa-dice"></i>
       </button>
-      <button class="tcb-button" id="tcb-select-all-player-tokens" title="${game.i18n.localize("TRINIUMCB.SelectAllPlayerTokens")}">
+      <button class="tcb-button" id="tcb-select-all-player-tokens" title="${game.i18n.localize(
+        'TRINIUMCB.SelectAllPlayerTokens'
+      )}">
         <i class="fas fa-users"></i>
       </button>
-      <button class="tcb-button" id="tcb-select-random-player-token" title="${game.i18n.localize("TRINIUMCB.SelectRandomPlayerToken")}">
+      <button class="tcb-button" id="tcb-select-random-player-token" title="${game.i18n.localize(
+        'TRINIUMCB.SelectRandomPlayerToken'
+      )}">
         <i class="fas fa-random"></i>
       </button>
     `;
@@ -80,22 +81,24 @@ class UtilityButtons {
 
   static createPlayerControlIcons() {
     return `
-      <button class="tcb-button" id="tcb-roll-player-initiative" title="${game.i18n.localize("TRINIUMCB.RollPlayerInitiative")}">
+      <button class="tcb-button" id="tcb-roll-player-initiative" title="${game.i18n.localize(
+        'TRINIUMCB.RollPlayerInitiative'
+      )}">
         <i class="fas fa-dice"></i>
       </button>
-      <button class="tcb-button" id="tcb-select-own-token" title="${game.i18n.localize("TRINIUMCB.SelectOwnToken")}">
+      <button class="tcb-button" id="tcb-select-own-token" title="${game.i18n.localize('TRINIUMCB.SelectOwnToken')}">
         <i class="fas fa-user"></i>
       </button>
     `;
   }
 
   static addUtilityButtonsListeners() {
-    $("#tcb-roll-npc-initiative").on("click", this.buttonRollNPCInitiative.bind(this));
-    $("#tcb-select-all-player-tokens").on("click", this.buttonSelectAllPlayerTokens.bind(this));
-    $("#tcb-select-all-player-tokens").on("dblclick", this.buttonSelectAllNPCTokens.bind(this));
-    $("#tcb-select-random-player-token").on("click", this.buttonSelectRandomPlayerToken.bind(this));
-    $("#tcb-roll-player-initiative").on("click", this.buttonRollPlayerInitiative.bind(this));
-    $("#tcb-select-own-token").on("click", this.buttonSelectOwnToken.bind(this));
+    $('#tcb-roll-npc-initiative').on('click', this.buttonRollNPCInitiative.bind(this));
+    $('#tcb-select-all-player-tokens').on('click', this.buttonSelectAllPlayerTokens.bind(this));
+    $('#tcb-select-all-player-tokens').on('dblclick', this.buttonSelectAllNPCTokens.bind(this));
+    $('#tcb-select-random-player-token').on('click', this.buttonSelectRandomPlayerToken.bind(this));
+    $('#tcb-roll-player-initiative').on('click', this.buttonRollPlayerInitiative.bind(this));
+    $('#tcb-select-own-token').on('click', this.buttonSelectOwnToken.bind(this));
     this.logger.debug('Combat tracker button listeners added');
   }
 
@@ -103,18 +106,18 @@ class UtilityButtons {
     const combat = game.combats.active;
     if (combat) {
       await combat.rollNPC();
-      this.logger.debug("Rolled NPC initiative.");
+      this.logger.debug('Rolled NPC initiative.');
     }
   }
 
   static buttonSelectAllPlayerTokens() {
-    this.selectTokens(token => token.actor?.hasPlayerOwner);
-    this.logger.debug("Selected all player tokens.");
+    this.selectTokens((token) => token.actor?.hasPlayerOwner);
+    this.logger.debug('Selected all player tokens.');
   }
 
   static buttonSelectAllNPCTokens() {
-    this.selectTokens(token => !token.actor?.hasPlayerOwner);
-    this.logger.debug("Selected all NPC tokens.");
+    this.selectTokens((token) => !token.actor?.hasPlayerOwner);
+    this.logger.debug('Selected all NPC tokens.');
   }
 
   static selectTokens(filterFn) {
@@ -131,13 +134,14 @@ class UtilityButtons {
 
   static buttonSelectRandomPlayerToken() {
     const selectedTokens = canvas.tokens.controlled;
-    let tokens = selectedTokens.length > 1 ? selectedTokens : canvas.tokens.placeables.filter(t => t.actor?.hasPlayerOwner);
+    let tokens =
+      selectedTokens.length > 1 ? selectedTokens : canvas.tokens.placeables.filter((t) => t.actor?.hasPlayerOwner);
 
     const randomToken = tokens[Math.floor(Math.random() * tokens.length)];
     if (randomToken) {
       randomToken.control({ releaseOthers: true });
-      ui.notifications.info(`${game.i18n.localize("TRINIUMCB.TokenSelected")}: ${randomToken.name}`);
-      this.logger.debug("Selected a random player token.");
+      ui.notifications.info(`${game.i18n.localize('TRINIUMCB.TokenSelected')}: ${randomToken.name}`);
+      this.logger.debug('Selected a random player token.');
     }
   }
 
@@ -147,17 +151,17 @@ class UtilityButtons {
     const combatant = combat.getCombatantsByActor(game.user.character.id)[0];
     if (combatant && combatant.actor && combatant.token.isOwner) {
       await combat.rollInitiative([combatant.id]);
-      this.logger.debug("Rolled initiative for player.");
+      this.logger.debug('Rolled initiative for player.');
     }
   }
 
   static buttonSelectOwnToken() {
     canvas.tokens.releaseAll();
-    const token = canvas.tokens.placeables.find(t => t.actor?.id === game.user.character.id);
+    const token = canvas.tokens.placeables.find((t) => t.actor?.id === game.user.character.id);
     if (token) {
       token.control({ releaseOthers: true });
       canvas.animatePan({ x: token.x, y: token.y });
-      this.logger.debug("Selected own token and panned to it.");
+      this.logger.debug('Selected own token and panned to it.');
     }
   }
 }

@@ -1,21 +1,16 @@
-import { TriniumLogger } from './logger.js';
+import { TriniumLogger } from '../logger.js';
+import { SETTINGS } from '../settings.js';
 
 class PrivacyButtons {
   static BUTTON_TYPES = [
     { type: 'publicroll', icon: 'fa-eye', tooltip: 'TRINIUMCB.PublicRoll' },
     { type: 'gmroll', icon: 'fa-user-secret', tooltip: 'TRINIUMCB.PrivateRoll' },
     { type: 'selfroll', icon: 'fa-user', tooltip: 'TRINIUMCB.SelfRoll' },
-    { type: 'blindroll', icon: 'fa-eye-slash', tooltip: 'TRINIUMCB.BlindRoll' }
+    { type: 'blindroll', icon: 'fa-eye-slash', tooltip: 'TRINIUMCB.BlindRoll' },
   ];
 
-  static SETTINGS = {
-    MODULE_NAME: 'trinium-chat-buttons',
-    PRIVACY_VISIBILITY: 'privacyButtonVisibility',
-    DEBUG: 'debug'
-  };
-
   static init() {
-    this.logger = new TriniumLogger(this.SETTINGS.MODULE_NAME);
+    this.logger = new TriniumLogger(SETTINGS.MODULE_NAME);
     Hooks.on('renderChatLog', this.initializeButtons.bind(this));
     this.logger.info('TriniumChatButtonsPrivacy initialized');
   }
@@ -54,12 +49,13 @@ class PrivacyButtons {
    * @returns {boolean} Whether to show privacy buttons
    */
   static shouldShowPrivacyButtons() {
-    const privacyVisibility = game.settings.get(this.SETTINGS.MODULE_NAME, this.SETTINGS.PRIVACY_VISIBILITY);
+    const privacyVisibility = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.PRIVACY_VISIBILITY);
     const isGM = game.user.isGM;
 
-    const shouldShow = (privacyVisibility === 'everyone') ||
-           (privacyVisibility === 'players' && !isGM) ||
-           (privacyVisibility === 'gm' && isGM);
+    const shouldShow =
+      privacyVisibility === 'everyone' ||
+      (privacyVisibility === 'players' && !isGM) ||
+      (privacyVisibility === 'gm' && isGM);
 
     this.logger.debug(`Privacy buttons visibility: ${shouldShow}. User is GM: ${isGM}, Setting: ${privacyVisibility}`);
     return shouldShow;
@@ -73,7 +69,7 @@ class PrivacyButtons {
     const buttonGroup = $('<div id="tcb-button-groups"></div>');
     const privacyButtonGroup = $('<section id="tcb-roll-type-buttons" class="tcb-button-row"></section>');
 
-    this.BUTTON_TYPES.forEach(button => {
+    this.BUTTON_TYPES.forEach((button) => {
       const buttonElement = this.createButton(button);
       privacyButtonGroup.append(buttonElement);
     });

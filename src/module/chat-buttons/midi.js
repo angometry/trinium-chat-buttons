@@ -1,12 +1,32 @@
-import { TriniumLogger } from './logger.js';
-import { SETTINGS } from './settings.js';
+import { TriniumLogger } from '../logger.js';
+import { SETTINGS } from '../settings.js';
 
 class MidiButtons {
-    static BUTTONS = {
-    FAST_FORWARD: { id: 'tcb-midi-fast-forward-toggle', icon: 'fa-forward', tooltip: 'TRINIUMCB.ToggleMidiFastForward', key: '_fastForwardSet' },
-    ROLL_TOGGLE: { id: 'tcb-midi-roll-toggle', icon: 'fa-toggle-on', tooltip: 'TRINIUMCB.ToggleMidiRoll', key: '_rollToggle' },
-    ADVANTAGE: { id: 'tcb-midi-advantage-toggle', icon: 'fa-plus-circle', tooltip: 'TRINIUMCB.ToggleMidiAdvantage', key: '_adv' },
-    DISADVANTAGE: { id: 'tcb-midi-disadvantage-toggle', icon: 'fa-minus-circle', tooltip: 'TRINIUMCB.ToggleMidiDisadvantage', key: '_dis' }
+  static BUTTONS = {
+    FAST_FORWARD: {
+      id: 'tcb-midi-fast-forward-toggle',
+      icon: 'fa-forward',
+      tooltip: 'TRINIUMCB.ToggleMidiFastForward',
+      key: '_fastForwardSet',
+    },
+    ROLL_TOGGLE: {
+      id: 'tcb-midi-roll-toggle',
+      icon: 'fa-toggle-on',
+      tooltip: 'TRINIUMCB.ToggleMidiRoll',
+      key: '_rollToggle',
+    },
+    ADVANTAGE: {
+      id: 'tcb-midi-advantage-toggle',
+      icon: 'fa-plus-circle',
+      tooltip: 'TRINIUMCB.ToggleMidiAdvantage',
+      key: '_adv',
+    },
+    DISADVANTAGE: {
+      id: 'tcb-midi-disadvantage-toggle',
+      icon: 'fa-minus-circle',
+      tooltip: 'TRINIUMCB.ToggleMidiDisadvantage',
+      key: '_dis',
+    },
   };
 
   static init() {
@@ -24,7 +44,7 @@ class MidiButtons {
   static initializeButtons(chatLog, html, data) {
     const chatControls = this.getChatControls(html);
     if (!chatControls) return;
-    
+
     const buttonGroup = this.createButtonGroup();
     chatControls.parent().prepend(buttonGroup);
 
@@ -49,8 +69,8 @@ class MidiButtons {
 
     if (this.shouldShowMidiButtons()) {
       const midiButtonGroup = $('<section id="tcb-midi-buttons" class="tcb-button-row"></section>');
-      
-      Object.values(this.BUTTONS).forEach(button => {
+
+      Object.values(this.BUTTONS).forEach((button) => {
         const buttonElement = this.createButton(button);
         midiButtonGroup.append(buttonElement);
         this[`midi${button.id}Button`] = buttonElement;
@@ -68,13 +88,13 @@ class MidiButtons {
     const isGM = game.user.isGM;
     const isMidiActive = game.modules.get('midi-qol')?.active;
 
-    const shouldShow = isMidiActive && (
-      (midiVisibility === 'everyone') ||
-      (midiVisibility === 'players' && !isGM) ||
-      (midiVisibility === 'gm' && isGM)
-    );
+    const shouldShow =
+      isMidiActive &&
+      (midiVisibility === 'everyone' || (midiVisibility === 'players' && !isGM) || (midiVisibility === 'gm' && isGM));
 
-    this.logger.debug(`Midi buttons visibility: ${shouldShow}. User is GM: ${isGM}, Setting: ${midiVisibility}, Midi-QOL active: ${isMidiActive}`);
+    this.logger.debug(
+      `Midi buttons visibility: ${shouldShow}. User is GM: ${isGM}, Setting: ${midiVisibility}, Midi-QOL active: ${isMidiActive}`
+    );
     return shouldShow;
   }
 
@@ -96,15 +116,15 @@ class MidiButtons {
   }
 
   static handleButtonClick(event) {
-      const buttonId = event.currentTarget.id;
-      const button = Object.values(this.BUTTONS).find(b => b.id === buttonId);
-      if (button) {
-        this.toggleMidiState(button.key);
-      }
-      }
+    const buttonId = event.currentTarget.id;
+    const button = Object.values(this.BUTTONS).find((b) => b.id === buttonId);
+    if (button) {
+      this.toggleMidiState(button.key);
+    }
+  }
 
   static updateButtonHighlight() {
-    Object.values(this.BUTTONS).forEach(button => {
+    Object.values(this.BUTTONS).forEach((button) => {
       const buttonElement = this[`midi${button.id}Button`];
       if (buttonElement) {
         this.updateButtonState(buttonElement, this.midiKeyManager[button.key]);
@@ -128,7 +148,7 @@ class MidiButtons {
 
   static getMidiKeyManager() {
     const midiQOL = game.modules.get('midi-qol');
-    return midiQOL?.active ? (midiQOL.api?.MidiKeyManager ?? window.MidiKeyManager) : null;
+    return midiQOL?.active ? midiQOL.api?.MidiKeyManager ?? window.MidiKeyManager : null;
   }
 
   static startPollingMidiStates() {

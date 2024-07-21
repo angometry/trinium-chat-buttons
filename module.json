@@ -15,7 +15,7 @@
     {
       "lang": "en",
       "name": "English",
-      "path": "languages/en.json",
+      "path": "lang/en.json",
       "flags": {}
     }
   ],
@@ -23,23 +23,25 @@
     "lib/marked-min.js"
   ],
   "esmodules": [
-    "scripts/logger.js",
-    "scripts/settings.js",
-    "scripts/gmScreenDefaultContent.js",
-    "scripts/utils/Draggable.js",
+    "src/templates/gm-screen-content-templates.js",
 
-    "scripts/trinium-chat-buttons-init.js",
+    "src/module/settings.js",
+    "src/module/logger.js",
 
-    "scripts/trinium-chat-buttons-privacy.js",
-    "scripts/trinium-chat-buttons-gm-screen.js",
-    "scripts/trinium-chat-buttons-midi.js",
-    "scripts/trinium-chat-buttons-combat-tracker.js",
-    "scripts/trinium-chat-buttons-utility.js"
+    "src/utils/draggable.js",
+
+    "src/module/chat-buttons/roll-privacy.js",
+    "src/module/chat-buttons/gm-screen.js",
+    "src/module/chat-buttons/midi.js",
+    "src/module/chat-buttons/combat-tracker.js",
+    "src/module/chat-buttons/utility.js",
+    
+    "src/trinium-chat-buttons.js"
   ],
   "styles": [
-    "styles/trinium-chat-buttons.css",
-    "styles/trinium-chat-buttons-gm-screen.css",
-    "styles/trinium-chat-buttons-combat-tracker.css"
+    "styles/chat-buttons.css",
+    "styles/gm-screen.css",
+    "styles/combat-tracker.css"
   ],
   "url": "https://github.com/thedarktongo/trinium-chat-buttons",
   "manifest": "https://raw.githubusercontent.com/TheDarkTongo/trinium-chat-buttons/main/module.json",

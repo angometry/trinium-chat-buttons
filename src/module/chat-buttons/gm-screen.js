@@ -1,48 +1,6 @@
-import { TriniumLogger } from './logger.js';
-import { SETTINGS, DEFAULT_COLUMN } from './settings.js';
-
-export class Draggable {
-  constructor(element, handle) {
-    this.element = element;
-    this.handle = handle || element;
-    this.isDragging = false;
-    this.startX = 0;
-    this.startY = 0;
-    this.startLeft = 0;
-    this.startTop = 0;
-
-    this.bindEvents();
-  }
-
-  bindEvents() {
-    this.handle.style.cursor = 'move';
-    this.handle.addEventListener('mousedown', this.startDragging.bind(this));
-    document.addEventListener('mousemove', this.drag.bind(this));
-    document.addEventListener('mouseup', this.stopDragging.bind(this));
-  }
-
-  startDragging(e) {
-    if (e.button !== 0) return; // Only react to left mouse button
-    this.isDragging = true;
-    this.startX = e.clientX;
-    this.startY = e.clientY;
-    this.startLeft = parseInt(window.getComputedStyle(this.element).left, 10);
-    this.startTop = parseInt(window.getComputedStyle(this.element).top, 10);
-    e.preventDefault();
-  }
-
-  drag(e) {
-    if (!this.isDragging) return;
-    const dx = e.clientX - this.startX;
-    const dy = e.clientY - this.startY;
-    this.element.style.left = `${this.startLeft + dx}px`;
-    this.element.style.top = `${this.startTop + dy}px`;
-  }
-
-  stopDragging() {
-    this.isDragging = false;
-  }
-}
+import { TriniumLogger } from '../logger.js';
+import { SETTINGS, DEFAULT_COLUMN } from '../settings.js';
+import { Draggable } from '../../utils/draggable.js';
 
 class JournalEntryRenderer {
   constructor(journalEntry) {
@@ -67,10 +25,12 @@ class JournalEntryRenderer {
   }
 
   async renderMultiplePages() {
-    const pageElements = await Promise.all(this.journalEntry.pages.contents.map(async (page, index) => {
-      const pageContent = await this.renderPage(page);
-      return `<section class="journal-page" data-page-number="${index + 1}">${pageContent}</section>`;
-    }));
+    const pageElements = await Promise.all(
+      this.journalEntry.pages.contents.map(async (page, index) => {
+        const pageContent = await this.renderPage(page);
+        return `<section class="journal-page" data-page-number="${index + 1}">${pageContent}</section>`;
+      })
+    );
     return pageElements.join('');
   }
 
@@ -78,16 +38,21 @@ class JournalEntryRenderer {
     let content;
     switch (page.type) {
       case 'text':
-        content = await TextEditor.enrichHTML(page.text.content, {async: true, secrets: this.journalEntry.isOwner});
+        content = await TextEditor.enrichHTML(page.text.content, { async: true, secrets: this.journalEntry.isOwner });
         break;
       case 'image':
         content = `<img src="${page.src}" alt="${page.name}" style="max-width: 100%; height: auto;">`;
         break;
       // Add cases for other page types as needed
       default:
-        content = `<p>${game.i18n.localize('TCB_GMSCREEN.UnsupportedPageType')} "${page.type}". ${game.i18n.localize('TCB_GMSCREEN.TryingToRenderText')}</p>`;
+        content = `<p>${game.i18n.localize('TCB_GMSCREEN.UnsupportedPageType')} "${page.type}". ${game.i18n.localize(
+          'TCB_GMSCREEN.TryingToRenderText'
+        )}</p>`;
         if (page.text && page.text.content) {
-          const enrichedText = await TextEditor.enrichHTML(page.text.content, {async: true, secrets: this.journalEntry.isOwner});
+          const enrichedText = await TextEditor.enrichHTML(page.text.content, {
+            async: true,
+            secrets: this.journalEntry.isOwner,
+          });
           content += `<div>${enrichedText}</div>`;
         }
     }
@@ -103,7 +68,6 @@ class JournalEntryRenderer {
     `;
   }
 }
-
 
 // Define constants for CSS selectors
 const CSS = {
@@ -210,9 +174,9 @@ class GMScreen {
     const rightMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_RIGHT_MARGIN);
     let defaultColumnWidth = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.DEFAULT_COLUMN_WIDTH);
     const expandBottomMode = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.EXPAND_BOTTOM_MODE);
-  
+
     const layout = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT);
-  
+
     // Calculate combined width of columns with width > 0 within the limit of numberOfColumns
     let combinedWidth = 0;
     for (let i = 1; i <= numberOfColumns; i++) {
@@ -223,20 +187,20 @@ class GMScreen {
       this.logger.debug('Added column to width calculation', columnWidth, combinedWidth);
       combinedWidth += columnWidth;
     }
-  
+
     let gmScreenHtml = `<div id="tcb-gm-screen" class="tcb-app tcb-${mode}-mode" style="--gm-screen-height: ${gmScreenHeight}%; --number-of-columns: ${numberOfColumns}; --left-margin: ${leftMargin}px; --right-margin: ${rightMargin}px; --total-width: ${combinedWidth}px; --expand-bottom-mode: ${
       expandBottomMode ? 'true' : 'false'
     };">`;
-  
+
     for (let i = 1; i <= numberOfColumns; i++) {
       const column = layout[i] || DEFAULT_COLUMN;
       gmScreenHtml += this.createColumnHTML(i, column);
     }
-  
+
     gmScreenHtml += '</div>';
-  
+
     $('#interface').append($(gmScreenHtml));
-  
+
     // Initialize content for all columns
     for (let i = 1; i <= numberOfColumns; i++) {
       const column = layout[i] || DEFAULT_COLUMN;
@@ -245,7 +209,7 @@ class GMScreen {
         this.switchTab(defaultTab, i, row);
       }
     }
-  
+
     // Apply width to columns
     for (let i = 1; i <= numberOfColumns; i++) {
       const column = layout[i] || DEFAULT_COLUMN;
@@ -255,10 +219,11 @@ class GMScreen {
       }
     }
   }
-  
 
   static createColumnHTML(columnIndex, column) {
-    let html = `<div class="tcb-column" data-column="${columnIndex}" data-width="${column.width}" style="width: ${column.width ? column.width + 'px' : 'auto'}">`;
+    let html = `<div class="tcb-column" data-column="${columnIndex}" data-width="${column.width}" style="width: ${
+      column.width ? column.width + 'px' : 'auto'
+    }">`;
 
     for (let row = 1; row <= column.rows; row++) {
       const defaultTab = this.getDefaultTab(columnIndex, row);
@@ -266,9 +231,19 @@ class GMScreen {
         <div class="tcb-column-row" data-row="${row}">
           <header class="tcb-window-header">
             <div class="tcb-gm-screen-controls">
-              ${columnIndex === 1 && row === 1 ? `<button class="tcb-settings-button" title="${game.i18n.localize('TCB_GMSCREEN.OpenSettings')}"><i class="fas fa-cog"></i></button>` : ''}
-              <button class="tcb-tab-toggle" title="${game.i18n.localize('TCB_GMSCREEN.ChangeTab')}"><i class="fas fa-chevron-down"></i> ${game.i18n.localize('TCB_GMSCREEN.Tab')} #${defaultTab}</button>
-              <button class="tcb-edit-button" title="${game.i18n.localize('TCB_GMSCREEN.EditCurrentTab')}"><i class="fas fa-edit"></i></button>
+              ${
+                columnIndex === 1 && row === 1
+                  ? `<button class="tcb-settings-button" title="${game.i18n.localize(
+                      'TCB_GMSCREEN.OpenSettings'
+                    )}"><i class="fas fa-cog"></i></button>`
+                  : ''
+              }
+              <button class="tcb-tab-toggle" title="${game.i18n.localize(
+                'TCB_GMSCREEN.ChangeTab'
+              )}"><i class="fas fa-chevron-down"></i> ${game.i18n.localize('TCB_GMSCREEN.Tab')} #${defaultTab}</button>
+              <button class="tcb-edit-button" title="${game.i18n.localize(
+                'TCB_GMSCREEN.EditCurrentTab'
+              )}"><i class="fas fa-edit"></i></button>
             </div>
           </header>
           <div class="tcb-tab-container" style="display: none; position: absolute; width: 100%; z-index: 100;">
@@ -292,12 +267,11 @@ class GMScreen {
     return html;
   }
 
-
   static toggleTabContainer(event) {
     const $button = $(event.currentTarget);
     const $row = $button.closest('.tcb-column-row');
     const $tabContainer = $row.find('.tcb-tab-container');
-    
+
     if ($tabContainer.is(':visible')) {
       $tabContainer.slideUp(100, () => {
         $tabContainer.css('display', 'none');
@@ -337,25 +311,25 @@ class GMScreen {
     const $button = $(event.currentTarget);
     const tab = $button.data('tab');
     const $row = $button.closest('.tcb-column-row');
-    
+
     // Slide up the tab container
     const $tabContainer = $row.find('.tcb-tab-container');
     $tabContainer.slideUp(100, () => {
       $tabContainer.css('display', 'none');
-      
+
       // Proceed with tab switch after the tab container has slid up
       const $column = $button.closest('.tcb-column');
       const columnIndex = $column.data('column');
       const rowIndex = $row.data('row');
-      
+
       this.switchTab(tab, columnIndex, rowIndex);
       this.setDefaultTab(columnIndex, rowIndex, tab);
-      
+
       // Update active state in the tab container
       $row.find('.tcb-tab-button').removeClass('tcb-active');
       $button.addClass('tcb-active');
     });
-}
+  }
 
   static async setDefaultTab(columnIndex, rowIndex, tab) {
     const defaultTabs = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_DEFAULT_TABS);
@@ -372,7 +346,7 @@ class GMScreen {
   static async switchTab(tab, columnIndex, rowIndex) {
     this.logger.debug(`Switching to tab ${tab} in column ${columnIndex}, row ${rowIndex}`);
     const content = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${tab}`);
-    
+
     let renderedContent;
     if (this.isJournalEntryUUID(content)) {
       try {
@@ -381,13 +355,13 @@ class GMScreen {
           renderedContent = await this.renderJournalEntry(journalEntry);
         }
       } catch (error) {
-        console.error("Error rendering Journal Entry:", error);
+        console.error('Error rendering Journal Entry:', error);
       }
     }
-    
+
     // If not a Journal Entry UUID or if there was an error, render as normal markdown
     if (!renderedContent) {
-      renderedContent = await TextEditor.enrichHTML(marked.parse(content), {async: true});
+      renderedContent = await TextEditor.enrichHTML(marked.parse(content), { async: true });
     }
 
     const $content = $(
@@ -403,17 +377,7 @@ class GMScreen {
     $row.find(`.tcb-tab-button[data-tab="${tab}"]`).addClass('tcb-active');
   }
 
-  static async getJournalEntryByUUID(uuid) {
-    try {
-      const entry = await fromUuid(uuid);
-      if (entry instanceof JournalEntry) {
-        return entry;
-      }
-    } catch (error) {
-      console.error("Error fetching Journal Entry:", error);
-    }
-    return null;
-  }
+
 
   static openEditor(event) {
     const $button = $(event.currentTarget);
@@ -437,7 +401,9 @@ class GMScreen {
         <div class="tcb-editor-input">
           <div class="tcb-editor-header">
             <div class="tcb-editor-header-text">
-          ${game.i18n.localize('TCB_GMSCREEN.EditorNote')} ${columnIndex} - ${rowIndex}. ${game.i18n.localize('TCB_GMSCREEN.SelectTabToEdit')}:
+          ${game.i18n.localize('TCB_GMSCREEN.EditorNote')} ${columnIndex} - ${rowIndex}. ${game.i18n.localize(
+      'TCB_GMSCREEN.SelectTabToEdit'
+    )}:
             </div>
           <div class="tcb-editor-tabs">
         ${Array.from({ length: 12 }, (_, i) => i + 1)
@@ -537,7 +503,7 @@ class GMScreen {
   // Update the updateEditorPreview method
   static async updateEditorPreview() {
     const content = $(CSS.EDITOR_TEXTAREA).val();
-    
+
     if (this.isJournalEntryUUID(content)) {
       try {
         const journalEntry = await this.getJournalEntryByUUID(content);
@@ -547,13 +513,25 @@ class GMScreen {
           return;
         }
       } catch (error) {
-        console.error("Error rendering Journal Entry:", error);
+        console.error('Error rendering Journal Entry:', error);
       }
     }
-    
+
     // If not a Journal Entry UUID or if there was an error, render as normal markdown
-    const renderedContent = await TextEditor.enrichHTML(marked.parse(content), {async: true});
+    const renderedContent = await TextEditor.enrichHTML(marked.parse(content), { async: true });
     $(`${CSS.EDITOR} .tcb-editor-preview-content`).html(renderedContent);
+  }
+
+  static async getJournalEntryByUUID(uuid) {
+    try {
+      const entry = await fromUuid(uuid);
+      if (entry instanceof JournalEntry) {
+        return entry;
+      }
+    } catch (error) {
+      console.error('Error fetching Journal Entry:', error);
+    }
+    return null;
   }
 
   static async renderJournalEntry(journalEntry) {
@@ -630,7 +608,9 @@ class GMScreen {
                 .join('')}
             </div>
             <div class="tcb-settings-buttons">
-              <button type="submit" id="tcb-save-close-settings">${game.i18n.localize('TCB_GMSCREEN.SaveAndClose')}</button>
+              <button type="submit" id="tcb-save-close-settings">${game.i18n.localize(
+                'TCB_GMSCREEN.SaveAndClose'
+              )}</button>
               <button type="button" id="tcb-save-settings">${game.i18n.localize('TCB_GMSCREEN.Save')}</button>
               <button type="button" class="tcb-close-settings">${game.i18n.localize('TCB_GMSCREEN.Cancel')}</button>
             </div>
@@ -783,10 +763,10 @@ class GMScreen {
   static async saveSettings(event) {
     event.preventDefault();
     this.logger.debug('Saving GM Screen settings');
-  
+
     const form = document.getElementById('tcb-gm-screen-settings-form');
     const formData = new FormData(form);
-  
+
     // Save general settings
     const generalSettings = [
       SETTINGS.NUMBER_OF_COLUMNS,
@@ -795,9 +775,8 @@ class GMScreen {
       SETTINGS.GM_SCREEN_LEFT_MARGIN,
       SETTINGS.GM_SCREEN_RIGHT_MARGIN,
       SETTINGS.DEFAULT_COLUMN_WIDTH,
-
     ];
-  
+
     for (const setting of generalSettings) {
       let value = formData.get(setting);
       if (setting !== SETTINGS.GM_SCREEN_MODE) {
@@ -805,11 +784,11 @@ class GMScreen {
       }
       await game.settings.set(SETTINGS.MODULE_NAME, setting, value);
     }
-  
+
     // Handle Expand Bottom Mode checkbox
     const expandBottomMode = formData.get(SETTINGS.EXPAND_BOTTOM_MODE) === 'on';
     await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.EXPAND_BOTTOM_MODE, expandBottomMode);
-  
+
     // Save layout settings
     const newLayout = {};
     for (let [key, value] of formData.entries()) {
@@ -823,10 +802,10 @@ class GMScreen {
       }
     }
     await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT, newLayout);
-  
+
     this.refreshGMScreen();
     ui.notifications.info(game.i18n.localize('TCB_GMSCREEN.SettingsSaved'));
-  
+
     return newLayout;
   }
 
