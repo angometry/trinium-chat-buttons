@@ -143,10 +143,45 @@
   font-size: 12px;
 }
 
+/*/ Tab Container /*/
+
+.tcb-subscreen-row {
+  position: relative;
+}
+
+.tcb-tab-container {
+  background-color: rgb(0 0 0 / 25%);
+  padding: 6px;
+  position: absolute;
+  top: 25px;
+  width: 100%;
+  z-index: 123;
+}
+
+.tcb-tab-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  gap: 5px;
+}
+
+.tcb-tab-row:last-child {
+  margin-bottom: 0;
+}
+
 .tcb-tab-button {
-  background-color: rgba(0, 0, 0, 0.5);
+  flex: 1;
+}
+
+.tcb-edit-button i {
+  margin-left: 4px;
+}
+
+.tcb-tab-button {
+  background-color: rgba(0, 0, 0, 0.75);
   color: white;
   border: 1px solid black;
+  line-height: 1.25em;
 }
 
 .tcb-tab-button:hover {
@@ -499,3 +534,4 @@ margin-top: 1em;
   border: 1px solid #000;
   margin-bottom: .25em;
 }
+

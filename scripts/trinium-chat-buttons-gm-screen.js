@@ -1,7 +1,6 @@
 import { TriniumLogger } from './logger.js';
 import { SETTINGS, DEFAULT_SUBSCREEN } from './settings.js';
 
-
 export class Draggable {
   constructor(element, handle) {
     this.element = element;
@@ -45,8 +44,6 @@ export class Draggable {
   }
 }
 
-
-
 // Define constants for CSS selectors
 const CSS = {
   GM_SCREEN: '#tcb-gm-screen',
@@ -65,7 +62,7 @@ const CSS = {
   SAVE_SETTINGS: '.tcb-close-settings',
   SAVE_CLOSE_SETTINGS: '.tcb-close-settings',
   CLOSE_SETTINGS: '.tcb-close-settings',
-  TAB_BUTTON: '.tcb-tab-button'
+  TAB_BUTTON: '.tcb-tab-button',
 };
 
 class GMScreen {
@@ -79,19 +76,22 @@ class GMScreen {
 
   static initializeEventListeners() {
     this.logger.info('Initializing event listeners');
-    
+
     // GM Screen toggle
     $(document).on('click.tcb-gm-screen', CSS.GM_SCREEN_BUTTON, this.toggleGMScreen.bind(this));
-    
+
     // Tab switching
     $(document).on('click.tcb-gm-screen', `${CSS.GM_SCREEN} ${CSS.TAB_BUTTON}`, this.handleTabClick.bind(this));
-    
+
     // Edit button
     $(document).on('click.tcb-gm-screen', `${CSS.GM_SCREEN} ${CSS.EDIT_BUTTON}`, this.openEditor.bind(this));
-    
+
     // Settings button
     $(document).on('click.tcb-gm-screen', `${CSS.GM_SCREEN} ${CSS.SETTINGS_BUTTON}`, this.openSettings.bind(this));
-    
+
+    // Tab container
+    $(document).on('click.tcb-gm-screen', `${CSS.GM_SCREEN} .tcb-tab-toggle`, this.toggleTabContainer.bind(this));
+
     // Editor events
     $(document).on('input', CSS.EDITOR_TEXTAREA, this.debounce(this.updateEditorPreview.bind(this), 300));
     $(document).on('click', CSS.EDITOR_SAVE, () => this.saveEditor(false));
@@ -99,7 +99,27 @@ class GMScreen {
     $(document).on('click', CSS.EDITOR_CANCEL, this.closeEditor.bind(this));
     $(document).on('click', CSS.EDITOR_RESTORE, this.restoreDefaultContent.bind(this));
     $(document).on('click', '#tcb-gm-screen-editor .tcb-editor-tab-button', this.handleEditorTabClick.bind(this));
-    
+
+    // Settings panel event listeners
+    $(document).on('submit', '#tcb-gm-screen-settings-form', async (e) => {
+      e.preventDefault();
+      if (this.validateSettingsForm(e.target)) {
+        await this.saveSettings(e);
+        $('#tcb-gm-screen-settings').remove();
+      }
+    });
+
+    $(document).on('click', '#tcb-save-settings', async (e) => {
+      e.preventDefault();
+      if (this.validateSettingsForm(e.target.form)) {
+        await this.saveSettings(e);
+      }
+    });
+
+    $(document).on('click', '.tcb-close-settings', () => {
+      $('#tcb-gm-screen-settings').remove();
+    });
+
     // Foundry hooks
     Hooks.on('renderChatLog', this.initializeGMScreenButton.bind(this));
     Hooks.on('updateSetting', this.refreshGMScreen.bind(this));
@@ -129,7 +149,7 @@ class GMScreen {
     const leftMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LEFT_MARGIN);
     const rightMargin = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_RIGHT_MARGIN);
     const expandBottomMode = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.EXPAND_BOTTOM_MODE);
-  
+
     let gmScreenHtml = `<div id="tcb-gm-screen" class="tcb-app tcb-${mode}-mode" style="--gm-screen-height: ${gmScreenHeight}%; --number-of-subscreens: ${numberOfSubscreens}; --left-margin: ${leftMargin}px; --right-margin: ${rightMargin}px; --expand-bottom-mode: ${
       expandBottomMode ? 'true' : 'false'
     };">`;
@@ -144,8 +164,6 @@ class GMScreen {
     gmScreenHtml += '</div>';
 
     $('#interface').append($(gmScreenHtml));
-
-    
 
     // Initialize content for all subscreens
     for (let i = 1; i <= numberOfSubscreens; i++) {
@@ -165,31 +183,61 @@ class GMScreen {
   }
 
   static createSubscreenHTML(subscreenIndex, subscreen) {
-    let html = `<div class="tcb-subscreen" data-subscreen="${subscreenIndex}" data-width="${subscreen.width}" style="width: ${subscreen.width ? subscreen.width + 'px' : 'auto'}">`;
-    
+    let html = `<div class="tcb-subscreen" data-subscreen="${subscreenIndex}" data-width="${
+      subscreen.width
+    }" style="width: ${subscreen.width ? subscreen.width + 'px' : 'auto'}">`;
+
     for (let row = 1; row <= subscreen.rows; row++) {
       html += `
         <div class="tcb-subscreen-row" data-row="${row}">
           <header class="tcb-window-header">
             <div class="tcb-gm-screen-controls">
-              ${subscreenIndex === 1 && row === 1 ? `
+              ${
+                subscreenIndex === 1 && row === 1
+                  ? `
                 <button class="tcb-settings-button"><i class="fas fa-cog"></i></button>
-              ` : ''}
-              ${Array.from({length: 10}, (_, i) => i + 1).map(tab => 
-                `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`
-              ).join('')}
-              <button class="tcb-edit-button"><i class="fas fa-edit"></i></button>
+              `
+                  : ''
+              }
+              <button class="tcb-tab-toggle"><i class="fas fa-chevron-down"></i></button>
+              <button class="tcb-edit-button">Edit Tab #1 <i class="fas fa-edit"></i></button>
             </div>
           </header>
+          <div class="tcb-tab-container" style="display: none; position: absolute; width: 100%; z-index: 100;">
+            <div class="tcb-tab-row">
+              ${Array.from({ length: 5 }, (_, i) => i + 1)
+                .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`)
+                .join('')}
+            </div>
+            <div class="tcb-tab-row">
+              ${Array.from({ length: 5 }, (_, i) => i + 6)
+                .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`)
+                .join('')}
+            </div>
+          </div>
           <section class="tcb-window-content"></section>
         </div>
       `;
     }
-  
+
     html += '</div>';
     return html;
   }
 
+  static toggleTabContainer(event) {
+    const $button = $(event.currentTarget);
+    const $row = $button.closest('.tcb-subscreen-row');
+    const $tabContainer = $row.find('.tcb-tab-container');
+    
+    if ($tabContainer.is(':visible')) {
+      $tabContainer.slideUp(100, () => {
+        $tabContainer.css('display', 'none');
+      });
+    } else {
+      $tabContainer.css('display', 'block').hide().slideDown(100);
+    }
+    $button.find('i').toggleClass('fa-chevron-down fa-chevron-up');
+  }
 
   static toggleGMScreen() {
     this.logger.debug('Toggling GM Screen');
@@ -226,6 +274,19 @@ class GMScreen {
     
     this.switchTab(tab, subscreenIndex, rowIndex);
     this.setDefaultTab(subscreenIndex, rowIndex, tab);
+    
+    // Update active state in the tab container
+    $row.find('.tcb-tab-button').removeClass('tcb-active');
+    $button.addClass('tcb-active');
+  
+    // Update edit button text
+    $row.find('.tcb-edit-button').html(`Edit Tab #${tab} <i class="fas fa-edit"></i>`);
+  
+    // Slide up the tab container
+    $row.find('.tcb-tab-container').slideUp(100, () => {
+      $row.find('.tcb-tab-container').css('display', 'none');
+    });
+    $row.find('.tcb-tab-toggle i').removeClass('fa-chevron-up').addClass('fa-chevron-down');
   }
 
   static async setDefaultTab(subscreenIndex, rowIndex, tab) {
@@ -244,9 +305,16 @@ class GMScreen {
     this.logger.debug(`Switching to tab ${tab} in subscreen ${subscreenIndex}, row ${rowIndex}`);
     const content = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${tab}`);
     const renderedContent = window.marked.parse(content);
-    $(`${CSS.GM_SCREEN} .tcb-subscreen[data-subscreen="${subscreenIndex}"] .tcb-subscreen-row[data-row="${rowIndex}"] .tcb-window-content`).html(renderedContent);
-    $(`${CSS.GM_SCREEN} .tcb-subscreen[data-subscreen="${subscreenIndex}"] .tcb-subscreen-row[data-row="${rowIndex}"] ${CSS.TAB_BUTTON}`).removeClass('tcb-active');
-    $(`${CSS.GM_SCREEN} .tcb-subscreen[data-subscreen="${subscreenIndex}"] .tcb-subscreen-row[data-row="${rowIndex}"] ${CSS.TAB_BUTTON}[data-tab="${tab}"]`).addClass('tcb-active');
+    $(
+      `${CSS.GM_SCREEN} .tcb-subscreen[data-subscreen="${subscreenIndex}"] .tcb-subscreen-row[data-row="${rowIndex}"] .tcb-window-content`
+    ).html(renderedContent);
+
+    // Update active state in the tab container
+    const $row = $(
+      `${CSS.GM_SCREEN} .tcb-subscreen[data-subscreen="${subscreenIndex}"] .tcb-subscreen-row[data-row="${rowIndex}"]`
+    );
+    $row.find('.tcb-tab-button').removeClass('tcb-active');
+    $row.find(`.tcb-tab-button[data-tab="${tab}"]`).addClass('tcb-active');
   }
 
   static openEditor(event) {
@@ -256,12 +324,12 @@ class GMScreen {
     const $row = $button.closest('.tcb-subscreen-row');
     const rowIndex = $row.data('row');
     const activeTab = $row.find(`${CSS.TAB_BUTTON}.tcb-active`).data('tab');
-  
+
     const content = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${activeTab}`);
-  
+
     const rowHeight = $row.height();
     const rowWidth = $row.width();
-  
+
     const editorHtml = `
       <div id="tcb-gm-screen-editor" class="tcb-app">
         <div class="tcb-editor-preview" style="width: ${rowWidth}px; position: relative;">
@@ -274,9 +342,14 @@ class GMScreen {
           Note: The size of the preview tab is currently set to the size of Subscreen ${subscreenIndex}, Row ${rowIndex}. Select tab to edit:
             </div>
           <div class="tcb-editor-tabs">
-        ${Array.from({length: 10}, (_, i) => i + 1).map(tab => 
-          `<button class="tcb-editor-tab-button ${tab === activeTab ? 'tcb-active' : ''}" data-tab="${tab}">${tab}</button>`
-        ).join('')}
+        ${Array.from({ length: 10 }, (_, i) => i + 1)
+          .map(
+            (tab) =>
+              `<button class="tcb-editor-tab-button ${
+                tab === activeTab ? 'tcb-active' : ''
+              }" data-tab="${tab}">${tab}</button>`
+          )
+          .join('')}
       </div>
           </div>
           <textarea id="tcb-editor-textarea">${content}</textarea>
@@ -289,9 +362,9 @@ class GMScreen {
         </div>
       </div>
     `;
-  
+
     $('body').append(editorHtml);
-  
+
     this.updateEditorPreview();
   }
 
@@ -300,12 +373,12 @@ class GMScreen {
     const newTab = $button.data('tab');
     const $activeTab = $('#tcb-gm-screen-editor .tcb-editor-tab-button.tcb-active');
     const currentTab = $activeTab.data('tab');
-  
+
     if (newTab === currentTab) return;
-  
+
     const currentContent = $(CSS.EDITOR_TEXTAREA).val();
     const savedContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${currentTab}`);
-  
+
     if (currentContent !== savedContent) {
       // Create the confirmation dialog HTML
       const confirmationHtml = `
@@ -317,14 +390,14 @@ class GMScreen {
           </div>
         </div>
       `;
-      
+
       // Append the confirmation dialog to the editor
       $('#tcb-gm-screen-editor').prepend(confirmationHtml);
       const $dialog = $('.tcb-editor-confirmation-dialog');
-  
+
       // Show the dialog
       $dialog.show();
-  
+
       return new Promise((resolve) => {
         const confirmYesHandler = () => {
           cleanup();
@@ -334,21 +407,21 @@ class GMScreen {
           cleanup();
           resolve(false);
         };
-        
+
         const cleanup = () => {
           $dialog.find('.confirm-yes').off('click', confirmYesHandler);
           $dialog.find('.confirm-no').off('click', confirmNoHandler);
           $dialog.remove();
         };
-  
+
         $dialog.find('.confirm-yes').on('click', confirmYesHandler);
         $dialog.find('.confirm-no').on('click', confirmNoHandler);
       }).then((confirmation) => {
         if (!confirmation) return;
-  
+
         $activeTab.removeClass('tcb-active');
         $button.addClass('tcb-active');
-  
+
         const newContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${newTab}`);
         $(CSS.EDITOR_TEXTAREA).val(newContent);
         this.updateEditorPreview();
@@ -356,17 +429,13 @@ class GMScreen {
     } else {
       $activeTab.removeClass('tcb-active');
       $button.addClass('tcb-active');
-  
+
       const newContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${newTab}`);
       $(CSS.EDITOR_TEXTAREA).val(newContent);
       this.updateEditorPreview();
     }
   }
-  
-  
-  
-  
-  
+
   // Update the updateEditorPreview method
   static updateEditorPreview() {
     const content = $(CSS.EDITOR_TEXTAREA).val();
@@ -402,7 +471,7 @@ class GMScreen {
   static openSettings() {
     this.logger.debug('Opening GM Screen settings');
     const layout = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT);
-  
+
     const settingsHtml = `
       <div id="tcb-gm-screen-settings">
         <header class="tcb-window-header">
@@ -415,22 +484,32 @@ class GMScreen {
               ${this.generateGeneralSettingsFields()}
               <hr>
               <h3>${game.i18n.localize('TRINIUMCB.SubscreenSettings')}</h3>
-              ${[1, 2, 3, 4].map(i => `
+              ${[1, 2, 3, 4]
+                .map(
+                  (i) => `
                 <fieldset>
                   <legend>${game.i18n.localize('TRINIUMCB.Subscreen')} ${i}</legend>
                   <div class="form-group">
                     <label for="tcb-subscreen-rows-${i}">${game.i18n.localize('TRINIUMCB.NumberOfRows')}</label>
-                    <input type="number" id="tcb-subscreen-rows-${i}" name="subscreen[${i}].rows" value="${layout[i]?.rows || 1}" min="1" max="3" required>
+                    <input type="number" id="tcb-subscreen-rows-${i}" name="subscreen[${i}].rows" value="${
+                    layout[i]?.rows || 1
+                  }" min="1" max="3" required>
                   </div>
                   <div class="form-group">
                     <label for="tcb-subscreen-width-${i}">${game.i18n.localize('TRINIUMCB.SubscreenWidth')}</label>
-                    <input type="number" id="tcb-subscreen-width-${i}" name="subscreen[${i}].width" value="${layout[i]?.width || 0}" min="0" max="1000" step="10" required>
+                    <input type="number" id="tcb-subscreen-width-${i}" name="subscreen[${i}].width" value="${
+                    layout[i]?.width || 0
+                  }" min="0" max="1000" step="10" required>
                   </div>
                 </fieldset>
-              `).join('')}
+              `
+                )
+                .join('')}
             </div>
             <div class="tcb-settings-buttons">
-              <button type="submit" id="tcb-save-close-settings">${game.i18n.localize('TRINIUMCB.SaveAndClose')}</button>
+              <button type="submit" id="tcb-save-close-settings">${game.i18n.localize(
+                'TRINIUMCB.SaveAndClose'
+              )}</button>
               <button type="button" id="tcb-save-settings">${game.i18n.localize('TRINIUMCB.Save')}</button>
               <button type="button" class="tcb-close-settings">${game.i18n.localize('TRINIUMCB.Cancel')}</button>
             </div>
@@ -438,33 +517,13 @@ class GMScreen {
         </div>
       </div>
     `;
-  
+
     const $settingsPanel = $(settingsHtml);
     $('body').append($settingsPanel);
-  
+
     this.initializeDraggableSettings($settingsPanel[0]);
-  
-    // Add event listeners for the buttons
-    $settingsPanel.find('form').on('submit', async (e) => {
-      e.preventDefault();
-      if (this.validateSettingsForm(e.target)) {
-        await this.saveSettings(e);
-        $settingsPanel.remove();
-      }
-    });
-  
-    $settingsPanel.find('#tcb-save-settings').on('click', async (e) => {
-      e.preventDefault();
-      if (this.validateSettingsForm(e.target.form)) {
-        await this.saveSettings(e);
-      }
-    });
-  
-    $settingsPanel.find('.tcb-close-settings').on('click', () => {
-      $settingsPanel.remove();
-    });
   }
-  
+
   static validateSettingsForm(form) {
     if (form.checkValidity()) {
       return true;
@@ -473,7 +532,15 @@ class GMScreen {
       return false;
     }
   }
-  
+
+  static validateSettingsForm(form) {
+    if (form.checkValidity()) {
+      return true;
+    } else {
+      form.reportValidity();
+      return false;
+    }
+  }
 
   static initializeDraggableSettings(settingsPanel) {
     const header = settingsPanel.querySelector('.tcb-window-header');
@@ -595,10 +662,10 @@ class GMScreen {
   static async saveSettings(event) {
     event.preventDefault();
     this.logger.debug('Saving GM Screen settings');
-    
+
     const form = document.getElementById('tcb-gm-screen-settings-form');
     const formData = new FormData(form);
-    
+
     // Save general settings
     for (let [key, value] of formData.entries()) {
       if (!key.startsWith('subscreen')) {
@@ -610,7 +677,7 @@ class GMScreen {
         await game.settings.set(SETTINGS.MODULE_NAME, key, value);
       }
     }
-  
+
     // Save layout settings
     const newLayout = {};
     for (let [key, value] of formData.entries()) {
@@ -624,10 +691,10 @@ class GMScreen {
       }
     }
     await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT, newLayout);
-  
+
     this.refreshGMScreen();
     ui.notifications.info(game.i18n.localize('TRINIUMCB.SettingsSaved'));
-    
+
     return newLayout;
   }
 
