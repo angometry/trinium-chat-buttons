@@ -48,7 +48,7 @@ Hooks.once('init', () => {
     import('./trinium-chat-buttons-gm-screen.js').then((module) => module.init());
   }
 
-  if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_COMBAT_TRACKER_BUTTONS) && (game.system.id === 'dnd5e' || game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.OVERRIDE_DND5E_CHECK))) {
+  if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_COMBAT_TRACKER_BUTTONS)) {
     import('./trinium-chat-buttons-combat-tracker.js').then((module) => module.init());
     import('./trinium-chat-buttons-utility.js').then((module) => module.init());
   }

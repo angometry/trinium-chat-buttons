@@ -363,15 +363,6 @@ export function registerSettings() {
     default: true,
   });
 
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.OVERRIDE_DND5E_CHECK, {
-    name: game.i18n.localize('TCB_SETTINGS.OverrideDnD5eCheck'),
-    hint: game.i18n.localize('TCB_SETTINGS.OverrideDnD5eCheckHint'),
-    scope: 'world',
-    config: true,
-    type: Boolean,
-    default: false,
-  });
-
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_CSS_TWEAKS, {
     name: game.i18n.localize('TCB_SETTINGS.EnableCSSTweaks'),
     hint: game.i18n.localize('TCB_SETTINGS.EnableCSSTweaksHint'),

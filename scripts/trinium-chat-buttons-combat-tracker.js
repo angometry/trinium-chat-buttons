@@ -294,6 +294,7 @@ class MiniCombatTracker {
   }
 
   static createHealthBar(combatant, isGM) {
+    if (!combatant.actor.system.attributes.hp.value || !combatant.actor.system.attributes.hp.max){return ''};
     const healthPrivacy = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.HEALTH_PRIVACY);
     const hpPercent = combatant.actor
       ? combatant.actor.system.attributes.hp.value / combatant.actor.system.attributes.hp.max

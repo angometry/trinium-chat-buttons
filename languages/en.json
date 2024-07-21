@@ -105,8 +105,6 @@
     "EnableCombatTrackerButtonsHint": "Enable or disable the combat tracker buttons.",
     "CombatTrackerButtonVisibility": "Combat Tracker Button Visibility",
     "CombatTrackerButtonVisibilityHint": "Select who can see the combat tracker buttons.",
-    "OverrideDnD5eCheck": "Untested: Override DnD5e Check",
-    "OverrideDnD5eCheckHint": "By default, the combat tracker is only loaded when the game system is DnD5e. With this override on, it loads on all systems. Things may break.",
     "HealthPrivacy": "Show NPC Health to Players",
     "HealthPrivacyHint": "Select how much info about NPC Health players can see",
     "HealthPrivacyAll": "Everything",
