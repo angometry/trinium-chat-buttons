@@ -25,8 +25,6 @@
 - Fixed changing GM screen tab causing the entire screen to reload, instead of only that specific tab.
 
 
-
-
 ## v1.5.0
 
 ### New Features
