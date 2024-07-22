@@ -592,6 +592,47 @@ margin-top: 1em;
   100% { transform: rotate(360deg); }
 }
 
+.journal-page-selector {
+  background-color: #cdcac4;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 8px;
+  border: 1px solid #8e8e8e;
+}
+
+.journal-page-selector .page-link {
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 14px;
+  color: #2d2d2d;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: auto;
+  text-align: left;
+}
+
+.journal-page-selector .page-link.active {
+  font-weight: bold;
+  color: black;
+}
+
+.journal-page-selector .page-link::after {
+  content: "•";
+}
+
+.journal-page-selector .page-link:last-child::after {
+  content: "";
+}
+
+.journal-page-selector .page-link:hover {
+  box-shadow: none;
+}
+
+
 /*/ notifications /*/
 
 .tcb-notification {
