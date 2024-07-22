@@ -76,23 +76,23 @@
   display: flex;
   flex-direction: column;
   border-right: 2px solid #7f7f7f;
-  flex: 1 1 0; /* Allow growth and shrinking */
-  min-width: 0; /* Allow shrinking below content width */
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .tcb-column[data-width="0"] {
-  flex: 1 1 0; /* For columns with width 0, allow them to grow and shrink */
+  flex: 1 1 0;
 }
 
 .tcb-column[data-width]:not([data-width="0"]) {
-  flex: 0 0 auto; /* For columns with explicit width, don't grow or shrink */
+  flex: 0 0 auto;
 }
 
 .tcb-column-row {
   display: flex;
   flex-direction: column;
-  flex: 1 0 0; /* Grow but don't shrink */
-  min-height: 0; /* Allow content to determine height */
+  flex: 1 0 0;
+  min-height: 0;
 }
 
 /*/ Content and editor preview/*/
@@ -100,7 +100,7 @@
 .tcb-column-row .tcb-window-content {
   flex: 1 1 auto;
   overflow-y: auto;
-  min-height: 0; /* Allow scrolling */
+  min-height: 0;
 }
 
 .tcb-column-row .tcb-window-content, .tcb-editor-preview  {
@@ -218,7 +218,8 @@
   box-shadow: none !important;
 }
 
-/* New: Styles for column settings button */
+/* Column settings button */
+
 .tcb-column-settings-button {
   background: none;
   color: white;
@@ -231,6 +232,7 @@
 }
 
 /* Editor Styling */
+
 #tcb-gm-screen-editor {
   position: fixed;
   top: 0em;
@@ -436,7 +438,6 @@ box-shadow: inset 0 0 10px #faa9ff;
   box-shadow: 0 0 25px rgba(0, 0, 0, 0.75);
   z-index: 103;
   max-width: 500px;
-
 }
 
 #tcb-gm-screen-settings .tcb-window-header {

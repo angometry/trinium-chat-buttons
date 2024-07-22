@@ -23,7 +23,7 @@
     "lib/marked-min.js"
   ],
   "esmodules": [
-    "src/templates/gm-screen-content-templates.js",
+    "src/templates/gm-screen-presets.js",
 
     "src/module/settings.js",
     "src/module/logger.js",

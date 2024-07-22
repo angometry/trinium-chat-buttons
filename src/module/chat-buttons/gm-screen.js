@@ -1,6 +1,7 @@
 import { TriniumLogger } from '../logger.js';
 import { SETTINGS, DEFAULT_COLUMN } from '../settings.js';
 import { Draggable } from '../../utils/draggable.js';
+import { GM_SCREEN_PRESETS } from '../../templates/gm-screen-presets.js';
 
 class TriniumConfirmationDialog {
   constructor(options = {}) {
@@ -79,14 +80,20 @@ class TriniumNotification {
 class JournalEntryRenderer {
   constructor(journalEntry) {
     this.journalEntry = journalEntry;
+    this.currentPage = 0;
+    this.pageSize = 3;
+    this.logger = new TriniumLogger('JournalEntryRenderer');
+    this.renderedPages = new Map();
   }
 
   async render() {
+    this.logger.debug('Rendering journal entry', { id: this.journalEntry.id, name: this.journalEntry.name });
     const content = await this.getRenderedContent();
     return this.wrapContent(content);
   }
 
   async getRenderedContent() {
+    this.logger.debug('Getting rendered content', { pagesCount: this.journalEntry.pages.size });
     if (this.journalEntry.pages.size === 1) {
       return this.renderSinglePage(this.journalEntry.pages.contents[0]);
     } else {
@@ -95,42 +102,138 @@ class JournalEntryRenderer {
   }
 
   async renderSinglePage(page) {
+    this.logger.debug('Rendering single page', { pageId: page.id, pageType: page.type });
     return this.renderPage(page);
   }
 
   async renderMultiplePages() {
+    const totalPages = this.journalEntry.pages.size;
+    const pagesToRender = Math.min(this.pageSize, totalPages - this.currentPage);
+
+    this.logger.debug('Rendering multiple pages', {
+      totalPages,
+      currentPage: this.currentPage,
+      pagesToRender,
+    });
+
     const pageElements = await Promise.all(
-      this.journalEntry.pages.contents.map(async (page, index) => {
-        const pageContent = await this.renderPage(page);
-        return `<section class="journal-page" data-page-number="${index + 1}">${pageContent}</section>`;
-      })
+      this.journalEntry.pages.contents
+        .slice(this.currentPage, this.currentPage + pagesToRender)
+        .map(async (page, index) => {
+          const pageContent = await this.getOrRenderPage(page);
+          return `<section class="journal-page" data-page-number="${
+            this.currentPage + index + 1
+          }">${pageContent}</section>`;
+        })
     );
-    return pageElements.join('');
+
+    const pageSelector = this.createPageSelector(totalPages);
+    return `
+      ${pageSelector}
+      ${pageElements.join('')}
+      ${this.currentPage + pagesToRender < totalPages ? this.createLoadMoreButton() : ''}
+    `;
+  }
+
+  async getOrRenderPage(page) {
+    if (this.renderedPages.has(page.id)) {
+      this.logger.debug('Using cached page content', { pageId: page.id });
+      return this.renderedPages.get(page.id);
+    }
+    const content = await this.renderPage(page);
+    this.renderedPages.set(page.id, content);
+    return content;
   }
 
   async renderPage(page) {
+    this.logger.debug('Rendering page', { pageId: page.id, pageType: page.type });
     let content;
     switch (page.type) {
       case 'text':
-        content = await TextEditor.enrichHTML(page.text.content, { async: true, secrets: this.journalEntry.isOwner });
+        content = await this.renderTextPage(page);
         break;
       case 'image':
-        content = `<img src="${page.src}" alt="${page.name}" style="max-width: 100%; height: auto;">`;
+        content = this.renderImagePage(page);
         break;
-      // Add cases for other page types as needed
       default:
-        content = `<p>${game.i18n.localize('TCB_GMSCREEN.UnsupportedPageType')} "${page.type}". ${game.i18n.localize(
-          'TCB_GMSCREEN.TryingToRenderText'
-        )}</p>`;
-        if (page.text && page.text.content) {
-          const enrichedText = await TextEditor.enrichHTML(page.text.content, {
-            async: true,
-            secrets: this.journalEntry.isOwner,
-          });
-          content += `<div>${enrichedText}</div>`;
-        }
+        content = this.renderUnsupportedPage(page);
     }
     return `<h2>${page.name}</h2>${content}`;
+  }
+
+  async renderTextPage(page) {
+    this.logger.debug('Rendering text page', { pageId: page.id });
+    const maxLength = 1000;
+    let content = page.text.content;
+
+    if (content.length > maxLength) {
+      const truncatedContent = content.slice(0, maxLength);
+      content = `
+        <div class="truncated-content">${await TextEditor.enrichHTML(truncatedContent, {
+          async: true,
+          secrets: this.journalEntry.isOwner,
+        })}</div>
+        <div class="full-content" style="display: none;">${await TextEditor.enrichHTML(content, {
+          async: true,
+          secrets: this.journalEntry.isOwner,
+        })}</div>
+        <button class="expand-content" data-action="expandContent">${game.i18n.localize(
+          'TCB_GMSCREEN.ShowMore'
+        )}</button>
+      `;
+    } else {
+      content = await TextEditor.enrichHTML(content, { async: true, secrets: this.journalEntry.isOwner });
+    }
+
+    return content;
+  }
+
+  renderImagePage(page) {
+    this.logger.debug('Trinium Image Debugging: Starting image page render', { pageId: page.id, imageSrc: page.src });
+    const uniqueId = `img-${page.id}-${Date.now()}`;
+    this.logger.debug('Trinium Image Debugging: Generated unique ID for image', { uniqueId });
+    return `
+      <div class="image-container" id="${uniqueId}">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+             alt="${page.name}" 
+             class="lazy-image" 
+             data-src="${page.src}" 
+             style="max-width: 100%; height: auto;">
+        <div class="image-loading-overlay">Loading...</div>
+      </div>
+    `;
+  }
+
+  renderUnsupportedPage(page) {
+    this.logger.warn('Rendering unsupported page type', { pageId: page.id, pageType: page.type });
+    let content = `<p>${game.i18n.localize('TCB_GMSCREEN.UnsupportedPageType')} "${page.type}". ${game.i18n.localize(
+      'TCB_GMSCREEN.TryingToRenderText'
+    )}</p>`;
+    if (page.text && page.text.content) {
+      content += `<div>${page.text.content}</div>`;
+    }
+    return content;
+  }
+
+  createPageSelector(totalPages) {
+    const pageButtons = this.journalEntry.pages.contents
+      .map(
+        (page, index) =>
+          `<button type="button" class="page-link ${index === this.currentPage ? 'active' : ''}" data-page="${index}">
+            ${page.name}
+          </button>`
+      )
+      .join('');
+
+    return `
+      <div class="journal-page-selector">
+        ${pageButtons}
+      </div>
+    `;
+  }
+
+  createLoadMoreButton() {
+    return `<button class="load-more" data-action="loadMore">${game.i18n.localize('TCB_GMSCREEN.LoadMore')}</button>`;
   }
 
   wrapContent(content) {
@@ -195,7 +298,7 @@ class GMScreen {
     $(document).on('click', CSS.EDITOR_SAVE, () => this.saveEditor(false));
     $(document).on('click', CSS.EDITOR_SAVE_CLOSE, () => this.saveEditor(true));
     $(document).on('click', CSS.EDITOR_CANCEL, this.closeEditor.bind(this));
-    $(document).on('click', CSS.EDITOR_RESTORE, this.restoreDefaultContent.bind(this));
+    $(document).on('click', '#tcb-editor-load-preset', this.handleLoadPreset.bind(this));
     $(document).on('click', '#tcb-gm-screen-editor .tcb-editor-tab-button', this.handleEditorTabClick.bind(this));
 
     // Settings panel event listeners
@@ -682,7 +785,7 @@ class GMScreen {
           <div class="tcb-editor-buttons">
             <button id="tcb-editor-save-close">${game.i18n.localize('TCB_GMSCREEN.SaveAndClose')}</button>
             <button id="tcb-editor-save">${game.i18n.localize('TCB_GMSCREEN.Save')}</button>
-            <button id="tcb-editor-restore">${game.i18n.localize('TCB_GMSCREEN.RestoreDefault')}</button>
+            <button id="tcb-editor-load-preset">${game.i18n.localize('TCB_GMSCREEN.LoadFromPreset')}</button>
             <button id="tcb-editor-cancel">${game.i18n.localize('TCB_GMSCREEN.Cancel')}</button>
           </div>
         </div>
@@ -766,8 +869,141 @@ class GMScreen {
   }
 
   static async renderJournalEntry(journalEntry) {
+    this.logger.debug('Rendering journal entry', { id: journalEntry.id, name: journalEntry.name });
     const renderer = new JournalEntryRenderer(journalEntry);
-    return renderer.render();
+    const content = await renderer.render();
+
+    const $content = $(content);
+    this.addJournalEntryEventListeners($content, renderer);
+
+    return $content;
+  }
+
+  static addJournalEntryEventListeners($content, renderer) {
+    this.logger.debug('Adding journal entry event listeners');
+
+    $content.off('click', '[data-action]');
+    $content.off('click', '.page-link');
+
+    this.initializeLazyLoading($content);
+
+    $content.on('click', '[data-action]', this.handleJournalAction.bind(this, renderer));
+    $content.on('click', '.page-link', this.handlePageLinkClick.bind(this, renderer));
+  }
+
+  static handlePageLinkClick(renderer, event) {
+    event.preventDefault();
+    const $target = $(event.currentTarget);
+    const newPage = parseInt($target.data('page'), 10);
+    this.changeJournalPage(renderer, newPage);
+  }
+
+  static handleJournalAction(renderer, event) {
+    const $target = $(event.currentTarget);
+    const action = $target.data('action');
+
+    switch (action) {
+      case 'expandContent':
+        this.expandTruncatedContent(event);
+        break;
+      case 'loadMore':
+        this.loadMoreJournalPages(renderer);
+        break;
+    }
+  }
+
+
+
+  static initializeLazyLoading($content) {
+    this.logger.debug('Trinium Image Debugging: Initializing lazy loading for images');
+    const observerOptions = {
+      root: null,
+      rootMargin: '100px',
+      threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const container = entry.target;
+          const img = container.querySelector('img');
+          const overlay = container.querySelector('.image-loading-overlay');
+          
+          this.logger.debug('Trinium Image Debugging: Image intersecting viewport', { 
+            containerId: container.id, 
+            imageSrc: img.dataset.src 
+          });
+
+          const startTime = performance.now();
+          img.onload = () => {
+            const endTime = performance.now();
+            this.logger.debug('Trinium Image Debugging: Image loaded', { 
+              containerId: container.id, 
+              imageSrc: img.src, 
+              loadTime: endTime - startTime 
+            });
+            img.classList.remove('lazy-image');
+            overlay.style.display = 'none';
+          };
+
+          img.onerror = () => {
+            this.logger.error('Trinium Image Debugging: Image failed to load', { 
+              containerId: container.id, 
+              imageSrc: img.dataset.src 
+            });
+            overlay.textContent = 'Failed to load image';
+          };
+
+          this.logger.debug('Trinium Image Debugging: Starting to load image', { 
+            containerId: container.id, 
+            imageSrc: img.dataset.src 
+          });
+          img.src = img.dataset.src;
+          observer.unobserve(container);
+        }
+      });
+    }, observerOptions);
+
+    $content.find('.image-container').each((index, container) => {
+      this.logger.debug('Trinium Image Debugging: Observing image container', { containerId: container.id });
+      observer.observe(container);
+    });
+  }
+
+  static expandTruncatedContent(event) {
+    const $button = $(event.currentTarget);
+    const $truncated = $button.siblings('.truncated-content');
+    const $full = $button.siblings('.full-content');
+
+    this.logger.debug('Expanding truncated content');
+    $truncated.hide();
+    $full.show();
+    $button.remove();
+  }
+
+  static async loadMoreJournalPages(renderer) {
+    this.logger.debug('Loading more journal pages', { currentPageSize: renderer.pageSize });
+    renderer.pageSize += 3;
+    await this.updateJournalContent(renderer);
+  }
+
+  static async changeJournalPage(renderer, newPage) {
+    this.logger.debug('Changing journal page', { oldPage: renderer.currentPage, newPage });
+    renderer.currentPage = newPage;
+    renderer.pageSize = 3;
+    await this.updateJournalContent(renderer);
+  }
+
+  static async updateJournalContent(renderer) {
+    this.logger.debug('Updating journal content', {
+      journalId: renderer.journalEntry.id,
+      currentPage: renderer.currentPage,
+      pageSize: renderer.pageSize,
+    });
+    const newContent = await renderer.renderMultiplePages();
+    const $content = $(CSS.GM_SCREEN).find(`.journal-entry-content[data-entry-id="${renderer.journalEntry.id}"]`);
+    $content.html(newContent);
+    this.addJournalEntryEventListeners($content, renderer);
   }
 
   static isJournalEntryUUID(content) {
@@ -790,14 +1026,36 @@ class GMScreen {
     this.refreshGMScreen();
   }
 
-  static restoreDefaultContent() {
-    this.logger.debug('Restoring default content');
-    const activeTab = $(`${CSS.GM_SCREEN} ${CSS.TAB_BUTTON}.tcb-active`).data('tab');
-    const defaultContent = game.settings.settings.get(
-      `${SETTINGS.MODULE_NAME}.gmScreenContent_tab${activeTab}`
-    ).default;
-    $(CSS.EDITOR_TEXTAREA).val(defaultContent);
-    this.updateEditorPreview();
+  static handleLoadPreset(event) {
+    event.preventDefault();
+    const presetOptions = Object.entries(GM_SCREEN_PRESETS)
+      .map(([key, preset]) => `<option value="${key}">${preset.name}</option>`)
+      .join('');
+
+    const dropdownHtml = `
+      <div id="tcb-preset-dropdown-container" class="tcb-dropdown">
+        <select id="tcb-preset-dropdown">
+          <option value="">${game.i18n.localize('TCB_GMSCREEN.SelectPreset')}</option>
+          ${presetOptions}
+        </select>
+      </div>
+    `;
+
+    const $loadPresetButton = $('#tcb-editor-load-preset');
+    $loadPresetButton.after(dropdownHtml);
+
+    const $dropdown = $('#tcb-preset-dropdown');
+    $dropdown.on('change', (e) => {
+      const selectedPreset = e.target.value;
+      if (selectedPreset) {
+        const presetContent = GM_SCREEN_PRESETS[selectedPreset].content;
+        const currentContent = $('#tcb-editor-textarea').val();
+        $('#tcb-editor-textarea').val(currentContent + '\n\n' + presetContent.trim());
+        this.updateEditorPreview();
+        $dropdown.val('');
+      }
+      $('#tcb-preset-dropdown-container').remove();
+    });
   }
 
   static openSettings() {

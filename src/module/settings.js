@@ -1,9 +1,4 @@
-import {
-  GM_SCREEN_TAB1_CONTENT,
-  GM_SCREEN_TAB2_CONTENT,
-  GM_SCREEN_TAB3_CONTENT,
-  GM_SCREEN_TAB4_CONTENT,
-} from '../templates/gm-screen-content-templates.js';
+import { GM_SCREEN_PRESETS } from '../templates/gm-screen-presets.js';
 
 export const SETTINGS = {
   MODULE_NAME: 'trinium-chat-buttons',
@@ -168,7 +163,7 @@ export function registerGMScreenSettings() {
     scope: 'world',
     config: false,
     type: String,
-    default: GM_SCREEN_TAB1_CONTENT,
+    default: GM_SCREEN_PRESETS.nameGenerators.content,
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB2, {
@@ -176,7 +171,7 @@ export function registerGMScreenSettings() {
     scope: 'world',
     config: false,
     type: String,
-    default: GM_SCREEN_TAB2_CONTENT,
+    default: GM_SCREEN_PRESETS.dnd5eActionsInCombat.content,
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB3, {
@@ -184,7 +179,7 @@ export function registerGMScreenSettings() {
     scope: 'world',
     config: false,
     type: String,
-    default: GM_SCREEN_TAB3_CONTENT,
+    default: GM_SCREEN_PRESETS.dnd5eConditions.content,
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB4, {
@@ -192,21 +187,22 @@ export function registerGMScreenSettings() {
     scope: 'world',
     config: false,
     type: String,
-    default: GM_SCREEN_TAB4_CONTENT,
+    default: GM_SCREEN_PRESETS.dnd5eExhaustionTravel.content,
   });
+
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB5, {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab5'),
     scope: 'world',
     config: false,
     type: String,
-    default: '',
+    default: GM_SCREEN_PRESETS.dnd5eTaskDifficulty.content,
   });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB6, {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab6'),
     scope: 'world',
     config: false,
     type: String,
-    default: '',
+    default: GM_SCREEN_PRESETS.dnd5eMagicItems.content,
   });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB7, {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab7'),
