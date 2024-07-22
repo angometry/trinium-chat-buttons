@@ -1,5 +1,7 @@
-// Define constants for each GM Screen Tab Content
-export const GM_SCREEN_TAB1_CONTENT = `
+export const GM_SCREEN_PRESETS = {
+  nameGenerators: {
+    name: 'Name Generators',
+    content: `
 **Name Generators**
 ### Humans
 Alia, Bran, Caius, Dara, Evan, Fiona, Gideon, Hanna, Ian, Julia, Kurt, Lara, Max, Nora, Oliver, Petra, Quinn, Rosa, Seth, Tina,
@@ -19,39 +21,11 @@ The Black Network, The Crimson Hand, The Frozen Hearts, The Shadow Thieves, The 
 Willowdale, Oakhaven, Briarwood, Greendale, Rivermoot, Foxglove, Pinecrest, Eldenwood, Whitebridge, Mistvale, Dawndale, Silverstream, Thistletop, Brindle, Goldshore, Stonelake, Fallcrest, Lakeshire, Brightwater, Moonstair,
 ### Locations
 Crystal Caverns, Darkwood Forest, Misty Isles, The Howling Hills, Thunder Peaks, Silent Sands, Shimmering Shores, Starfall Lake, Frozen Wastes, Crimson Valley, Whispering Woods, Stormy Cape, Sunken City, Glimmering Plains, Eternal Swamp, Hidden Temple, Broken Ridge, Golden Sands, Lost Ruins, Haunted Moor,
-`;
-
-export const GM_SCREEN_TAB2_CONTENT = `
-**Reference Tables**
-### Task Difficulty DCs
-| Difficulty         | DC  |
-|--------------------|-----|
-| Very Easy          | 5   |
-| Easy               | 10  |
-| Medium             | 15  |
-| Hard               | 20  |
-| Very Hard          | 25  |
-| Nearly Impossible  | 30  |
-
-### Healing Potions
-| Type               | Heal      |
-|--------------------|-----------|
-| Potion of Healing  | 2d4+2     |
-| Greater Healing    | 4d4+4     |
-| Superior Healing   | 8d4+8     |
-| Supreme Healing    | 10d4+20   |
-
-### Magic Item Cost
-| Item Rarity  | Cost           |
-|--------------|----------------|
-| Common       | 50-100 gp      |
-| Uncommon     | 101-500 gp     |
-| Rare         | 501-5,000 gp   |
-| Very Rare    | 5,001-50,000 gp|
-| Legendary    | 50,001+ gp     |
-`;
-
-export const GM_SCREEN_TAB3_CONTENT = `
+`,
+  },
+  dnd5eConditions: {
+    name: 'DnD 5e conditions cheatsheet',
+    content: `
 **Conditions**
 ##### Blinded
 Can't see, fails any ability check requiring sight, attack rolls against have advantage, and the creature's attack rolls have disadvantage.
@@ -71,10 +45,11 @@ Incapacitated, can't move or speak, fails Strength and Dexterity saving throws, 
 Transformed, along with any nonmagical object it is wearing or carrying, into a solid inanimate substance (usually stone).
 ##### Exhaustion
 Level 1: Disadvantage on ability checks, Level 2: Speed halved, Level 3: Disadvantage on attack rolls and saving throws, Level 4: Hit point maximum halved, Level 5: Speed reduced to 0, Level 6: Death.
-`;
-
-export const GM_SCREEN_TAB4_CONTENT = `
-**Combat and Travel**
+`,
+  },
+  dnd5eActionsInCombat: {
+    name: 'DnD5e Actions in Combat',
+    content: `
 ### Actions in Combat
 | Action         | Description                        |
 |----------------|------------------------------------|
@@ -89,8 +64,46 @@ export const GM_SCREEN_TAB4_CONTENT = `
 | Half Cover         | +2 bonus to AC and Dexterity saving throws  |
 | Three-Quarters Cover | +5 bonus to AC and Dexterity saving throws |
 | Total Cover        | Cannot be directly targeted by attacks or spells |
+`,
+  },
+  dnd5eMagicItems: {
+    name: 'DnD5e Healing Potions and Magic Items',
+    content: `
+### Healing Potions
+| Type               | Heal      |
+|--------------------|-----------|
+| Potion of Healing  | 2d4+2     |
+| Greater Healing    | 4d4+4     |
+| Superior Healing   | 8d4+8     |
+| Supreme Healing    | 10d4+20   |
 
-### Exhaustion
+### Magic Item Cost
+| Item Rarity  | Cost           |
+|--------------|----------------|
+| Common       | 50-100 gp      |
+| Uncommon     | 101-500 gp     |
+| Rare         | 501-5,000 gp   |
+| Very Rare    | 5,001-50,000 gp|
+| Legendary    | 50,001+ gp     |
+`,
+  },
+  dnd5eTaskDifficulty: {
+    name: 'DnD5e Task Difficulty',
+    content: `**Reference Tables**
+### Task Difficulty DCs
+| Difficulty         | DC  |
+|--------------------|-----|
+| Very Easy          | 5   |
+| Easy               | 10  |
+| Medium             | 15  |
+| Hard               | 20  |
+| Very Hard          | 25  |
+| Nearly Impossible  | 30  |`,
+  },
+  dnd5eExhaustionTravel: {
+    name: 'DnD5e Exhaustion and travel',
+    content: `
+  ### Exhaustion
 | Level  | Effect                                     |
 |--------|--------------------------------------------|
 | 1      | Disadvantage on ability checks             |
@@ -106,4 +119,6 @@ export const GM_SCREEN_TAB4_CONTENT = `
 | Fast   | 4           | -5 penalty to passive Wisdom (Perception) |
 | Normal | 3           | None                                  |
 | Slow   | 2           | Can use stealth                       |
-`;
+  `,
+  },
+};

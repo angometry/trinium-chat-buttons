@@ -1,5 +1,5 @@
-import { TriniumLogger } from './logger.js';
-import { SETTINGS } from './settings.js';
+import { TriniumLogger } from '../logger.js';
+import { SETTINGS } from '../settings.js';
 
 class MiniCombatTracker {
   static logger;
@@ -51,8 +51,6 @@ class MiniCombatTracker {
   }
 
   static bindEvents() {
-
-
     $(document)
       .on('click.tcb-combat', '#tcb-combat-tracker-toggle', (e) => this.toggleCombatTracker(e))
       .on('click.tcb-combat', '#tcb-mini-combat-tracker .tcb-combat-controls-mini button', (e) =>
@@ -294,6 +292,9 @@ class MiniCombatTracker {
   }
 
   static createHealthBar(combatant, isGM) {
+    if (!combatant.actor.system.attributes.hp.value || !combatant.actor.system.attributes.hp.max) {
+      return '';
+    }
     const healthPrivacy = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.HEALTH_PRIVACY);
     const hpPercent = combatant.actor
       ? combatant.actor.system.attributes.hp.value / combatant.actor.system.attributes.hp.max
@@ -499,7 +500,9 @@ class MiniCombatTracker {
     }
 
     const dialogContent = this.createDialogContent(combatant);
-    const parentElement = $('#chat-controls-wrapper').length ? $('#chat-controls-wrapper') : $('#chat-controls').parent();
+    const parentElement = $('#chat-controls-wrapper').length
+      ? $('#chat-controls-wrapper')
+      : $('#chat-controls').parent();
     const dialog = $(dialogContent).hide().prependTo(parentElement);
 
     combatantElement.addClass('tcb-combatant-dialogmarker');
@@ -513,7 +516,7 @@ class MiniCombatTracker {
     this.logger.debug(`Showed right-click dialog for combatant: ${combatant.name}`);
   }
 
-static addDialogEventListeners(dialog, combatant) {
+  static addDialogEventListeners(dialog, combatant) {
     dialog.find('.tcb-dialog-button').on('click', (event) => this.handleDialogAction(event, combatant));
 
     $(document).on('click.tcb-dialog', (event) => {
@@ -526,7 +529,6 @@ static addDialogEventListeners(dialog, combatant) {
       }
     });
   }
-
 
   static removeDialogEventListeners(dialog) {
     dialog.off('.tcb-dialog');

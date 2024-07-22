@@ -1,3 +1,30 @@
+## v1.5.1
+
+### New Features
+
+- You can now drag and drop Journals and Enrichers into the GM Screen! Compendiums and playlists are not supported by drag and drop.
+- Added a page selector to the GM journal viewer.
+- Added presets to the GM screen! You can now load a preset to add it to the current tab. Contributions are very welcome!
+
+### Improvements
+
+- Removed dnd5e system override setting. Combat tracker should correctly load on all systems, though HP bar/value might not work.
+- Various refactors to improve performance.
+
+#### GM SCREEN
+- Added a close button, because why not.
+- Added pagination to the journal viewer to improve performance.
+- Added lazy loading and image resizing to minimize the main thread work from rendering large images in the journal viewer. I managed to make it slightly faster than foundry's own viewer, but, sadly, if foundry can't avoid the stuttering, I surely have no clue how to either.
+- Added a slight delay to journal rendering to make the aforementioned stuttering less noticeable.
+- Added a couple confirmation dialogs and notifications for better UX (and because I want random colors around the place)
+- Added a little ? icon to the editor containing some useful info
+- Improved GM screen css
+
+### Bug fixes
+
+- Fixed changing GM screen tab causing the entire screen to reload, instead of only that specific tab.
+
+
 ## v1.5.0
 
 ### New Features

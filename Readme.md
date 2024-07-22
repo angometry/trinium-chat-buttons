@@ -27,15 +27,13 @@ Everything you need to know at the click of a single button! Try it in the super
 
 #### Features
 
-- **Build-in Editor:** Fully editable content to keep exactly the information you want at your fingertips. Supports Markdown and HTML with live preview.
+- **Built-in Editor:** Fully editable content to keep exactly the information you want at your fingertips. Supports Markdown and HTML with live preview.
+- **Journals**: Drag and drop a journal page to add it to the GM Screen!
+- **Enrichers**: Drag and drop an item, actor etc to add a link to it in the GM Screen.
 - **Sections:** Up to 4 columns and 3 rows for a total of up to 12 sections! 
-- **Tabs:** Each section can show one of 12 tabs. You can have multiple sections on the same tab (scrolled to different heights maybe) or, like me, use a very compact screen that can switch between a ton of different content quickly.
-- **Customizable Sizes:** Open from the right, left or bottom and customize the width, height and more.
-
-#### Journals and Enrichers:
-
-- **Journals:** To render a journal, delete all content of a tab and set it to the journal's UUID. You can copy it by clicking the icon in the top-left of a journal. Looks like this: "JournalEntry.HRNRygUvR91F8BOB". Currently, Text and Images are fully supported, but images may cause some lag upon first load.
-- **Enrichers:** Enrichers should be automatically rendered for content supported by your game system. To use them in HTML/Markdown, you must paste the enricher string directly in the editor. Drag-drop will be supported at a later time.
+- **Tabs:** A total of 12 tabs to choose from so you can keep it as compact as you wish
+- **Customizable Sizes:** Open from the right, left or bottom and customize width, height and more.
+- **Presets:** Add preset info and cheat sheets to the GM Screen with the click of a button. Submissions are welcome!
 
 ## Roll Privacy and MIDI Buttons
 

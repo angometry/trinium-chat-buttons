@@ -1,4 +1,4 @@
-import { GM_SCREEN_TAB1_CONTENT, GM_SCREEN_TAB2_CONTENT, GM_SCREEN_TAB3_CONTENT, GM_SCREEN_TAB4_CONTENT } from './gmScreenDefaultContent.js';
+import { GM_SCREEN_PRESETS } from '../templates/gm-screen-presets.js';
 
 export const SETTINGS = {
   MODULE_NAME: 'trinium-chat-buttons',
@@ -19,6 +19,7 @@ export const SETTINGS = {
   OVERRIDE_DND5E_CHECK: 'overrideDnd5eCheck',
 
   ENABLE_GM_SCREEN: 'enableGMScreen',
+
   GM_SCREEN_CONTENT_TAB1: 'gmScreenContent_tab1',
   GM_SCREEN_CONTENT_TAB2: 'gmScreenContent_tab2',
   GM_SCREEN_CONTENT_TAB3: 'gmScreenContent_tab3',
@@ -36,7 +37,7 @@ export const SETTINGS = {
   NUMBER_OF_COLUMNS: 'numberOfColumns',
   GM_SCREEN_MODE: 'gmScreenMode',
   DEFAULT_COLUMN_WIDTH: 'defaultColumnWidth',
-   GM_SCREEN_HEIGHT: 'gmScreenHeight',
+  GM_SCREEN_HEIGHT: 'gmScreenHeight',
   GM_SCREEN_LEFT_MARGIN: 'gmScreenLeftMargin',
   GM_SCREEN_RIGHT_MARGIN: 'gmScreenRightMargin',
   EXPAND_BOTTOM_MODE: 'expandBottomMode',
@@ -49,11 +50,10 @@ export const DEFAULT_COLUMN = {
   width: 0,
 };
 
-
-export function registerGmScreenSettings() {
+export function registerGMScreenSettings() {
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT, {
-      name: game.i18n.localize('TCB_SETTINGS.GMScreenLayout'),
-      hint: game.i18n.localize('TCB_SETTINGS.GMScreenLayoutHint'),
+    name: game.i18n.localize('TCB_SETTINGS.GMScreenLayout'),
+    hint: game.i18n.localize('TCB_SETTINGS.GMScreenLayoutHint'),
     scope: 'world',
     config: false,
     type: Object,
@@ -87,7 +87,7 @@ export function registerGmScreenSettings() {
     range: {
       min: 1,
       max: 4,
-      step: 1
+      step: 1,
     },
     default: 1,
   });
@@ -110,7 +110,7 @@ export function registerGmScreenSettings() {
     range: {
       min: 10,
       max: 100,
-      step: 5
+      step: 5,
     },
     default: 50,
   });
@@ -124,7 +124,7 @@ export function registerGmScreenSettings() {
     choices: {
       'right-side': game.i18n.localize('TCB_SETTINGS.RightSideMode'),
       'left-side': game.i18n.localize('TCB_SETTINGS.LeftSideMode'),
-      'bottom': game.i18n.localize('TCB_SETTINGS.BottomMode')
+      bottom: game.i18n.localize('TCB_SETTINGS.BottomMode'),
     },
     default: 'right-side',
   });
@@ -163,7 +163,7 @@ export function registerGmScreenSettings() {
     scope: 'world',
     config: false,
     type: String,
-    default: GM_SCREEN_TAB1_CONTENT,
+    default: GM_SCREEN_PRESETS.nameGenerators.content,
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB2, {
@@ -171,7 +171,7 @@ export function registerGmScreenSettings() {
     scope: 'world',
     config: false,
     type: String,
-    default: GM_SCREEN_TAB2_CONTENT,
+    default: GM_SCREEN_PRESETS.dnd5eActionsInCombat.content,
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB3, {
@@ -179,7 +179,7 @@ export function registerGmScreenSettings() {
     scope: 'world',
     config: false,
     type: String,
-    default: GM_SCREEN_TAB3_CONTENT,
+    default: GM_SCREEN_PRESETS.dnd5eConditions.content,
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB4, {
@@ -187,38 +187,44 @@ export function registerGmScreenSettings() {
     scope: 'world',
     config: false,
     type: String,
-    default: GM_SCREEN_TAB4_CONTENT,
+    default: GM_SCREEN_PRESETS.dnd5eExhaustionTravel.content,
   });
+
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB5, {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab5'),
     scope: 'world',
     config: false,
     type: String,
-    default: '',  });
+    default: GM_SCREEN_PRESETS.dnd5eTaskDifficulty.content,
+  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB6, {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab6'),
     scope: 'world',
     config: false,
     type: String,
-    default: '',  });
+    default: GM_SCREEN_PRESETS.dnd5eMagicItems.content,
+  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB7, {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab7'),
     scope: 'world',
     config: false,
     type: String,
-    default: '',  });
+    default: '',
+  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB8, {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab8'),
     scope: 'world',
     config: false,
     type: String,
-    default: '',  });
+    default: '',
+  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB9, {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab9'),
     scope: 'world',
     config: false,
     type: String,
-    default: '',  });
+    default: '',
+  });
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_CONTENT_TAB10, {
     name: game.i18n.localize('TCB_SETTINGS.GMScreenContentTab10'),
     scope: 'world',
@@ -240,7 +246,6 @@ export function registerGmScreenSettings() {
     type: String,
     default: '',
   });
-  
 }
 
 export function registerSettings() {
@@ -361,15 +366,6 @@ export function registerSettings() {
     config: true,
     type: Boolean,
     default: true,
-  });
-
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.OVERRIDE_DND5E_CHECK, {
-    name: game.i18n.localize('TCB_SETTINGS.OverrideDnD5eCheck'),
-    hint: game.i18n.localize('TCB_SETTINGS.OverrideDnD5eCheckHint'),
-    scope: 'world',
-    config: true,
-    type: Boolean,
-    default: false,
   });
 
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_CSS_TWEAKS, {
