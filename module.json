@@ -29,6 +29,9 @@
     "src/module/logger.js",
 
     "src/utils/draggable.js",
+    "src/utils/confirmation-dialog.js",
+    "src/utils/journal-entry-renderer.js",
+    "src/utils/notification.js",
 
     "src/module/chat-buttons/roll-privacy.js",
     "src/module/chat-buttons/gm-screen.js",

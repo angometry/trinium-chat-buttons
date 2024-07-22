@@ -1,252 +1,10 @@
 import { TriniumLogger } from '../logger.js';
 import { SETTINGS, DEFAULT_COLUMN } from '../settings.js';
 import { Draggable } from '../../utils/draggable.js';
-import { GM_SCREEN_PRESETS } from '../../templates/gm-screen-presets.js';
+import { JournalEntryRenderer } from '../../utils/journal-entry-renderer.js';
+import { TriniumConfirmationDialog } from '../../utils/confirmation-dialog.js';
+import { TriniumNotification } from '../../utils/notification.js';
 
-class TriniumConfirmationDialog {
-  constructor(options = {}) {
-    this.content = options.content || game.i18n.localize('TCB_GMSCREEN.AreYouSure');
-    this.yes = options.yes || game.i18n.localize('TCB_GMSCREEN.Yes');
-    this.no = options.no || game.i18n.localize('TCB_GMSCREEN.No');
-    this.callback = options.callback || (() => {});
-  }
-
-  async render() {
-    const confirmationHtml = `
-      <div class="tcb-editor-confirmation-dialog">
-        <p>${this.content}</p>
-        <div class="button-container">
-          <button class="confirm-yes">${this.yes}</button>
-          <button class="confirm-no">${this.no}</button>
-        </div>
-      </div>
-    `;
-
-    $('#tcb-gm-screen-editor').prepend(confirmationHtml);
-    const $dialog = $('.tcb-editor-confirmation-dialog');
-
-    $dialog.show();
-
-    return new Promise((resolve) => {
-      const confirmYesHandler = () => {
-        cleanup();
-        this.callback(true);
-        resolve(true);
-      };
-      const confirmNoHandler = () => {
-        cleanup();
-        this.callback(false);
-        resolve(false);
-      };
-
-      const cleanup = () => {
-        $dialog.find('.confirm-yes').off('click', confirmYesHandler);
-        $dialog.find('.confirm-no').off('click', confirmNoHandler);
-        $dialog.remove();
-      };
-
-      $dialog.find('.confirm-yes').on('click', confirmYesHandler);
-      $dialog.find('.confirm-no').on('click', confirmNoHandler);
-    });
-  }
-}
-
-class TriniumNotification {
-  constructor(options = {}) {
-    this.content = options.content || '';
-    this.type = options.type || 'info'; // 'info', 'success', 'warning', 'error'
-    this.duration = options.duration || 3000; // Duration in milliseconds
-  }
-
-  show() {
-    const notificationHtml = `
-      <div class="tcb-notification tcb-notification-${this.type}">
-        <p>${this.content}</p>
-      </div>
-    `;
-
-    $('body').append(notificationHtml);
-    const $notification = $('.tcb-notification').last();
-
-    $notification
-      .fadeIn(300)
-      .delay(this.duration)
-      .fadeOut(300, function () {
-        $(this).remove();
-      });
-  }
-}
-
-class JournalEntryRenderer {
-  constructor(journalEntry) {
-    this.journalEntry = journalEntry;
-    this.currentPage = 0;
-    this.pageSize = 3;
-    this.logger = new TriniumLogger('JournalEntryRenderer');
-    this.renderedPages = new Map();
-  }
-
-  async render() {
-    this.logger.debug('Rendering journal entry', { id: this.journalEntry.id, name: this.journalEntry.name });
-    const content = await this.getRenderedContent();
-    return this.wrapContent(content);
-  }
-
-  async getRenderedContent() {
-    this.logger.debug('Getting rendered content', { pagesCount: this.journalEntry.pages.size });
-    if (this.journalEntry.pages.size === 1) {
-      return this.renderSinglePage(this.journalEntry.pages.contents[0]);
-    } else {
-      return this.renderMultiplePages();
-    }
-  }
-
-  async renderSinglePage(page) {
-    this.logger.debug('Rendering single page', { pageId: page.id, pageType: page.type });
-    return this.renderPage(page);
-  }
-
-  async renderMultiplePages() {
-    const totalPages = this.journalEntry.pages.size;
-    const pagesToRender = Math.min(this.pageSize, totalPages - this.currentPage);
-
-    this.logger.debug('Rendering multiple pages', {
-      totalPages,
-      currentPage: this.currentPage,
-      pagesToRender,
-    });
-
-    const pageElements = await Promise.all(
-      this.journalEntry.pages.contents
-        .slice(this.currentPage, this.currentPage + pagesToRender)
-        .map(async (page, index) => {
-          const pageContent = await this.getOrRenderPage(page);
-          return `<section class="journal-page" data-page-number="${
-            this.currentPage + index + 1
-          }">${pageContent}</section>`;
-        })
-    );
-
-    const pageSelector = this.createPageSelector(totalPages);
-    return `
-      ${pageSelector}
-      ${pageElements.join('')}
-      ${this.currentPage + pagesToRender < totalPages ? this.createLoadMoreButton() : ''}
-    `;
-  }
-
-  async getOrRenderPage(page) {
-    if (this.renderedPages.has(page.id)) {
-      this.logger.debug('Using cached page content', { pageId: page.id });
-      return this.renderedPages.get(page.id);
-    }
-    const content = await this.renderPage(page);
-    this.renderedPages.set(page.id, content);
-    return content;
-  }
-
-  async renderPage(page) {
-    this.logger.debug('Rendering page', { pageId: page.id, pageType: page.type });
-    let content;
-    switch (page.type) {
-      case 'text':
-        content = await this.renderTextPage(page);
-        break;
-      case 'image':
-        content = this.renderImagePage(page);
-        break;
-      default:
-        content = this.renderUnsupportedPage(page);
-    }
-    return `<h2>${page.name}</h2>${content}`;
-  }
-
-  async renderTextPage(page) {
-    this.logger.debug('Rendering text page', { pageId: page.id });
-    const maxLength = 1000;
-    let content = page.text.content;
-
-    if (content.length > maxLength) {
-      const truncatedContent = content.slice(0, maxLength);
-      content = `
-        <div class="truncated-content">${await TextEditor.enrichHTML(truncatedContent, {
-          async: true,
-          secrets: this.journalEntry.isOwner,
-        })}</div>
-        <div class="full-content" style="display: none;">${await TextEditor.enrichHTML(content, {
-          async: true,
-          secrets: this.journalEntry.isOwner,
-        })}</div>
-        <button class="expand-content" data-action="expandContent">${game.i18n.localize(
-          'TCB_GMSCREEN.ShowMore'
-        )}</button>
-      `;
-    } else {
-      content = await TextEditor.enrichHTML(content, { async: true, secrets: this.journalEntry.isOwner });
-    }
-
-    return content;
-  }
-
-  renderImagePage(page) {
-    this.logger.debug('Trinium Image Debugging: Starting image page render', { pageId: page.id, imageSrc: page.src });
-    const uniqueId = `img-${page.id}-${Date.now()}`;
-    this.logger.debug('Trinium Image Debugging: Generated unique ID for image', { uniqueId });
-    return `
-      <div class="image-container" id="${uniqueId}">
-        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
-             alt="${page.name}" 
-             class="lazy-image" 
-             data-src="${page.src}" 
-             style="max-width: 100%; height: auto;">
-        <div class="image-loading-overlay">Loading...</div>
-      </div>
-    `;
-  }
-
-  renderUnsupportedPage(page) {
-    this.logger.warn('Rendering unsupported page type', { pageId: page.id, pageType: page.type });
-    let content = `<p>${game.i18n.localize('TCB_GMSCREEN.UnsupportedPageType')} "${page.type}". ${game.i18n.localize(
-      'TCB_GMSCREEN.TryingToRenderText'
-    )}</p>`;
-    if (page.text && page.text.content) {
-      content += `<div>${page.text.content}</div>`;
-    }
-    return content;
-  }
-
-  createPageSelector(totalPages) {
-    const pageButtons = this.journalEntry.pages.contents
-      .map(
-        (page, index) =>
-          `<button type="button" class="page-link ${index === this.currentPage ? 'active' : ''}" data-page="${index}">
-            ${page.name}
-          </button>`
-      )
-      .join('');
-
-    return `
-      <div class="journal-page-selector">
-        ${pageButtons}
-      </div>
-    `;
-  }
-
-  createLoadMoreButton() {
-    return `<button class="load-more" data-action="loadMore">${game.i18n.localize('TCB_GMSCREEN.LoadMore')}</button>`;
-  }
-
-  wrapContent(content) {
-    return `
-      <div class="journal-entry-content" data-entry-id="${this.journalEntry.id}">
-        <h1>${this.journalEntry.name}</h1>
-        ${content}
-      </div>
-    `;
-  }
-}
-
-// Define constants for CSS selectors
 const CSS = {
   GM_SCREEN: '#tcb-gm-screen',
   GM_SCREEN_BUTTON: '#chat-controls .tcb-gm-screen-button',
@@ -323,8 +81,7 @@ class GMScreen {
 
     // Foundry hooks
     Hooks.on('renderChatLog', this.initializeGMScreenButton.bind(this));
-    Hooks.on('updateSetting', this.refreshGMScreen.bind(this));
-  }
+    }
 
   static initializeGMScreenButton(chatLog, html) {
     if (!game.user.isGM) return;
@@ -523,29 +280,39 @@ class GMScreen {
   static async switchTab(tab, columnIndex, rowIndex) {
     this.logger.debug(`Switching to tab ${tab} in column ${columnIndex}, row ${rowIndex}`);
     const content = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${tab}`);
-
+  
     let renderedContent;
     if (this.isJournalEntryUUID(content)) {
       try {
         const journalEntry = await this.getJournalEntryByUUID(content);
         if (journalEntry) {
-          renderedContent = await this.renderJournalEntry(journalEntry);
+          const { content: journalContent, renderer } = await this.renderJournalEntry(journalEntry);
+          renderedContent = journalContent;
+          // Store the renderer for later use
+          this.journalRenderers = this.journalRenderers || {};
+          this.journalRenderers[`${columnIndex}-${rowIndex}-${tab}`] = renderer;
         }
       } catch (error) {
         console.error('Error rendering Journal Entry:', error);
       }
     }
-
+  
     // If not a Journal Entry UUID or if there was an error, render as normal markdown
     if (!renderedContent) {
       renderedContent = await TextEditor.enrichHTML(marked.parse(content), { async: true });
     }
-
+  
     const $content = $(
       `${CSS.GM_SCREEN} .tcb-column[data-column="${columnIndex}"] .tcb-column-row[data-row="${rowIndex}"] .tcb-window-content`
     );
     $content.html(renderedContent);
-
+  
+    // If it's a journal entry, add event listeners
+    if (this.isJournalEntryUUID(content)) {
+      const renderer = this.journalRenderers[`${columnIndex}-${rowIndex}-${tab}`];
+      this.addJournalEntryEventListeners($content, renderer);
+    }
+  
     // Update active state in the tab container
     const $row = $(
       `${CSS.GM_SCREEN} .tcb-column[data-column="${columnIndex}"] .tcb-column-row[data-row="${rowIndex}"]`
@@ -665,10 +432,9 @@ class GMScreen {
         },
       });
       await dialog.render();
-      return null; // Prevent default insertion
+      return null;
     }
 
-    // If there's no current content, insert the journal entry UUID directly
     new TriniumNotification({
       content: game.i18n.localize('TCB_GMSCREEN.ContentInserted'),
       type: 'success',
@@ -872,136 +638,56 @@ class GMScreen {
     this.logger.debug('Rendering journal entry', { id: journalEntry.id, name: journalEntry.name });
     const renderer = new JournalEntryRenderer(journalEntry);
     const content = await renderer.render();
-
-    const $content = $(content);
-    this.addJournalEntryEventListeners($content, renderer);
-
-    return $content;
+    return { content, renderer };
   }
-
+  
   static addJournalEntryEventListeners($content, renderer) {
     this.logger.debug('Adding journal entry event listeners');
-
+  
     $content.off('click', '[data-action]');
     $content.off('click', '.page-link');
-
-    this.initializeLazyLoading($content);
-
-    $content.on('click', '[data-action]', this.handleJournalAction.bind(this, renderer));
-    $content.on('click', '.page-link', this.handlePageLinkClick.bind(this, renderer));
+  
+    renderer.initializeLazyLoading($content[0]);
+  
+    $content.on('click', '[data-action]', (event) => this.handleJournalAction(event, renderer));
+    $content.on('click', '.page-link', (event) => this.handlePageLinkClick(event, renderer));
   }
-
-  static handlePageLinkClick(renderer, event) {
+  
+  static handlePageLinkClick(event, renderer) {
     event.preventDefault();
     const $target = $(event.currentTarget);
     const newPage = parseInt($target.data('page'), 10);
     this.changeJournalPage(renderer, newPage);
   }
-
-  static handleJournalAction(renderer, event) {
+  
+  static async handleJournalAction(event, renderer) {
     const $target = $(event.currentTarget);
     const action = $target.data('action');
-
+  
     switch (action) {
       case 'expandContent':
-        this.expandTruncatedContent(event);
+        renderer.expandTruncatedContent(event.currentTarget);
         break;
       case 'loadMore':
-        this.loadMoreJournalPages(renderer);
+        await this.loadMoreJournalPages(renderer);
         break;
     }
   }
-
-
-
-  static initializeLazyLoading($content) {
-    this.logger.debug('Trinium Image Debugging: Initializing lazy loading for images');
-    const observerOptions = {
-      root: null,
-      rootMargin: '100px',
-      threshold: 0.1
-    };
-
-    const observer = new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const container = entry.target;
-          const img = container.querySelector('img');
-          const overlay = container.querySelector('.image-loading-overlay');
-          
-          this.logger.debug('Trinium Image Debugging: Image intersecting viewport', { 
-            containerId: container.id, 
-            imageSrc: img.dataset.src 
-          });
-
-          const startTime = performance.now();
-          img.onload = () => {
-            const endTime = performance.now();
-            this.logger.debug('Trinium Image Debugging: Image loaded', { 
-              containerId: container.id, 
-              imageSrc: img.src, 
-              loadTime: endTime - startTime 
-            });
-            img.classList.remove('lazy-image');
-            overlay.style.display = 'none';
-          };
-
-          img.onerror = () => {
-            this.logger.error('Trinium Image Debugging: Image failed to load', { 
-              containerId: container.id, 
-              imageSrc: img.dataset.src 
-            });
-            overlay.textContent = 'Failed to load image';
-          };
-
-          this.logger.debug('Trinium Image Debugging: Starting to load image', { 
-            containerId: container.id, 
-            imageSrc: img.dataset.src 
-          });
-          img.src = img.dataset.src;
-          observer.unobserve(container);
-        }
-      });
-    }, observerOptions);
-
-    $content.find('.image-container').each((index, container) => {
-      this.logger.debug('Trinium Image Debugging: Observing image container', { containerId: container.id });
-      observer.observe(container);
-    });
-  }
-
-  static expandTruncatedContent(event) {
-    const $button = $(event.currentTarget);
-    const $truncated = $button.siblings('.truncated-content');
-    const $full = $button.siblings('.full-content');
-
-    this.logger.debug('Expanding truncated content');
-    $truncated.hide();
-    $full.show();
-    $button.remove();
-  }
-
+  
   static async loadMoreJournalPages(renderer) {
-    this.logger.debug('Loading more journal pages', { currentPageSize: renderer.pageSize });
-    renderer.pageSize += 3;
-    await this.updateJournalContent(renderer);
+    this.logger.debug('Loading more journal pages');
+    const newContent = await renderer.loadMorePages();
+    this.updateJournalContent(renderer.journalEntry.id, newContent, renderer);
   }
-
+  
   static async changeJournalPage(renderer, newPage) {
     this.logger.debug('Changing journal page', { oldPage: renderer.currentPage, newPage });
-    renderer.currentPage = newPage;
-    renderer.pageSize = 3;
-    await this.updateJournalContent(renderer);
+    const newContent = await renderer.changePage(newPage);
+    this.updateJournalContent(renderer.journalEntry.id, newContent, renderer);
   }
-
-  static async updateJournalContent(renderer) {
-    this.logger.debug('Updating journal content', {
-      journalId: renderer.journalEntry.id,
-      currentPage: renderer.currentPage,
-      pageSize: renderer.pageSize,
-    });
-    const newContent = await renderer.renderMultiplePages();
-    const $content = $(CSS.GM_SCREEN).find(`.journal-entry-content[data-entry-id="${renderer.journalEntry.id}"]`);
+  
+  static updateJournalContent(journalEntryId, newContent, renderer) {
+    const $content = $(CSS.GM_SCREEN).find(`.journal-entry-content[data-entry-id="${journalEntryId}"]`);
     $content.html(newContent);
     this.addJournalEntryEventListeners($content, renderer);
   }
