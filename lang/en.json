@@ -82,7 +82,7 @@
     "SelectTabToEdit": "Select tab to edit",
     "LoadFromPreset": "Load Preset",
     "SelectPreset": "Pick a Preset to add",
-    "UnsavedChangesConfirmation": "You have unsaved changes. Do you want to discard them?",
+    "UnsavedChangesConfirmation": "You have unsaved changes. Are you sure you want to discard them?",
     "Yes": "Yes",
     "No": "No",
     "ColumnSettings": "Column Settings",
@@ -90,9 +90,11 @@
     "ColumnWidth": "Column Width (0 for auto)",
     "NumberOfRows": "Number of Rows (1-3)",
     "Tab": "Tab",
+    "ReplaceJournalContent": "This will replace all content with the Journal. Are you sure?",
+    "EditorHelpContent": "Drag and Drop a Journal page to embed it into the editor. You can also drag and drop items and actors to create enrichers.",
     "ContentInserted": "Successfully inserted content",
-    "ActionCancelled": "Cancelled drag and drop",
-    "UnsupportedContentType": "This type of content cannot be drag and dropped. You may try inserting it manually",
+    "ActionCancelled": "Content import aborted",
+    "UnsupportedContentType": "This type of content cannot be imported this way. You may try inserting it manually via UUID",
     "FailedToInsertContent": "Failed to insert content."
   
   },
