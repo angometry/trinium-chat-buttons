@@ -20,6 +20,8 @@ export class JournalEntryRenderer {
             if (src) {
               this.loadImage(container, img, src).then(() => {
                 observer.unobserve(container);
+              }).catch((error) => {
+                this.logger.error('Error loading image', { src, error });
               });
             }
           }
@@ -35,34 +37,83 @@ export class JournalEntryRenderer {
 
   async loadImage(container, img, src) {
     if (this.imageCache.has(src)) {
-      img.src = this.imageCache.get(src);
-      img.classList.remove('lazy-image');
-      container.querySelector('.image-loading-overlay').remove();
+      this.setImageSource(img, this.imageCache.get(src), container);
       return;
     }
 
+    try {
+      const response = await fetch(src);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const blob = await response.blob();
+      const objectURL = URL.createObjectURL(blob);
+      const resizedURL = await this.resizeImage(objectURL);
+      this.scheduleImageRender(container, img, resizedURL, src);
+      this.imageCache.set(src, resizedURL);
+    } catch (error) {
+      this.handleImageError(container, src, error);
+    }
+  }
+
+  resizeImage(src) {
     return new Promise((resolve, reject) => {
-      const startTime = performance.now();
+      const img = new Image();
       img.onload = () => {
-        const endTime = performance.now();
-        this.logger.debug('Image loaded', {
-          src,
-          loadTime: endTime - startTime,
-        });
-        img.classList.remove('lazy-image');
-        container.querySelector('.image-loading-overlay').remove();
-        this.imageCache.set(src, img.src);
-        resolve();
-      };
+        const canvas = document.createElement('canvas');
+        const maxDim = 1000; // maximum dimension for resizing
+        let width = img.width;
+        let height = img.height;
 
-      img.onerror = () => {
-        this.logger.error('Image failed to load', { src });
-        container.querySelector('.image-loading-overlay').textContent = 'Failed to load image';
-        reject();
-      };
+        if (width > height && width > maxDim) {
+          height *= maxDim / width;
+          width = maxDim;
+        } else if (height > width && height > maxDim) {
+          width *= maxDim / height;
+          height = maxDim;
+        } else if (width > maxDim) {
+          width = maxDim;
+          height = maxDim;
+        }
 
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob((blob) => {
+          const resizedURL = URL.createObjectURL(blob);
+          resolve(resizedURL);
+        }, img.type);
+      };
+      img.onerror = reject;
       img.src = src;
     });
+  }
+
+  scheduleImageRender(container, img, objectURL, src) {
+    const renderImage = () => {
+      this.setImageSource(img, objectURL, container);
+    };
+
+    // Schedule the render operation using requestAnimationFrame
+    requestAnimationFrame(renderImage);
+  }
+
+  setImageSource(img, src, container) {
+    img.src = src;
+    img.classList.remove('lazy-image');
+    const overlay = container.querySelector('.image-loading-overlay');
+    if (overlay) {
+      overlay.remove();
+    }
+  }
+
+  handleImageError(container, src, error) {
+    this.logger.error('Image failed to load', { src, error });
+    const overlay = container.querySelector('.image-loading-overlay');
+    if (overlay) {
+      overlay.textContent = 'Failed to load image';
+    }
   }
 
   async render(delay = 0) {
