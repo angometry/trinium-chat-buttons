@@ -505,12 +505,6 @@ class GMScreen {
       case 'Scene':
         content = await this.handleSceneDrop(data);
         break;
-      case 'Compendium':
-        content = await this.handleCompendiumDrop(data);
-        break;
-      case 'Playlist':
-        content = await this.handlePlaylistDrop(data);
-        break;
       case 'Macro':
         content = await this.handleMacroDrop(data);
         break;
@@ -621,28 +615,6 @@ class GMScreen {
     }
     this.logger.debug('Scene:', scene);
     return `@UUID[${scene.uuid}]{${scene.name}}`;
-  }
-
-  static async handleCompendiumDrop(data) {
-    this.logger.info('Handling Compendium drop');
-    const pack = game.packs.get(data.id);
-    if (!pack) {
-      this.logger.error('Failed to retrieve Compendium:', data);
-      return '';
-    }
-    this.logger.debug('Compendium:', pack);
-    return `@Compendium[${pack.collection}]{${pack.metadata.label}}`;
-  }
-
-  static async handlePlaylistDrop(data) {
-    this.logger.info('Handling Playlist drop');
-    const playlist = game.playlists.get(data.id);
-    if (!playlist) {
-      this.logger.error('Failed to retrieve Playlist:', data);
-      return '';
-    }
-    this.logger.debug('Playlist:', playlist);
-    return `@UUID[Playlist.${playlist.id}]{${playlist.name}}`;
   }
 
   static async handleMacroDrop(data) {
