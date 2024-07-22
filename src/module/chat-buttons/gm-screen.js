@@ -81,7 +81,7 @@ class GMScreen {
 
     // Foundry hooks
     Hooks.on('renderChatLog', this.initializeGMScreenButton.bind(this));
-    }
+  }
 
   static initializeGMScreenButton(chatLog, html) {
     if (!game.user.isGM) return;
