@@ -65,9 +65,7 @@ class GMScreen {
       },
       { selector: CSS.EDITOR_SAVE, event: 'click', handler: () => this.saveEditor(false) },
       { selector: CSS.EDITOR_SAVE_CLOSE, event: 'click', handler: () => this.saveEditor(true) },
-      { selector: CSS.EDITOR_CANCEL, event: 'click', handler: this.closeEditor.bind(this) },
-      { selector: '#tcb-editor-load-preset', event: 'click', handler: this.handleLoadPreset.bind(this) },
-      {
+      { selector: CSS.EDITOR_CANCEL, event: 'click', handler: this.closeEditor.bind(this) },      {
         selector: '#tcb-gm-screen-editor .tcb-editor-tab-button',
         event: 'click',
         handler: this.handleEditorTabClick.bind(this),
@@ -75,6 +73,7 @@ class GMScreen {
       { selector: '#tcb-gm-screen-settings-form', event: 'submit', handler: this.handleSettingsSubmit.bind(this) },
       { selector: '#tcb-save-settings', event: 'click', handler: this.handleSettingsSaveClick.bind(this) },
       { selector: '.tcb-close-settings', event: 'click', handler: this.handleSettingsCloseClick.bind(this) },
+      { selector: `${CSS.GM_SCREEN} .tcb-close-button`, event: 'click', handler: this.handleCloseButtonClick.bind(this) }
     ];
 
     events.forEach(({ selector, event, handler }) => $(document).on(event, selector, handler));
@@ -169,38 +168,32 @@ class GMScreen {
     }
   }
 
-  static createColumnHTML(columnIndex, column) {
-    const tabButtons = (start, end) =>
-      Array.from({ length: end - start + 1 }, (_, i) => i + start)
-        .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`)
-        .join('');
+  static handleCloseButtonClick(event) {
+    const $button = $(event.currentTarget);
+    const $gmScreen = $button.closest(CSS.GM_SCREEN);
+    if ($gmScreen.length) {
+      $gmScreen.removeClass('tcb-visible');
+    }
+  }
+  
 
+  static createColumnHTML(columnIndex, column) {
+    const tabButtons = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => i + start)
+      .map((tab) => `<button class="tcb-tab-button" data-tab="${tab}">${tab}</button>`)
+      .join('');
+  
     return `
-      <div class="tcb-column" data-column="${columnIndex}" data-width="${column.width}" style="width: ${
-      column.width ? column.width + 'px' : 'auto'
-    }">
-        ${Array.from({ length: column.rows }, (_, row) => row + 1)
-          .map(
-            (row) => `
+      <div class="tcb-column" data-column="${columnIndex}" data-width="${column.width}" style="width: ${column.width ? column.width + 'px' : 'auto'}">
+        ${Array.from({ length: column.rows }, (_, row) => row + 1).map(row => `
           <div class="tcb-column-row" data-row="${row}">
             <header class="tcb-window-header">
               <div class="tcb-gm-screen-controls">
-                ${
-                  columnIndex === 1 && row === 1
-                    ? `<button class="tcb-settings-button" title="${game.i18n.localize(
-                        'TCB_GMSCREEN.OpenSettings'
-                      )}"><i class="fas fa-cog"></i></button>`
-                    : ''
-                }
-                <button class="tcb-tab-toggle" title="${game.i18n.localize(
-                  'TCB_GMSCREEN.ChangeTab'
-                )}"><i class="fas fa-chevron-down"></i> ${game.i18n.localize('TCB_GMSCREEN.Tab')} #${this.getDefaultTab(
-              columnIndex,
-              row
-            )}</button>
-                <button class="tcb-edit-button" title="${game.i18n.localize(
-                  'TCB_GMSCREEN.EditCurrentTab'
-                )}"><i class="fas fa-edit"></i></button>
+                ${columnIndex === 1 && row === 1 ? `
+                  <button class="tcb-close-button" title="${game.i18n.localize('TCB_GMSCREEN.Close')}"><i class="fas fa-times"></i></button>
+                  <button class="tcb-settings-button" title="${game.i18n.localize('TCB_GMSCREEN.OpenSettings')}"><i class="fas fa-cog"></i></button>
+                ` : ''}
+                <button class="tcb-tab-toggle" title="${game.i18n.localize('TCB_GMSCREEN.ChangeTab')}"><i class="fas fa-chevron-down"></i> <span class="tcb-tab-number">${game.i18n.localize('TCB_GMSCREEN.Tab')} #${this.getDefaultTab(columnIndex, row)}</span></button>
+                <button class="tcb-edit-button" title="${game.i18n.localize('TCB_GMSCREEN.EditCurrentTab')}"><i class="fas fa-edit"></i></button>
               </div>
             </header>
             <div class="tcb-tab-container" style="display: none; position: absolute; width: 100%; z-index: 100;">
@@ -208,11 +201,10 @@ class GMScreen {
               <div class="tcb-tab-row">${tabButtons(7, 12)}</div>
             </div>
             <section class="tcb-window-content"></section>
-          </div>`
-          )
-          .join('')}
+          </div>`).join('')}
       </div>`;
   }
+  
 
   static toggleTabContainer(event) {
     const $button = $(event.currentTarget);
@@ -249,8 +241,10 @@ class GMScreen {
       this.setDefaultTab(columnIndex, rowIndex, tab);
       $row.find('.tcb-tab-button').removeClass('tcb-active');
       $button.addClass('tcb-active');
+      $row.find('.tcb-tab-number').text(`${game.i18n.localize('TCB_GMSCREEN.Tab')} #${tab}`);
     });
   }
+  
 
   static async setDefaultTab(columnIndex, rowIndex, tab) {
     const defaultTabs = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_DEFAULT_TABS);
@@ -496,27 +490,39 @@ class GMScreen {
         </div>
         <div class="tcb-editor-input">
           <div class="tcb-editor-header">
-            <div class="tcb-editor-header-text">
-              ${game.i18n.localize('TCB_GMSCREEN.EditorNote')} ${columnIndex} - ${rowIndex}. ${game.i18n.localize(
-      'TCB_GMSCREEN.SelectTabToEdit'
-    )}:
+            <div class="tcb-editor-header-text">${game.i18n.localize('TCB_GMSCREEN.SelectTabToEdit')}:
+            </div>
+            <div class="tcb-editor-header-icons">
+              <button id="tcb-editor-help" title="${game.i18n.localize('TCB_GMSCREEN.EditorHelp')}">
+                <i class="fas fa-question-circle"></i>
+              </button>
+                <div id="tcb-editor-help-content" class="tcb-floating-help">
+                ${game.i18n.localize('TCB_GMSCREEN.EditorNote')} ${columnIndex} - ${rowIndex}.
+                <br>
+                <br>
+                ${game.i18n.localize('TCB_GMSCREEN.EditorHelpContent')}
+                </div>
             </div>
             <div class="tcb-editor-tabs">
               ${Array.from({ length: 12 }, (_, i) => i + 1)
-                .map(
-                  (tab) =>
-                    `<button class="tcb-editor-tab-button ${
-                      tab === activeTab ? 'tcb-active' : ''
-                    }" data-tab="${tab}">${game.i18n.localize('TCB_GMSCREEN.Tab')} ${tab}</button>`
-                )
+                .map(tab => `<button class="tcb-editor-tab-button ${tab === activeTab ? 'tcb-active' : ''}" data-tab="${tab}">${game.i18n.localize('TCB_GMSCREEN.Tab')} ${tab}</button>`)
                 .join('')}
             </div>
           </div>
           <textarea id="tcb-editor-textarea">${content}</textarea>
+        <div id="tcb-preset-container">
+          <div id="tcb-preset-dropdown-container" class="tcb-dropdown">
+            <select id="tcb-preset-dropdown">
+              <option value="">${game.i18n.localize('TCB_GMSCREEN.SelectPreset')}</option>
+              ${Object.entries(GM_SCREEN_PRESETS)
+                .map(([key, preset]) => `<option value="${key}">${preset.name}</option>`)
+                .join('')}
+            </select>
+          </div>
+        </div>
           <div class="tcb-editor-buttons">
             <button id="tcb-editor-save-close">${game.i18n.localize('TCB_GMSCREEN.SaveAndClose')}</button>
             <button id="tcb-editor-save">${game.i18n.localize('TCB_GMSCREEN.Save')}</button>
-            <button id="tcb-editor-load-preset">${game.i18n.localize('TCB_GMSCREEN.LoadFromPreset')}</button>
             <button id="tcb-editor-cancel">${game.i18n.localize('TCB_GMSCREEN.Cancel')}</button>
           </div>
         </div>
@@ -524,8 +530,36 @@ class GMScreen {
     `;
     $('body').append(editorHtml);
     this.initializeEditorDragDrop();
+    this.initializeEditorHelpHover();
     this.updateEditorPreview();
+    this.initializePresetDropdown();
   }
+  
+  static initializeEditorHelpHover() {
+    $('#tcb-editor-help').hover(
+      () => $('#tcb-editor-help-content').fadeIn(100),
+      () => $('#tcb-editor-help-content').fadeOut(100)
+    );
+  }
+
+  static initializePresetDropdown() {
+    const $dropdown = $('#tcb-preset-dropdown');
+    $dropdown.on('change', async (e) => {
+      const selectedPreset = e.target.value;
+      if (selectedPreset) {
+        const presetContent = GM_SCREEN_PRESETS[selectedPreset].content;
+        const currentContent = $('#tcb-editor-textarea').val();
+        $('#tcb-editor-textarea').val(currentContent + '\n\n' + presetContent.trim());
+        await this.updateEditorPreview();
+        $dropdown.val('');
+      }
+    });
+  }
+  
+  
+  
+  
+  
 
   static async handleEditorTabClick(event) {
     const $button = $(event.currentTarget);
@@ -656,34 +690,7 @@ class GMScreen {
     this.refreshGMScreen();
   }
 
-  static handleLoadPreset(event) {
-    event.preventDefault();
-    const presetOptions = Object.entries(GM_SCREEN_PRESETS)
-      .map(([key, preset]) => `<option value="${key}">${preset.name}</option>`)
-      .join('');
-    const dropdownHtml = `
-      <div id="tcb-preset-dropdown-container" class="tcb-dropdown">
-        <select id="tcb-preset-dropdown">
-          <option value="">${game.i18n.localize('TCB_GMSCREEN.SelectPreset')}</option>
-          ${presetOptions}
-        </select>
-      </div>
-    `;
-    const $loadPresetButton = $('#tcb-editor-load-preset');
-    $loadPresetButton.after(dropdownHtml);
-    const $dropdown = $('#tcb-preset-dropdown');
-    $dropdown.on('change', (e) => {
-      const selectedPreset = e.target.value;
-      if (selectedPreset) {
-        const presetContent = GM_SCREEN_PRESETS[selectedPreset].content;
-        const currentContent = $('#tcb-editor-textarea').val();
-        $('#tcb-editor-textarea').val(currentContent + '\n\n' + presetContent.trim());
-        this.updateEditorPreview();
-        $dropdown.val('');
-      }
-      $('#tcb-preset-dropdown-container').remove();
-    });
-  }
+  
 
   static openSettings() {
     this.logger.debug('Opening GM Screen settings');
