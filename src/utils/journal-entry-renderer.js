@@ -55,15 +55,6 @@ export class JournalEntryRenderer {
     const content = await this.getRenderedContent();
     return this.wrapContent(content);
   }
-  
-  wrapContent(content) {
-    return `
-      <div class="journal-entry-content" data-entry-id="${this.journalEntry.id}">
-        <h1>${this.journalEntry.name}</h1>
-        ${content}
-      </div>
-    `;
-  }
 
   async getRenderedContent() {
     this.logger.debug('Getting rendered content', { pagesCount: this.journalEntry.pages.size });
@@ -166,9 +157,11 @@ export class JournalEntryRenderer {
     const uniqueId = `img-${page.id}-${Date.now()}`;
     return `
       <div class="image-container" id="${uniqueId}">
-        <div class="image-placeholder" data-src="${page.src}">
-          <span>Loading...</span>
-        </div>
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" 
+             alt="${page.name}" 
+             class="lazy-image" 
+             data-src="${page.src}" 
+             style="max-width: 100%; height: auto;">
       </div>
     `;
   }
@@ -232,7 +225,6 @@ export class JournalEntryRenderer {
   }
 
   initializeLazyLoading(content) {
-    this.logger.debug('Initializing lazy loading for images');
     const images = content.querySelectorAll('img.lazy-image');
     images.forEach(img => this.imageObserver.observe(img));
   }
