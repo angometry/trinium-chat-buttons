@@ -554,3 +554,31 @@ margin-top: 1em;
   margin-bottom: 0.5em;
   color: #333;
 }
+
+.tcb-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  z-index: 9999;
+  display: none;
+}
+
+.tcb-notification-info {
+  background-color: #2196F3;
+}
+
+.tcb-notification-success {
+  background-color: #4CAF50;
+}
+
+.tcb-notification-warning {
+  background-color: #ff9800;
+}
+
+.tcb-notification-error {
+  background-color: #f44336;
+}

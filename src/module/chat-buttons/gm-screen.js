@@ -2,6 +2,80 @@ import { TriniumLogger } from '../logger.js';
 import { SETTINGS, DEFAULT_COLUMN } from '../settings.js';
 import { Draggable } from '../../utils/draggable.js';
 
+class TriniumConfirmationDialog {
+  constructor(options = {}) {
+    this.content = options.content || game.i18n.localize('TCB_GMSCREEN.AreYouSure');
+    this.yes = options.yes || game.i18n.localize('TCB_GMSCREEN.Yes');
+    this.no = options.no || game.i18n.localize('TCB_GMSCREEN.No');
+    this.callback = options.callback || (() => {});
+  }
+
+  async render() {
+    const confirmationHtml = `
+      <div class="tcb-editor-confirmation-dialog">
+        <p>${this.content}</p>
+        <div class="button-container">
+          <button class="confirm-yes">${this.yes}</button>
+          <button class="confirm-no">${this.no}</button>
+        </div>
+      </div>
+    `;
+
+    $('#tcb-gm-screen-editor').prepend(confirmationHtml);
+    const $dialog = $('.tcb-editor-confirmation-dialog');
+
+    $dialog.show();
+
+    return new Promise((resolve) => {
+      const confirmYesHandler = () => {
+        cleanup();
+        this.callback(true);
+        resolve(true);
+      };
+      const confirmNoHandler = () => {
+        cleanup();
+        this.callback(false);
+        resolve(false);
+      };
+
+      const cleanup = () => {
+        $dialog.find('.confirm-yes').off('click', confirmYesHandler);
+        $dialog.find('.confirm-no').off('click', confirmNoHandler);
+        $dialog.remove();
+      };
+
+      $dialog.find('.confirm-yes').on('click', confirmYesHandler);
+      $dialog.find('.confirm-no').on('click', confirmNoHandler);
+    });
+  }
+}
+
+class TriniumNotification {
+  constructor(options = {}) {
+    this.content = options.content || '';
+    this.type = options.type || 'info'; // 'info', 'success', 'warning', 'error'
+    this.duration = options.duration || 3000; // Duration in milliseconds
+  }
+
+  show() {
+    const notificationHtml = `
+      <div class="tcb-notification tcb-notification-${this.type}">
+        <p>${this.content}</p>
+      </div>
+    `;
+
+    $('body').append(notificationHtml);
+    const $notification = $('.tcb-notification').last();
+
+    $notification
+      .fadeIn(300)
+      .delay(this.duration)
+      .fadeOut(300, function () {
+        $(this).remove();
+      });
+  }
+}
+
 class JournalEntryRenderer {
   constructor(journalEntry) {
     this.journalEntry = journalEntry;
@@ -377,7 +451,223 @@ class GMScreen {
     $row.find(`.tcb-tab-button[data-tab="${tab}"]`).addClass('tcb-active');
   }
 
+  static initializeEditorDragDrop() {
+    this.logger.info('Initializing editor drag and drop functionality');
+    const textarea = document.querySelector(CSS.EDITOR_TEXTAREA);
+    if (!textarea) {
+      this.logger.error('Editor textarea not found');
+      return;
+    }
 
+    textarea.addEventListener('dragover', this.handleDragOver.bind(this));
+    textarea.addEventListener('drop', this.handleDrop.bind(this));
+  }
+
+  static handleDragOver(event) {
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+  }
+
+  static async handleDrop(event) {
+    this.logger.info('Handling drop event');
+    event.preventDefault();
+
+    let data;
+    try {
+      data = JSON.parse(event.dataTransfer.getData('text/plain'));
+    } catch (error) {
+      this.logger.error('Failed to parse drop data:', error);
+      return;
+    }
+
+    this.logger.debug('Dropped data:', data);
+
+    if (!data) {
+      this.logger.warn('No valid data in drop event');
+      return;
+    }
+
+    let content = '';
+
+    switch (data.type) {
+      case 'JournalEntry':
+        content = await this.handleJournalEntryDrop(data, event.target);
+        break;
+      case 'Actor':
+        content = await this.handleActorDrop(data);
+        break;
+      case 'Item':
+        content = await this.handleItemDrop(data);
+        break;
+      case 'RollTable':
+        content = await this.handleRollTableDrop(data);
+        break;
+      case 'Scene':
+        content = await this.handleSceneDrop(data);
+        break;
+      case 'Compendium':
+        content = await this.handleCompendiumDrop(data);
+        break;
+      case 'Playlist':
+        content = await this.handlePlaylistDrop(data);
+        break;
+      case 'Macro':
+        content = await this.handleMacroDrop(data);
+        break;
+      default:
+        this.logger.warn(`Unsupported drop type: ${data.type}`);
+        new TriniumNotification({
+          content: game.i18n.localize('TCB_GMSCREEN.UnsupportedContentType'),
+          type: 'warning',
+        }).show();
+    }
+
+    if (content) {
+      this.insertContentAtCursor(event.target, content);
+      this.updateEditorPreview();
+      if (data.type !== 'JournalEntry') {
+        new TriniumNotification({
+          content: game.i18n.localize('TCB_GMSCREEN.ContentInserted'),
+          type: 'success',
+        }).show();
+      }
+    }
+  }
+
+  static async handleJournalEntryDrop(data, textarea) {
+    this.logger.info('Handling Journal Entry drop');
+    const journalEntry = await fromUuid(data.uuid);
+    if (!journalEntry) {
+      this.logger.error('Failed to retrieve Journal Entry:', data);
+      new TriniumNotification({
+        content: game.i18n.localize('TCB_GMSCREEN.FailedToInsertContent'),
+        type: 'error',
+      }).show();
+      return null;
+    }
+    this.logger.debug('Journal Entry:', journalEntry);
+
+    const currentContent = textarea.value.trim();
+    if (currentContent) {
+      const dialog = new TriniumConfirmationDialog({
+        content: game.i18n.localize('TCB_GMSCREEN.ReplaceJournalContent'),
+        callback: (confirmed) => {
+          if (confirmed) {
+            textarea.value = journalEntry.uuid;
+            this.updateEditorPreview();
+            new TriniumNotification({
+              content: game.i18n.localize('TCB_GMSCREEN.ContentInserted'),
+              type: 'success',
+            }).show();
+          } else {
+            new TriniumNotification({
+              content: game.i18n.localize('TCB_GMSCREEN.ActionCancelled'),
+              type: 'info',
+            }).show();
+          }
+        },
+      });
+      await dialog.render();
+      return null; // Prevent default insertion
+    }
+
+    // If there's no current content, insert the journal entry UUID directly
+    new TriniumNotification({
+      content: game.i18n.localize('TCB_GMSCREEN.ContentInserted'),
+      type: 'success',
+    }).show();
+    return journalEntry.uuid;
+  }
+
+  static async handleActorDrop(data) {
+    this.logger.info('Handling Actor drop');
+    const actor = await fromUuid(data.uuid);
+    if (!actor) {
+      this.logger.error('Failed to retrieve Actor:', data);
+      return '';
+    }
+    this.logger.debug('Actor:', actor);
+    return `@UUID[${actor.uuid}]{${actor.name}}`;
+  }
+
+  static async handleItemDrop(data) {
+    this.logger.info('Handling Item drop');
+    const item = await fromUuid(data.uuid);
+    if (!item) {
+      this.logger.error('Failed to retrieve Item:', data);
+      return '';
+    }
+    this.logger.debug('Item:', item);
+    return `@UUID[${item.uuid}]{${item.name}}`;
+  }
+
+  static async handleRollTableDrop(data) {
+    this.logger.info('Handling RollTable drop');
+    const rollTable = await fromUuid(data.uuid);
+    if (!rollTable) {
+      this.logger.error('Failed to retrieve RollTable:', data);
+      return '';
+    }
+    this.logger.debug('RollTable:', rollTable);
+    return `@UUID[${rollTable.uuid}]{${rollTable.name}}`;
+  }
+
+  static async handleSceneDrop(data) {
+    this.logger.info('Handling Scene drop');
+    const scene = await fromUuid(data.uuid);
+    if (!scene) {
+      this.logger.error('Failed to retrieve Scene:', data);
+      return '';
+    }
+    this.logger.debug('Scene:', scene);
+    return `@UUID[${scene.uuid}]{${scene.name}}`;
+  }
+
+  static async handleCompendiumDrop(data) {
+    this.logger.info('Handling Compendium drop');
+    const pack = game.packs.get(data.id);
+    if (!pack) {
+      this.logger.error('Failed to retrieve Compendium:', data);
+      return '';
+    }
+    this.logger.debug('Compendium:', pack);
+    return `@Compendium[${pack.collection}]{${pack.metadata.label}}`;
+  }
+
+  static async handlePlaylistDrop(data) {
+    this.logger.info('Handling Playlist drop');
+    const playlist = game.playlists.get(data.id);
+    if (!playlist) {
+      this.logger.error('Failed to retrieve Playlist:', data);
+      return '';
+    }
+    this.logger.debug('Playlist:', playlist);
+    return `@UUID[Playlist.${playlist.id}]{${playlist.name}}`;
+  }
+
+  static async handleMacroDrop(data) {
+    this.logger.info('Handling Macro drop');
+    const macro = game.macros.get(data.id);
+    if (!macro) {
+      this.logger.error('Failed to retrieve Macro:', data);
+      return '';
+    }
+    this.logger.debug('Macro:', macro);
+    return `@UUID[Macro.${macro.id}]{${macro.name}}`;
+  }
+
+  static insertContentAtCursor(textarea, content) {
+    this.logger.info('Inserting content at cursor');
+    const startPos = textarea.selectionStart;
+    const endPos = textarea.selectionEnd;
+    const before = textarea.value.substring(0, startPos);
+    const after = textarea.value.substring(endPos);
+
+    textarea.value = before + content + after;
+    textarea.selectionStart = textarea.selectionEnd = startPos + content.length;
+    textarea.focus();
+    this.logger.debug('Content inserted:', content);
+  }
 
   static openEditor(event) {
     const $button = $(event.currentTarget);
@@ -429,6 +719,8 @@ class GMScreen {
 
     $('body').append(editorHtml);
 
+    this.initializeEditorDragDrop();
+
     this.updateEditorPreview();
   }
 
@@ -444,60 +736,27 @@ class GMScreen {
     const savedContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${currentTab}`);
 
     if (currentContent !== savedContent) {
-      // Create the confirmation dialog HTML
-      const confirmationHtml = `
-        <div class="tcb-editor-confirmation-dialog">
-          <p>${game.i18n.localize('TCB_GMSCREEN.UnsavedChangesConfirmation')}</p>
-          <div class="button-container">
-            <button class="confirm-yes">${game.i18n.localize('TCB_GMSCREEN.Yes')}</button>
-            <button class="confirm-no">${game.i18n.localize('TCB_GMSCREEN.No')}</button>
-          </div>
-        </div>
-      `;
-
-      // Append the confirmation dialog to the editor
-      $('#tcb-gm-screen-editor').prepend(confirmationHtml);
-      const $dialog = $('.tcb-editor-confirmation-dialog');
-
-      // Show the dialog
-      $dialog.show();
-
-      return new Promise((resolve) => {
-        const confirmYesHandler = () => {
-          cleanup();
-          resolve(true);
-        };
-        const confirmNoHandler = () => {
-          cleanup();
-          resolve(false);
-        };
-
-        const cleanup = () => {
-          $dialog.find('.confirm-yes').off('click', confirmYesHandler);
-          $dialog.find('.confirm-no').off('click', confirmNoHandler);
-          $dialog.remove();
-        };
-
-        $dialog.find('.confirm-yes').on('click', confirmYesHandler);
-        $dialog.find('.confirm-no').on('click', confirmNoHandler);
-      }).then((confirmation) => {
-        if (!confirmation) return;
-
-        $activeTab.removeClass('tcb-active');
-        $button.addClass('tcb-active');
-
-        const newContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${newTab}`);
-        $(CSS.EDITOR_TEXTAREA).val(newContent);
-        this.updateEditorPreview();
+      const dialog = new TriniumConfirmationDialog({
+        content: game.i18n.localize('TCB_GMSCREEN.UnsavedChangesConfirmation'),
+        callback: (confirmed) => {
+          if (confirmed) {
+            this.switchEditorTab(newTab, $activeTab, $button);
+          }
+        },
       });
+      dialog.render();
     } else {
-      $activeTab.removeClass('tcb-active');
-      $button.addClass('tcb-active');
-
-      const newContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${newTab}`);
-      $(CSS.EDITOR_TEXTAREA).val(newContent);
-      this.updateEditorPreview();
+      this.switchEditorTab(newTab, $activeTab, $button);
     }
+  }
+
+  static switchEditorTab(newTab, $activeTab, $button) {
+    $activeTab.removeClass('tcb-active');
+    $button.addClass('tcb-active');
+
+    const newContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${newTab}`);
+    $(CSS.EDITOR_TEXTAREA).val(newContent);
+    this.updateEditorPreview();
   }
 
   // Update the updateEditorPreview method
