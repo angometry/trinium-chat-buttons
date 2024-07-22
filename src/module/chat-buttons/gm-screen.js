@@ -4,6 +4,7 @@ import { Draggable } from '../../utils/draggable.js';
 import { JournalEntryRenderer } from '../../utils/journal-entry-renderer.js';
 import { TriniumConfirmationDialog } from '../../utils/confirmation-dialog.js';
 import { TriniumNotification } from '../../utils/notification.js';
+import { GM_SCREEN_PRESETS } from '../../templates/gm-screen-presets.js';
 
 const CSS = {
   GM_SCREEN: '#tcb-gm-screen',
@@ -280,7 +281,7 @@ class GMScreen {
   static async switchTab(tab, columnIndex, rowIndex) {
     this.logger.debug(`Switching to tab ${tab} in column ${columnIndex}, row ${rowIndex}`);
     const content = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${tab}`);
-  
+
     let renderedContent;
     if (this.isJournalEntryUUID(content)) {
       try {
@@ -296,23 +297,23 @@ class GMScreen {
         console.error('Error rendering Journal Entry:', error);
       }
     }
-  
+
     // If not a Journal Entry UUID or if there was an error, render as normal markdown
     if (!renderedContent) {
       renderedContent = await TextEditor.enrichHTML(marked.parse(content), { async: true });
     }
-  
+
     const $content = $(
       `${CSS.GM_SCREEN} .tcb-column[data-column="${columnIndex}"] .tcb-column-row[data-row="${rowIndex}"] .tcb-window-content`
     );
     $content.html(renderedContent);
-  
+
     // If it's a journal entry, add event listeners
     if (this.isJournalEntryUUID(content)) {
       const renderer = this.journalRenderers[`${columnIndex}-${rowIndex}-${tab}`];
       this.addJournalEntryEventListeners($content, renderer);
     }
-  
+
     // Update active state in the tab container
     const $row = $(
       `${CSS.GM_SCREEN} .tcb-column[data-column="${columnIndex}"] .tcb-column-row[data-row="${rowIndex}"]`
@@ -640,30 +641,30 @@ class GMScreen {
     const content = await renderer.render(delay);
     return { content, renderer };
   }
-  
+
   static addJournalEntryEventListeners($content, renderer) {
     this.logger.debug('Adding journal entry event listeners');
-  
+
     $content.off('click', '[data-action]');
     $content.off('click', '.page-link');
-  
+
     renderer.initializeLazyLoading($content[0]);
-  
+
     $content.on('click', '[data-action]', (event) => this.handleJournalAction(event, renderer));
     $content.on('click', '.page-link', (event) => this.handlePageLinkClick(event, renderer));
   }
-  
+
   static handlePageLinkClick(event, renderer) {
     event.preventDefault();
     const $target = $(event.currentTarget);
     const newPage = parseInt($target.data('page'), 10);
     this.changeJournalPage(renderer, newPage);
   }
-  
+
   static async handleJournalAction(event, renderer) {
     const $target = $(event.currentTarget);
     const action = $target.data('action');
-  
+
     switch (action) {
       case 'expandContent':
         renderer.expandTruncatedContent(event.currentTarget);
@@ -673,19 +674,19 @@ class GMScreen {
         break;
     }
   }
-  
+
   static async loadMoreJournalPages(renderer) {
     this.logger.debug('Loading more journal pages');
     const newContent = await renderer.loadMorePages();
     this.updateJournalContent(renderer.journalEntry.id, newContent, renderer);
   }
-  
+
   static async changeJournalPage(renderer, newPage) {
     this.logger.debug('Changing journal page', { oldPage: renderer.currentPage, newPage });
     const newContent = await renderer.changePage(newPage);
     this.updateJournalContent(renderer.journalEntry.id, newContent, renderer);
   }
-  
+
   static updateJournalContent(journalEntryId, newContent, renderer) {
     const $content = $(CSS.GM_SCREEN).find(`.journal-entry-content[data-entry-id="${journalEntryId}"]`);
     $content.html(newContent);
