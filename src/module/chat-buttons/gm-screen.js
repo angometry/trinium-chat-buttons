@@ -286,7 +286,7 @@ class GMScreen {
       try {
         const journalEntry = await this.getJournalEntryByUUID(content);
         if (journalEntry) {
-          const { content: journalContent, renderer } = await this.renderJournalEntry(journalEntry);
+          const { content: journalContent, renderer } = await this.renderJournalEntry(journalEntry, 100); // Add 100ms delay
           renderedContent = journalContent;
           // Store the renderer for later use
           this.journalRenderers = this.journalRenderers || {};
@@ -634,10 +634,10 @@ class GMScreen {
     return null;
   }
 
-  static async renderJournalEntry(journalEntry) {
+  static async renderJournalEntry(journalEntry, delay = 0) {
     this.logger.debug('Rendering journal entry', { id: journalEntry.id, name: journalEntry.name });
     const renderer = new JournalEntryRenderer(journalEntry);
-    const content = await renderer.render();
+    const content = await renderer.render(delay);
     return { content, renderer };
   }
   

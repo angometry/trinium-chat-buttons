@@ -5,44 +5,59 @@ export class JournalEntryRenderer {
     this.pageSize = 3;
     this.logger = logger;
     this.renderedPages = new Map();
+    this.imageCache = new Map();
     this.imageObserver = this.createImageObserver();
   }
 
   createImageObserver() {
-    return new IntersectionObserver((entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const img = entry.target;
-          const src = img.dataset.src;
-          if (src) {
-            this.loadImage(img, src).then(() => {
-              observer.unobserve(img);
-            });
+    return new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const container = entry.target;
+            const img = container.querySelector('img');
+            const src = img.dataset.src;
+            if (src) {
+              this.loadImage(container, img, src).then(() => {
+                observer.unobserve(container);
+              });
+            }
           }
-        }
-      });
-    }, {
-      root: null,
-      rootMargin: '100px',
-      threshold: 0.1
-    });
+        });
+      },
+      {
+        root: null,
+        rootMargin: '100px',
+        threshold: 0.1,
+      }
+    );
   }
 
-  async loadImage(img, src) {
+  async loadImage(container, img, src) {
+    if (this.imageCache.has(src)) {
+      img.src = this.imageCache.get(src);
+      img.classList.remove('lazy-image');
+      container.querySelector('.image-loading-overlay').remove();
+      return;
+    }
+
     return new Promise((resolve, reject) => {
       const startTime = performance.now();
       img.onload = () => {
         const endTime = performance.now();
-        this.logger.debug('Image loaded', { 
-          src, 
-          loadTime: endTime - startTime 
+        this.logger.debug('Image loaded', {
+          src,
+          loadTime: endTime - startTime,
         });
         img.classList.remove('lazy-image');
+        container.querySelector('.image-loading-overlay').remove();
+        this.imageCache.set(src, img.src);
         resolve();
       };
 
       img.onerror = () => {
         this.logger.error('Image failed to load', { src });
+        container.querySelector('.image-loading-overlay').textContent = 'Failed to load image';
         reject();
       };
 
@@ -50,10 +65,16 @@ export class JournalEntryRenderer {
     });
   }
 
-  async render() {
+  async render(delay = 0) {
     this.logger.debug('Rendering journal entry', { id: this.journalEntry.id, name: this.journalEntry.name });
     const content = await this.getRenderedContent();
-    return this.wrapContent(content);
+    const wrappedContent = this.wrapContent(content);
+
+    if (delay > 0) {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+
+    return wrappedContent;
   }
 
   async getRenderedContent() {
@@ -162,6 +183,10 @@ export class JournalEntryRenderer {
              class="lazy-image" 
              data-src="${page.src}" 
              style="max-width: 100%; height: auto;">
+        <div class="image-loading-overlay">
+          <div class="loading-spinner"></div>
+          <div class="loading-text">Loading...</div>
+        </div>
       </div>
     `;
   }
@@ -212,12 +237,23 @@ export class JournalEntryRenderer {
     const doc = parser.parseFromString(content, 'text/html');
     const images = doc.querySelectorAll('img');
 
-    images.forEach(img => {
+    images.forEach((img) => {
       if (!img.classList.contains('lazy-image')) {
+        const container = document.createElement('div');
+        container.className = 'image-container';
+        img.parentNode.insertBefore(container, img);
+        container.appendChild(img);
+
         img.classList.add('lazy-image');
         img.dataset.src = img.src;
         img.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
-        this.imageObserver.observe(img);
+
+        const overlay = document.createElement('div');
+        overlay.className = 'image-loading-overlay';
+        overlay.innerHTML = '<div class="loading-spinner"></div><div class="loading-text">Loading...</div>';
+        container.appendChild(overlay);
+
+        this.imageObserver.observe(container);
       }
     });
 
@@ -225,8 +261,8 @@ export class JournalEntryRenderer {
   }
 
   initializeLazyLoading(content) {
-    const images = content.querySelectorAll('img.lazy-image');
-    images.forEach(img => this.imageObserver.observe(img));
+    const containers = content.querySelectorAll('.image-container');
+    containers.forEach((container) => this.imageObserver.observe(container));
   }
 
   expandTruncatedContent(button) {
