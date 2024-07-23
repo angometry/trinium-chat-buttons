@@ -428,7 +428,7 @@ class MiniCombatTracker {
   }
 
   static async handleInitiativeClick(event) {
-    event.stopPropagation(); // Prevent the click from triggering the combatant click handler
+    event.stopPropagation();
     const combatantId = $(event.target).closest('.tcb-combatant-mini').data('combatant-id');
     const combat = game.combat;
     if (!combat) return;
@@ -447,7 +447,6 @@ class MiniCombatTracker {
     const token = canvas.tokens.get(tokenId);
     if (token) {
       token.control({ releaseOthers: true });
-      this.logger.debug(`Combatant clicked: ${token.name}`);
     }
   }
 
@@ -456,7 +455,6 @@ class MiniCombatTracker {
     const token = canvas.tokens.get(tokenId);
     if (token) {
       event.type === 'mouseenter' ? token._onHoverIn(event) : token._onHoverOut(event);
-      this.logger.debug(`Combatant hover ${event.type === 'mouseenter' ? 'in' : 'out'}: ${token.name}`);
     }
   }
 
@@ -466,7 +464,6 @@ class MiniCombatTracker {
     const combatant = combat.turns.find((c) => c.id === combatantId);
     if (combatant && combatant.actor?.sheet) {
       combatant.actor.sheet.render(true);
-      this.logger.debug(`Combatant double-clicked: ${combatant.name}`);
     }
   }
 

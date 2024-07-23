@@ -272,7 +272,7 @@ class GMScreen {
           this.journalRenderers[`${columnIndex}-${rowIndex}-${tab}`] = renderer;
         }
       } catch (error) {
-        console.error('Error rendering Journal Entry:', error);
+        this.logger.error('Error rendering Journal Entry:', error);
       }
     }
     if (!renderedContent) {
@@ -472,69 +472,152 @@ class GMScreen {
     this.logger.debug('Content inserted:', content);
   }
 
-  static openEditor(event) {
-    const $button = $(event.currentTarget);
-    const $column = $button.closest('.tcb-column');
-    const columnIndex = $column.data('column');
-    const $row = $button.closest('.tcb-column-row');
-    const rowIndex = $row.data('row');
-    const activeTab = $row.find(`${CSS.TAB_BUTTON}.tcb-active`).data('tab');
-    const content = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${activeTab}`);
-    const rowHeight = $row.height();
-    const rowWidth = $row.width();
-    const editorHtml = `
-      <div id="tcb-gm-screen-editor" class="tcb-app">
-        <div class="tcb-editor-preview" style="width: ${rowWidth}px; position: relative;">
-          <div class="tcb-editor-preview-content"></div>
-          <div class="tcb-editor-preview-line" style="position: absolute; top: ${rowHeight}px; left: 0; right: 0;"></div>
-        </div>
-        <div class="tcb-editor-input">
-          <div class="tcb-editor-header">
-            <div class="tcb-editor-header-text">${game.i18n.localize('TCB_GMSCREEN.SelectTabToEdit')}:
-            </div>
-            <div class="tcb-editor-header-icons">
-              <button id="tcb-editor-help" title="${game.i18n.localize('TCB_GMSCREEN.EditorHelp')}">
-                <i class="fas fa-question-circle"></i>
-              </button>
+    static openEditor(event) {
+      const $button = $(event.currentTarget);
+      const $column = $button.closest('.tcb-column');
+      const columnIndex = $column.data('column');
+      const $row = $button.closest('.tcb-column-row');
+      const rowIndex = $row.data('row');
+      const activeTab = $row.find(`${CSS.TAB_BUTTON}.tcb-active`).data('tab');
+      this.logger.debug('editor column, row, tab:', columnIndex, rowIndex, activeTab);
+      const content = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${activeTab}`);
+      const rowHeight = $row.height();
+      const rowWidth = $row.width();
+      const editorHtml = `
+        <div id="tcb-gm-screen-editor" class="tcb-app" data-active-tab="${activeTab}">
+          <div class="tcb-editor-preview" style="width: ${rowWidth}px; position: relative;">
+            <div class="tcb-editor-preview-content"></div>
+            <div class="tcb-editor-preview-line" style="position: absolute; top: ${rowHeight}px; left: 0; right: 0;"></div>
+          </div>
+          <div class="tcb-editor-input">
+            <div class="tcb-editor-header">
+              <div class="tcb-editor-header-text">${game.i18n.localize('TCB_GMSCREEN.SelectTabToEdit')}:
+              </div>
+              <div class="tcb-editor-header-icons">
+                <button id="tcb-editor-help" title="${game.i18n.localize('TCB_GMSCREEN.EditorHelp')}">
+                  <i class="fas fa-question-circle"></i>
+                </button>
                 <div id="tcb-editor-help-content" class="tcb-floating-help">
-                ${game.i18n.localize('TCB_GMSCREEN.EditorNote')} ${columnIndex} - ${rowIndex}.
-                <br>
-                <br>
-                ${game.i18n.localize('TCB_GMSCREEN.EditorHelpContent')}
+                  ${game.i18n.localize('TCB_GMSCREEN.EditorNote')} ${columnIndex} - ${rowIndex}.
+                  <br><br>
+                  ${game.i18n.localize('TCB_GMSCREEN.EditorHelpContent')}
                 </div>
+              </div>
+              <div class="tcb-editor-tabs">
+                ${Array.from({ length: 12 }, (_, i) => i + 1)
+                  .map(tab => `<button class="tcb-editor-tab-button ${tab === activeTab ? 'tcb-active' : ''}" data-tab="${tab}">${game.i18n.localize('TCB_GMSCREEN.Tab')} ${tab}</button>`)
+                  .join('')}
+              </div>
             </div>
-            <div class="tcb-editor-tabs">
-              ${Array.from({ length: 12 }, (_, i) => i + 1)
-                .map(tab => `<button class="tcb-editor-tab-button ${tab === activeTab ? 'tcb-active' : ''}" data-tab="${tab}">${game.i18n.localize('TCB_GMSCREEN.Tab')} ${tab}</button>`)
-                .join('')}
+            <textarea id="tcb-editor-textarea">${content}</textarea>
+            <div id="tcb-preset-container">
+              <div id="tcb-preset-dropdown-container" class="tcb-dropdown">
+                <select id="tcb-preset-dropdown">
+                  <option value="">${game.i18n.localize('TCB_GMSCREEN.SelectPreset')}</option>
+                  ${Object.entries(GM_SCREEN_PRESETS)
+                    .map(([key, preset]) => `<option value="${key}">${preset.name}</option>`)
+                    .join('')}
+                </select>
+              </div>
             </div>
-          </div>
-          <textarea id="tcb-editor-textarea">${content}</textarea>
-        <div id="tcb-preset-container">
-          <div id="tcb-preset-dropdown-container" class="tcb-dropdown">
-            <select id="tcb-preset-dropdown">
-              <option value="">${game.i18n.localize('TCB_GMSCREEN.SelectPreset')}</option>
-              ${Object.entries(GM_SCREEN_PRESETS)
-                .map(([key, preset]) => `<option value="${key}">${preset.name}</option>`)
-                .join('')}
-            </select>
+            <div class="tcb-editor-buttons">
+              <button id="tcb-editor-save-close">${game.i18n.localize('TCB_GMSCREEN.SaveAndClose')}</button>
+              <button id="tcb-editor-save">${game.i18n.localize('TCB_GMSCREEN.Save')}</button>
+              <button id="tcb-editor-cancel">${game.i18n.localize('TCB_GMSCREEN.Cancel')}</button>
+            </div>
           </div>
         </div>
-          <div class="tcb-editor-buttons">
-            <button id="tcb-editor-save-close">${game.i18n.localize('TCB_GMSCREEN.SaveAndClose')}</button>
-            <button id="tcb-editor-save">${game.i18n.localize('TCB_GMSCREEN.Save')}</button>
-            <button id="tcb-editor-cancel">${game.i18n.localize('TCB_GMSCREEN.Cancel')}</button>
-          </div>
-        </div>
-      </div>
-    `;
-    $('body').append(editorHtml);
-    this.initializeEditorDragDrop();
-    this.initializeEditorHelpHover();
-    this.updateEditorPreview();
-    this.initializePresetDropdown();
-  }
+      `;
+      $('body').append(editorHtml);
+      this.initializeEditorDragDrop();
+      this.initializeEditorHelpHover();
+      this.updateEditorPreview();
+      this.initializePresetDropdown();
+    }
   
+    static async saveEditor(close) {
+      this.logger.debug('Saving editor content');
+      const $editor = $(CSS.EDITOR);
+      const content = $editor.find(CSS.EDITOR_TEXTAREA).val();
+      const activeTab = $editor.data('active-tab');
+  
+      await game.settings.set(SETTINGS.MODULE_NAME, `gmScreenContent_tab${activeTab}`, content);
+
+      new TriniumNotification({
+        content: `${game.i18n.localize('TCB_GMSCREEN.EditorSaved')} ${activeTab}`,
+        type: 'success',
+      }).show();
+  
+      if (close) {
+        this.closeEditor();
+      }
+    }
+  
+    static closeEditor() {
+      $(CSS.EDITOR).remove();
+      this.refreshGMScreen();
+    }
+  
+    static async handleEditorTabClick(event) {
+      const $button = $(event.currentTarget);
+      const newTab = $button.data('tab');
+      const $activeTab = $('#tcb-gm-screen-editor .tcb-editor-tab-button.tcb-active');
+      const currentTab = $activeTab.data('tab');
+  
+      if (newTab === currentTab) return;
+  
+      const currentContent = $(CSS.EDITOR_TEXTAREA).val();
+      const savedContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${currentTab}`);
+  
+      if (currentContent !== savedContent) {
+        const dialog = new TriniumConfirmationDialog({
+          content: game.i18n.localize('TCB_GMSCREEN.UnsavedChangesConfirmation'),
+          callback: (confirmed) => {
+            if (confirmed) this.switchEditorTab(newTab, $activeTab, $button);
+          },
+        });
+        dialog.render();
+      } else {
+        this.switchEditorTab(newTab, $activeTab, $button);
+      }
+    }
+  
+    static switchEditorTab(newTab, $activeTab, $button) {
+      $activeTab.removeClass('tcb-active');
+      $button.addClass('tcb-active');
+      const newContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${newTab}`);
+      $(CSS.EDITOR_TEXTAREA).val(newContent);
+      this.updateEditorPreview();
+  
+      $('#tcb-gm-screen-editor').data('active-tab', newTab);
+    }
+  
+
+    static async updateEditorPreview() {
+      const content = $(CSS.EDITOR_TEXTAREA).val();    
+      if (this.isJournalEntryUUID(content)) {
+        try {
+          const journalEntry = await this.getJournalEntryByUUID(content);
+          if (journalEntry) {
+            const { content: renderedContent } = await this.renderJournalEntry(journalEntry);
+            $(`${CSS.EDITOR} .tcb-editor-preview-content`).html(renderedContent);
+            return;
+          }
+        } catch (error) {
+          this.logger.error('Error rendering Journal Entry:', error);
+        }
+      }
+    
+      try {
+        const renderedContent = await TextEditor.enrichHTML(marked.parse(content), { async: true });
+        $(`${CSS.EDITOR} .tcb-editor-preview-content`).html(renderedContent);
+      } catch (error) {
+        this.logger.error('Error rendering HTML content:', error);
+      }
+    }
+    
+
+
   static initializeEditorHelpHover() {
     $('#tcb-editor-help').hover(
       () => $('#tcb-editor-help-content').fadeIn(100),
@@ -555,65 +638,17 @@ class GMScreen {
       }
     });
   }
-  
-  
-  
-  
-  
 
-  static async handleEditorTabClick(event) {
-    const $button = $(event.currentTarget);
-    const newTab = $button.data('tab');
-    const $activeTab = $('#tcb-gm-screen-editor .tcb-editor-tab-button.tcb-active');
-    const currentTab = $activeTab.data('tab');
-    if (newTab === currentTab) return;
-    const currentContent = $(CSS.EDITOR_TEXTAREA).val();
-    const savedContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${currentTab}`);
-    if (currentContent !== savedContent) {
-      const dialog = new TriniumConfirmationDialog({
-        content: game.i18n.localize('TCB_GMSCREEN.UnsavedChangesConfirmation'),
-        callback: (confirmed) => {
-          if (confirmed) this.switchEditorTab(newTab, $activeTab, $button);
-        },
-      });
-      dialog.render();
-    } else {
-      this.switchEditorTab(newTab, $activeTab, $button);
-    }
-  }
 
-  static switchEditorTab(newTab, $activeTab, $button) {
-    $activeTab.removeClass('tcb-active');
-    $button.addClass('tcb-active');
-    const newContent = game.settings.get(SETTINGS.MODULE_NAME, `gmScreenContent_tab${newTab}`);
-    $(CSS.EDITOR_TEXTAREA).val(newContent);
-    this.updateEditorPreview();
-  }
 
-  static async updateEditorPreview() {
-    const content = $(CSS.EDITOR_TEXTAREA).val();
-    if (this.isJournalEntryUUID(content)) {
-      try {
-        const journalEntry = await this.getJournalEntryByUUID(content);
-        if (journalEntry) {
-          const renderedContent = await this.renderJournalEntry(journalEntry);
-          $(`${CSS.EDITOR} .tcb-editor-preview-content`).html(renderedContent);
-          return;
-        }
-      } catch (error) {
-        console.error('Error rendering Journal Entry:', error);
-      }
-    }
-    const renderedContent = await TextEditor.enrichHTML(marked.parse(content), { async: true });
-    $(`${CSS.EDITOR} .tcb-editor-preview-content`).html(renderedContent);
-  }
+  // Journal
 
   static async getJournalEntryByUUID(uuid) {
     try {
       const entry = await fromUuid(uuid);
       if (entry instanceof JournalEntry) return entry;
     } catch (error) {
-      console.error('Error fetching Journal Entry:', error);
+      this.logger.error('Error fetching Journal Entry:', error);
     }
     return null;
   }
@@ -676,19 +711,6 @@ class GMScreen {
     return /^JournalEntry\.[a-zA-Z0-9]{16}$/.test(content.trim());
   }
 
-  static async saveEditor(close) {
-    this.logger.debug('Saving editor content');
-    const content = $(CSS.EDITOR_TEXTAREA).val();
-    const activeTab = $(`${CSS.GM_SCREEN} ${CSS.TAB_BUTTON}.tcb-active`).data('tab');
-    await game.settings.set(SETTINGS.MODULE_NAME, `gmScreenContent_tab${activeTab}`, content);
-    this.switchTab(activeTab, 1);
-    if (close) this.closeEditor();
-  }
-
-  static closeEditor() {
-    $(CSS.EDITOR).remove();
-    this.refreshGMScreen();
-  }
 
   
 
@@ -904,7 +926,10 @@ class GMScreen {
     }
     await game.settings.set(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_LAYOUT, newLayout);
     this.refreshGMScreen();
-    ui.notifications.info(game.i18n.localize('TCB_GMSCREEN.SettingsSaved'));
+    new TriniumNotification({
+      content: game.i18n.localize('TCB_GMSCREEN.SettingsSaved'),
+      type: 'success',
+    }).show();
     return newLayout;
   }
 
