@@ -7,6 +7,7 @@
 ### Bug fixes
 
 - Fixed Journal Renderer trying to render "text" pages with undefined content, such as those added by journal modules.
+- Fixed Journal Pages not rendering in the editor preview.
 - Fixed GM Screen editor refreshing the screen twice when closed.
 - Fixed GM Screen editor targeting the wrong tab when saving content.
 
