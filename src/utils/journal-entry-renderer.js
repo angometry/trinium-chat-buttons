@@ -94,8 +94,6 @@ export class JournalEntryRenderer {
     const renderImage = () => {
       this.setImageSource(img, objectURL, container);
     };
-
-    // Schedule the render operation using requestAnimationFrame
     requestAnimationFrame(renderImage);
   }
 
@@ -117,7 +115,6 @@ export class JournalEntryRenderer {
   }
 
   async render(delay = 0) {
-    this.logger.debug('Rendering journal entry', { id: this.journalEntry.id, name: this.journalEntry.name });
     const content = await this.getRenderedContent();
     const wrappedContent = this.wrapContent(content);
 
@@ -129,7 +126,6 @@ export class JournalEntryRenderer {
   }
 
   async getRenderedContent() {
-    this.logger.debug('Getting rendered content', { pagesCount: this.journalEntry.pages.size });
     if (this.journalEntry.pages.size === 1) {
       return this.renderSinglePage(this.journalEntry.pages.contents[0]);
     } else {
@@ -138,7 +134,6 @@ export class JournalEntryRenderer {
   }
 
   async renderSinglePage(page) {
-    this.logger.debug('Rendering single page', { pageId: page.id, pageType: page.type });
     return this.renderPage(page);
   }
 
@@ -146,7 +141,7 @@ export class JournalEntryRenderer {
     const totalPages = this.journalEntry.pages.size;
     const pagesToRender = Math.min(this.pageSize, totalPages - this.currentPage);
 
-    this.logger.debug('Rendering multiple pages', {
+    this.logger.debug('Trinium Journal Renderer: Rendering multiple pages', {
       totalPages,
       currentPage: this.currentPage,
       pagesToRender,
@@ -173,7 +168,7 @@ export class JournalEntryRenderer {
 
   async getOrRenderPage(page) {
     if (this.renderedPages.has(page.id)) {
-      this.logger.debug('Using cached page content', { pageId: page.id });
+      this.logger.debug('Trinium Journal Renderer: Using cached page content for page', { pageId: page.id });
       return this.renderedPages.get(page.id);
     }
     const content = await this.renderPage(page);
@@ -182,7 +177,8 @@ export class JournalEntryRenderer {
   }
 
   async renderPage(page) {
-    this.logger.debug('Rendering page', { pageId: page.id, pageType: page.type });
+    this.logger.debug('Trinium Journal Renderer: Rendering page', { pageId: page.id, pageType: page.type });
+    this.logger.debug('Trinium Journal Renderer: Page object structure', page);
     let content;
     switch (page.type) {
       case 'text':
@@ -198,10 +194,14 @@ export class JournalEntryRenderer {
   }
 
   async renderTextPage(page) {
-    this.logger.debug('Rendering text page', { pageId: page.id });
+    if (!page || !page.text || !page.text.content) {
+      this.logger.error('Trinium Journal Renderer: Invalid Page Structure', page);
+      return `<p>Error: Invalid journal page structure. If this is a custom page created by Monk's Enhanced Journal, it is not supported! If it isn't, you can find an error "Invalid Page Structure" in your console with more details, open an issue on github if you can!</p>`;
+    }
+  
     const maxLength = 1000;
     let content = page.text.content;
-
+  
     if (content.length > maxLength) {
       const truncatedContent = content.slice(0, maxLength);
       content = `
@@ -220,12 +220,12 @@ export class JournalEntryRenderer {
     } else {
       content = await TextEditor.enrichHTML(content, { async: true, secrets: this.journalEntry.isOwner });
     }
-
+  
     return this.processLazyImages(content);
   }
+  
 
   renderImagePage(page) {
-    this.logger.debug('Rendering image page', { pageId: page.id, imageSrc: page.src });
     const uniqueId = `img-${page.id}-${Date.now()}`;
     return `
       <div class="image-container" id="${uniqueId}">
@@ -243,7 +243,7 @@ export class JournalEntryRenderer {
   }
 
   renderUnsupportedPage(page) {
-    this.logger.warn('Rendering unsupported page type', { pageId: page.id, pageType: page.type });
+    this.logger.warn('Trinium Journal Renderer: Rendering unsupported page type', { pageId: page.id, pageType: page.type });
     let content = `<p>${game.i18n.localize('TCB_GMSCREEN.UnsupportedPageType')} "${page.type}". ${game.i18n.localize(
       'TCB_GMSCREEN.TryingToRenderText'
     )}</p>`;
