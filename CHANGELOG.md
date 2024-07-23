@@ -1,3 +1,15 @@
+## v1.5.2
+
+### Improvements
+
+- Added various notifications when performing GM screen operations.
+
+### Bug fixes
+
+- Fixed Journal Renderer trying to render "text" pages with undefined content, such as those added by journal modules.
+- Fixed GM Screen editor refreshing the screen twice when closed.
+- Fixed GM Screen editor targeting the wrong tab when saving content.
+
 ## v1.5.1
 
 ### New Features
