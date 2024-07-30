@@ -1,3 +1,11 @@
+## v1.5.3
+
+This release mostly addresses a username change from TheDarkTongo to angometry, which is what I use nowadays on other platforms.
+
+### Improvements
+
+- Combat tracker no longer fully updates whenever only one combatant must be updated.
+
 ## v1.5.2
 
 ### Improvements
