@@ -2,12 +2,12 @@
   "id": "trinium-chat-buttons",
   "title": "Trinium Chat Buttons",
   "description": "Adds compact buttons below the chat with a few convenient features: roll modifiers, a mini combat tracker and customizable GM screen!",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "authors": [
     {
       "name": "Andrea Gomez",
       "discord": "angometry",
-      "url": "https://github.com/TheDarkTongo",
+      "url": "https://github.com/angometry",
       "flags": {}
     }
   ],
@@ -46,9 +46,9 @@
     "styles/gm-screen.css",
     "styles/combat-tracker.css"
   ],
-  "url": "https://github.com/thedarktongo/trinium-chat-buttons",
-  "manifest": "https://raw.githubusercontent.com/TheDarkTongo/trinium-chat-buttons/main/module.json",
-  "download": "https://github.com/TheDarkTongo/trinium-chat-buttons/archive/refs/heads/main.zip",
+  "url": "https://github.com/angometry/trinium-chat-buttons",
+  "manifest": "https://raw.githubusercontent.com/angometry/trinium-chat-buttons/main/module.json",
+  "download": "https://github.com/angometry/trinium-chat-buttons/archive/refs/heads/main.zip",
   "compatibility": {
     "minimum": "11",
     "verified": "12"
