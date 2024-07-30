@@ -26,7 +26,6 @@ class MiniCombatTracker {
 
   static shouldShowCombatTrackerButtons() {
     const combatTrackerVisibility = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.COMBAT_TRACKER_VISIBILITY);
-
     return (
       combatTrackerVisibility === 'everyone' ||
       (combatTrackerVisibility === 'players' && !game.user.isGM) ||
@@ -36,9 +35,7 @@ class MiniCombatTracker {
 
   static initializeCombatTracker(chatControls) {
     this.addCombatTrackerButtons(chatControls);
-
-    const combatTracker = this.createMiniCombatTracker();
-    chatControls.parent().prepend(combatTracker);
+    chatControls.parent().prepend(this.createMiniCombatTracker());
 
     if (!this.#eventsBound) {
       this.bindEvents();
@@ -52,30 +49,18 @@ class MiniCombatTracker {
 
   static bindEvents() {
     $(document)
-      .on('click.tcb-combat', '#tcb-combat-tracker-toggle', (e) => this.toggleCombatTracker(e))
-      .on('click.tcb-combat', '#tcb-mini-combat-tracker .tcb-combat-controls-mini button', (e) =>
-        this.handleControlButtonClick(e)
-      );
-
-    $(document)
-      .on('click.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', (e) => this.handleCombatantClick(e))
-      .on('dblclick.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', (e) =>
-        this.handleCombatantDoubleClick(e)
-      )
-      .on('mouseenter.tcb-combat mouseleave.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', (e) =>
-        this.handleCombatantHover(e)
-      );
+      .on('click.tcb-combat', '#tcb-combat-tracker-toggle', this.toggleCombatTracker.bind(this))
+      .on('click.tcb-combat', '#tcb-mini-combat-tracker .tcb-combat-controls-mini button', this.handleControlButtonClick.bind(this))
+      .on('click.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', this.handleCombatantClick.bind(this))
+      .on('dblclick.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', this.handleCombatantDoubleClick.bind(this))
+      .on('mouseenter.tcb-combat mouseleave.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', this.handleCombatantHover.bind(this));
 
     if (game.user.isGM) {
       $(document)
-        .on('contextmenu.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', (e) =>
-          this.handleCombatantRightClick(e)
-        )
-        .on('click.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini-initiative', (e) =>
-          this.handleInitiativeClick(e)
-        )
-        .on('click.tcb-combat', '#tcb-create-combat', (e) => this.createNewCombat(e))
-        .on('click.tcb-combat', '#tcb-start-combat', (e) => this.startCombat(game.combats.active, e));
+        .on('contextmenu.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', this.handleCombatantRightClick.bind(this))
+        .on('click.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini-initiative', this.handleInitiativeClick.bind(this))
+        .on('click.tcb-combat', '#tcb-create-combat', this.createNewCombat.bind(this))
+        .on('click.tcb-combat', '#tcb-start-combat', () => this.startCombat(game.combats.active));
     }
   }
 
@@ -96,18 +81,14 @@ class MiniCombatTracker {
   static addCombatTrackerButtons(chatControls) {
     const buttonGroup = $('<div id="tcb-combat-tracker-button-groups" class="tcb-button-row"></div>');
     buttonGroup.append(this.createCombatTrackerToggleButton());
-
     chatControls.parent().prepend(buttonGroup);
     this.logger.debug('Combat tracker buttons added');
   }
 
   static createCombatTrackerToggleButton() {
     return $(`
-      <button class="tcb-button" id="tcb-combat-tracker-toggle" title="${game.i18n.localize(
-        'TRINIUMCB.ToggleCombatTracker'
-      )}">
-        <i class="fas fa-fist-raised"></i>
-        ${game.i18n.localize('TRINIUMCB.MiniTracker')}
+      <button class="tcb-button" id="tcb-combat-tracker-toggle" title="${game.i18n.localize('TRINIUMCB.ToggleCombatTracker')}">
+        <i class="fas fa-fist-raised"></i> ${game.i18n.localize('TRINIUMCB.MiniTracker')}
       </button>
     `);
   }
@@ -135,7 +116,7 @@ class MiniCombatTracker {
   }
 
   static async updateMiniCombatTracker() {
-    let combatTracker = $('#tcb-mini-combat-tracker');
+    const combatTracker = $('#tcb-mini-combat-tracker');
     const isGM = game.user.isGM;
     let combat = game.combats.active || game.combats.viewed;
 
@@ -162,13 +143,10 @@ class MiniCombatTracker {
   static renderNoCombatState(combatTracker, isGM) {
     combatTracker.html(`
       <div class="tcb-combatants-nocombat">
-        ${
-          isGM
-            ? `<button class="tcb-button" id="tcb-create-combat"><i class="fas fa-plus"></i> ${game.i18n.localize(
-                'TRINIUMCB.CreateCombat'
-              )}</button>`
-            : game.i18n.localize('TRINIUMCB.NoCombat')
-        }
+        ${isGM
+        ? `<button class="tcb-button" id="tcb-create-combat"><i class="fas fa-plus"></i> ${game.i18n.localize('TRINIUMCB.CreateCombat')}</button>`
+        : game.i18n.localize('TRINIUMCB.NoCombat')
+      }
       </div>
     `);
     this.logger.debug('Rendered no combat state');
@@ -185,18 +163,14 @@ class MiniCombatTracker {
     const onlyShowTurnControls = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ONLY_SHOW_TURN_CONTROLS);
 
     if (onlyShowTurnControls) {
-      const controls = this.createControls(isGM, combat);
-      combatTracker.html(`${controls}`);
+      combatTracker.html(this.createControls(isGM, combat));
     } else {
       const currentTurn = combat.current || { round: 0, turn: 0 };
       const combatants = this.createCombatantElements(combat, currentTurn, isGM);
       const controls = this.createControls(isGM, combat);
-      const startCombatButton =
-        !combat.started && isGM
-          ? `<button class="tcb-button" id="tcb-start-combat"><i class="fas fa-play"></i> ${game.i18n.localize(
-              'TRINIUMCB.StartCombat'
-            )}</button>`
-          : '';
+      const startCombatButton = !combat.started && isGM
+        ? `<button class="tcb-button" id="tcb-start-combat"><i class="fas fa-play"></i> ${game.i18n.localize('TRINIUMCB.StartCombat')}</button>`
+        : '';
 
       combatTracker.html(`
         ${isGM ? `<div class="tcb-combat-controls">${startCombatButton}</div>` : ''}
@@ -209,18 +183,15 @@ class MiniCombatTracker {
   }
 
   static createCombatantElements(combat, currentTurn, isGM) {
-    return combat
-      .setupTurns()
-      .map((c, index) => {
-        const { classes, displayName } = this.getCombatantDisplayInfo(c, combat, currentTurn, index, isGM);
-        const healthBar = this.createHealthBar(c, isGM);
+    return combat.setupTurns().map((c, index) => {
+      const { classes, displayName } = this.getCombatantDisplayInfo(c, combat, currentTurn, index, isGM);
+      const healthBar = this.createHealthBar(c, isGM);
 
-        // Apply classes and displayName to the default combat tracker
-        if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.STYLE_FOUNDRY_COMBAT_TRACKER)) {
-          this.applyClassesToFoundryTracker(c.id, classes, displayName);
-        }
+      if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.STYLE_FOUNDRY_COMBAT_TRACKER)) {
+        this.applyClassesToFoundryTracker(c.id, classes, displayName);
+      }
 
-        return `
+      return `
         <div class="tcb-combatant-mini ${classes}" data-combatant-id="${c.id}" data-token-id="${c.token.id}">
           <div class="tcb-combatant-mini-initiative" data-action="promptInitiative">
             ${c.initiative !== null ? c.initiative : '-'}
@@ -230,17 +201,13 @@ class MiniCombatTracker {
           <div class="tcb-combatant-mini-health">${healthBar}</div>
         </div>
       `;
-      })
-      .join('');
+    }).join('');
   }
 
   static applyClassesToFoundryTracker(combatantId, classes, displayName) {
     const combatantElement = document.querySelector(`#combat-tracker li[data-combatant-id="${combatantId}"]`);
     if (combatantElement) {
-      // Apply classes
       combatantElement.className = `combatant actor directory-item flexrow ${classes}`;
-
-      // Update display name
       const nameElement = combatantElement.querySelector('.token-name h4');
       if (nameElement) {
         nameElement.textContent = displayName;
@@ -253,27 +220,15 @@ class MiniCombatTracker {
     const isHidden = combatant.token.hidden;
     const disposition = this.getCombatantDisposition(combatant);
     const isPlayer = combatant.actor?.hasPlayerOwner;
-    const hideForPlayers =
-      (!isGM && !isPlayer && !combat.started) || (currentTurn.round === 1 && index > currentTurn.turn);
+    const hideForPlayers = (!isGM && !isPlayer && !combat.started) || (currentTurn.round === 1 && index > currentTurn.turn);
 
     let classes = `${combatant.id === combat.combatant?.id ? 'tcb-combatant-active' : ''} ${disposition}`;
+    classes += isHidden ? (isGM ? ' tcb-combatant-hiddenGM' : ' tcb-combatant-hidden') : '';
+    classes = isDefeated ? `${classes} tcb-combatant-defeated` : classes.replace(' tcb-combatant-defeated', '');
 
-    // Update classes based on visibility
-    if (isHidden) {
-      classes += isGM ? ' tcb-combatant-hiddenGM' : ' tcb-combatant-hidden';
-    } else if (hideForPlayers && !isGM && !isPlayer) {
-      classes += ' tcb-combatant-hidden';
-    } else {
-      classes = classes.replace(' tcb-combatant-hiddenGM', '').replace(' tcb-combatant-hidden', '');
-    }
-
-    // Update classes based on defeated status
-    classes = isDefeated ? classes + ' tcb-combatant-defeated' : classes.replace(' tcb-combatant-defeated', '');
-
-    const displayName =
-      !isGM && (!combatant.actor || !combatant.actor.hasPlayerOwner)
-        ? game.i18n.localize('TRINIUMCB.Creature')
-        : combatant.name;
+    const displayName = !isGM && (!combatant.actor || !combatant.actor.hasPlayerOwner)
+      ? game.i18n.localize('TRINIUMCB.Creature')
+      : combatant.name;
 
     return { classes, displayName };
   }
@@ -296,12 +251,8 @@ class MiniCombatTracker {
       return '';
     }
     const healthPrivacy = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.HEALTH_PRIVACY);
-    const hpPercent = combatant.actor
-      ? combatant.actor.system.attributes.hp.value / combatant.actor.system.attributes.hp.max
-      : 0;
-    const displayHP = combatant.actor
-      ? `${combatant.actor.system.attributes.hp.value} / ${combatant.actor.system.attributes.hp.max}`
-      : '';
+    const hpPercent = combatant.actor.system.attributes.hp.value / combatant.actor.system.attributes.hp.max;
+    const displayHP = `${combatant.actor.system.attributes.hp.value} / ${combatant.actor.system.attributes.hp.max}`;
     const hpColor = `rgba(${Math.round(255 - hpPercent * 200)}, ${Math.round(hpPercent * 200)}, 0, 1)`;
 
     if (!combatant.isNPC && !isGM) {
@@ -319,17 +270,13 @@ class MiniCombatTracker {
 
   static createFullHealthBar(hpPercent, hpColor, displayHP) {
     return `
-      <div class="tcb-combatant-mini-health-bar" style="width: ${
-        hpPercent * 100
-      }%; background-color: ${hpColor};"></div>
+      <div class="tcb-combatant-mini-health-bar" style="width: ${hpPercent * 100}%; background-color: ${hpColor};"></div>
       <div class="tcb-combatant-mini-health-text">${displayHP}</div>
     `;
   }
 
   static createHealthBarOnly(hpPercent, hpColor) {
-    return `<div class="tcb-combatant-mini-health-bar" style="width: ${
-      hpPercent * 100
-    }%; background-color: ${hpColor};"></div>`;
+    return `<div class="tcb-combatant-mini-health-bar" style="width: ${hpPercent * 100}%; background-color: ${hpColor};"></div>`;
   }
 
   static createControls(isGM, combat) {
@@ -374,29 +321,35 @@ class MiniCombatTracker {
     Hooks.on('updateToken', this.onRenderCombatTracker.bind(this));
   }
 
-  static onUpdateCombat() {
+  static onUpdateCombat(combat, updateData, options, userId) {
     this.updateMiniCombatTracker();
     this.logger.debug('Combat updated');
   }
 
-  static onUpdateCombatant() {
-    this.updateMiniCombatTracker();
+  static onUpdateCombatant(combat, updateData, options, userId) {
+    this.updateCombatant(updateData._id);
     this.logger.debug('Combatant updated');
   }
 
-  static onDeleteCombatant() {
-    this.updateMiniCombatTracker();
+  static onDeleteCombatant(combat, deleteData, options, userId) {
+    this.removeCombatant(deleteData._id);
     this.logger.debug('Combatant deleted');
   }
 
-  static onRenderCombatTracker() {
+  static onRenderCombatTracker(combatTracker, html, data) {
     this.updateMiniCombatTracker();
     this.logger.debug('Combat tracker rendered');
   }
 
-  static onUpdateToken() {
-    this.updateMiniCombatTracker();
-    this.logger.debug('Combat tracker rendered');
+  static async onUpdateToken(token, updateData, options, userId) {
+    const combat = game.combats.active;
+    if (!combat) return;
+
+    const combatant = combat.combatants.find(c => c.token.id === token.id);
+    if (combatant) {
+      this.updateCombatant(combatant.id);
+    }
+    this.logger.debug(`Token updated: ${token.name}`);
   }
 
   static async handleControlButtonClick(event) {
@@ -474,7 +427,6 @@ class MiniCombatTracker {
     const combatant = combat.turns.find((c) => c.id === combatantId);
     if (combatant) {
       this.showRightClickDialog(combatant, event.pageX, event.pageY);
-      this.logger.debug(`Combatant right-clicked: ${combatant.name}`);
     }
   }
 
@@ -497,9 +449,7 @@ class MiniCombatTracker {
     }
 
     const dialogContent = this.createDialogContent(combatant);
-    const parentElement = $('#chat-controls-wrapper').length
-      ? $('#chat-controls-wrapper')
-      : $('#chat-controls').parent();
+    const parentElement = $('#chat-controls-wrapper').length ? $('#chat-controls-wrapper') : $('#chat-controls').parent();
     const dialog = $(dialogContent).hide().prependTo(parentElement);
 
     combatantElement.addClass('tcb-combatant-dialogmarker');
@@ -522,107 +472,6 @@ class MiniCombatTracker {
           dialog.remove();
           $(`.tcb-combatant-mini[data-combatant-id="${combatant.id}"]`).removeClass('tcb-combatant-dialogmarker');
         });
-        $(document).off('click.tcb-dialog');
-      }
-    });
-  }
-
-  static removeDialogEventListeners(dialog) {
-    dialog.off('.tcb-dialog');
-    $(document).off('.tcb-dialog-outside');
-  }
-
-  static createDialogContent(combatant) {
-    return `
-      <div class="tcb-right-click-dialog" data-combatant-id="${combatant.id}">
-        <div class="tcb-dialog-title">${game.i18n.localize('TRINIUMCB.OptionsFor')} ${combatant.name}</div>
-        ${this.createDialogSection('InitiativeActions', this.createInitiativeButtons())}
-        ${this.createDialogSection('VisibilityActions', this.createVisibilityButtons(combatant))}
-        ${this.createDialogSection('Disposition', this.createDispositionButtons(combatant))}
-      </div>
-    `;
-  }
-
-  static createDialogSection(titleKey, content) {
-    return `
-      <div class="tcb-dialog-section">
-        <div class="tcb-dialog-section-title">${game.i18n.localize(`TRINIUMCB.${titleKey}`)}</div>
-        <div class="tcb-dialog-flex">${content}</div>
-      </div>
-    `;
-  }
-
-  static createInitiativeButtons() {
-    return `
-      <button class="tcb-dialog-button" data-action="clear-initiative" title="${game.i18n.localize(
-        'TRINIUMCB.ClearInitiative'
-      )}">
-        <i class="fas fa-eraser"></i>
-      </button>
-      <button class="tcb-dialog-button" data-action="reroll-initiative" title="${game.i18n.localize(
-        'TRINIUMCB.RerollInitiative'
-      )}">
-        <i class="fas fa-dice-d20"></i>
-      </button>
-      <button class="tcb-dialog-button" data-action="set-initiative" title="${game.i18n.localize(
-        'TRINIUMCB.SetInitiative'
-      )}">
-        <i class="fas fa-input-numeric"></i>
-      </button>
-      <button class="tcb-dialog-button" data-action="set-turn" title="${game.i18n.localize('TRINIUMCB.SetCurrent')}">
-        <i class="fas fa-arrows-to-line"></i>
-      </button>
-    `;
-  }
-
-  static createVisibilityButtons(combatant) {
-    const hiddenClass = combatant.token.hidden ? 'tcb-button-active' : '';
-    const defeatedClass = combatant.defeated ? 'tcb-button-active' : '';
-
-    return `
-      <button class="tcb-dialog-button tcb-visibility-button ${hiddenClass}" data-action="toggle-visibility" title="${game.i18n.localize(
-      'TRINIUMCB.ToggleVisibility'
-    )}">
-        <i class="fas fa-eye-slash"></i>
-      </button>
-      <button class="tcb-dialog-button tcb-defeated-button ${defeatedClass}" data-action="toggle-defeated" title="${game.i18n.localize(
-      'TRINIUMCB.MarkDefeated'
-    )}">
-        <i class="fas fa-skull"></i>
-      </button>
-    `;
-  }
-
-  static createDispositionButtons(combatant) {
-    const dispositions = [
-      { value: 0, icon: 'meh', label: 'Neutral' },
-      { value: 1, icon: 'smile', label: 'Friendly' },
-      { value: -1, icon: 'frown', label: 'Enemy' },
-      { value: -2, icon: 'question-circle', label: 'Secret' },
-    ];
-
-    return dispositions
-      .map((d) => {
-        const activeClass = combatant.token.disposition === d.value ? 'tcb-button-active' : '';
-        return `
-        <button class="tcb-dialog-button tcb-disposition-button tcb-disposition-${
-          d.value
-        } ${activeClass}" data-action="set-disposition" data-disposition="${d.value}" title="${game.i18n.localize(
-          `TRINIUMCB.${d.label}`
-        )}">
-          <i class="fas fa-${d.icon}"></i>
-        </button>
-      `;
-      })
-      .join('');
-  }
-
-  static addDialogEventListeners(dialog, combatant) {
-    dialog.find('.tcb-dialog-button').on('click', (event) => this.handleDialogAction(event, combatant));
-
-    $(document).on('click.tcb-dialog', (event) => {
-      if (!$(event.target).closest('.tcb-right-click-dialog').length) {
-        dialog.slideUp(() => dialog.remove());
         $(document).off('click.tcb-dialog');
       }
     });
@@ -678,9 +527,7 @@ class MiniCombatTracker {
     return new Promise((resolve) => {
       const inputContainer = document.createElement('div');
       inputContainer.innerHTML = `
-        <input type="number" id="initiative-value" class="tcb-initiative-input" placeholder="${game.i18n.localize(
-          'TRINIUMCB.EnterInitiative'
-        )}">
+        <input type="number" id="initiative-value" class="tcb-initiative-input" placeholder="${game.i18n.localize('TRINIUMCB.EnterInitiative')}">
       `;
       inputContainer.className = 'tcb-initiative-input-container';
 
@@ -728,11 +575,100 @@ class MiniCombatTracker {
     const activeCombatant = combatTracker.find('.tcb-combatant-mini.tcb-combatant-active');
     if (activeCombatant.length) {
       const container = combatTracker.find('.tcb-combatants-mini');
-      const scrollPosition =
-        activeCombatant.position().left + container.scrollLeft() - container.width() / 2 + activeCombatant.width() / 2;
+      const scrollPosition = activeCombatant.position().left + container.scrollLeft() - container.width() / 2 + activeCombatant.width() / 2;
       container.scrollLeft(scrollPosition);
       this.logger.debug('Scrolled to active combatant.');
     }
+  }
+
+  static async updateCombatant(combatantId) {
+    const combatant = game.combat?.combatants.get(combatantId);
+    if (combatant) {
+      const combatTracker = $('#tcb-mini-combat-tracker');
+      const combatantElement = combatTracker.find(`.tcb-combatant-mini[data-combatant-id="${combatantId}"]`);
+      if (combatantElement.length) {
+        const { classes, displayName } = this.getCombatantDisplayInfo(combatant, game.combat, game.combat.current, combatant.turn, game.user.isGM);
+        combatantElement.attr('class', `tcb-combatant-mini ${classes}`);
+        combatantElement.find('.tcb-combatant-mini-name').text(displayName);
+        combatantElement.find('.tcb-combatant-mini-health').html(this.createHealthBar(combatant, game.user.isGM));
+        this.scrollToActiveCombatant(combatTracker);
+      }
+    }
+  }
+
+  static async removeCombatant(combatantId) {
+    const combatTracker = $('#tcb-mini-combat-tracker');
+    combatTracker.find(`.tcb-combatant-mini[data-combatant-id="${combatantId}"]`).remove();
+    this.scrollToActiveCombatant(combatTracker);
+  }
+
+  static createDialogContent(combatant) {
+    return `
+      <div class="tcb-right-click-dialog" data-combatant-id="${combatant.id}">
+        <div class="tcb-dialog-title">${game.i18n.localize('TRINIUMCB.OptionsFor')} ${combatant.name}</div>
+        ${this.createDialogSection('InitiativeActions', this.createInitiativeButtons())}
+        ${this.createDialogSection('VisibilityActions', this.createVisibilityButtons(combatant))}
+        ${this.createDialogSection('Disposition', this.createDispositionButtons(combatant))}
+      </div>
+    `;
+  }
+
+  static createDialogSection(titleKey, content) {
+    return `
+      <div class="tcb-dialog-section">
+        <div class="tcb-dialog-section-title">${game.i18n.localize(`TRINIUMCB.${titleKey}`)}</div>
+        <div class="tcb-dialog-flex">${content}</div>
+      </div>
+    `;
+  }
+
+  static createInitiativeButtons() {
+    return `
+      <button class="tcb-dialog-button" data-action="clear-initiative" title="${game.i18n.localize('TRINIUMCB.ClearInitiative')}">
+        <i class="fas fa-eraser"></i>
+      </button>
+      <button class="tcb-dialog-button" data-action="reroll-initiative" title="${game.i18n.localize('TRINIUMCB.RerollInitiative')}">
+        <i class="fas fa-dice-d20"></i>
+      </button>
+      <button class="tcb-dialog-button" data-action="set-initiative" title="${game.i18n.localize('TRINIUMCB.SetInitiative')}">
+        <i class="fas fa-input-numeric"></i>
+      </button>
+      <button class="tcb-dialog-button" data-action="set-turn" title="${game.i18n.localize('TRINIUMCB.SetCurrent')}">
+        <i class="fas fa-arrows-to-line"></i>
+      </button>
+    `;
+  }
+
+  static createVisibilityButtons(combatant) {
+    const hiddenClass = combatant.token.hidden ? 'tcb-button-active' : '';
+    const defeatedClass = combatant.defeated ? 'tcb-button-active' : '';
+
+    return `
+      <button class="tcb-dialog-button tcb-visibility-button ${hiddenClass}" data-action="toggle-visibility" title="${game.i18n.localize('TRINIUMCB.ToggleVisibility')}">
+        <i class="fas fa-eye-slash"></i>
+      </button>
+      <button class="tcb-dialog-button tcb-defeated-button ${defeatedClass}" data-action="toggle-defeated" title="${game.i18n.localize('TRINIUMCB.MarkDefeated')}">
+        <i class="fas fa-skull"></i>
+      </button>
+    `;
+  }
+
+  static createDispositionButtons(combatant) {
+    const dispositions = [
+      { value: 0, icon: 'meh', label: 'Neutral' },
+      { value: 1, icon: 'smile', label: 'Friendly' },
+      { value: -1, icon: 'frown', label: 'Enemy' },
+      { value: -2, icon: 'question-circle', label: 'Secret' },
+    ];
+
+    return dispositions.map((d) => {
+      const activeClass = combatant.token.disposition === d.value ? 'tcb-button-active' : '';
+      return `
+        <button class="tcb-dialog-button tcb-disposition-button tcb-disposition-${d.value} ${activeClass}" data-action="set-disposition" data-disposition="${d.value}" title="${game.i18n.localize(`TRINIUMCB.${d.label}`)}">
+          <i class="fas fa-${d.icon}"></i>
+        </button>
+      `;
+    }).join('');
   }
 }
 
