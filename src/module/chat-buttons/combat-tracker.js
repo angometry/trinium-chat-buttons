@@ -400,7 +400,6 @@ class MiniCombatTracker {
     const token = canvas.tokens.get(tokenId);
     if (token) {
       token.control({ releaseOthers: true });
-      this.logger.debug(`Combatant clicked: ${token.name}`);
     }
   }
 
@@ -409,7 +408,6 @@ class MiniCombatTracker {
     const token = canvas.tokens.get(tokenId);
     if (token) {
       event.type === 'mouseenter' ? token._onHoverIn(event) : token._onHoverOut(event);
-      this.logger.debug(`Combatant hover ${event.type === 'mouseenter' ? 'in' : 'out'}: ${token.name}`);
     }
   }
 
@@ -419,7 +417,6 @@ class MiniCombatTracker {
     const combatant = combat.turns.find((c) => c.id === combatantId);
     if (combatant && combatant.actor?.sheet) {
       combatant.actor.sheet.render(true);
-      this.logger.debug(`Combatant double-clicked: ${combatant.name}`);
     }
   }
 
@@ -430,7 +427,6 @@ class MiniCombatTracker {
     const combatant = combat.turns.find((c) => c.id === combatantId);
     if (combatant) {
       this.showRightClickDialog(combatant, event.pageX, event.pageY);
-      this.logger.debug(`Combatant right-clicked: ${combatant.name}`);
     }
   }
 
