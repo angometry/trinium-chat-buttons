@@ -1,0 +1,69 @@
+name: Create Draft Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Get the version
+      id: get_version
+      run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+    - name: Create ZIP file
+      run: zip -r module.zip . -x '*.git*'
+
+    - name: Parse Changelog
+      id: changelog
+      uses: ocavue/changelog-parser-action@v1.2.0
+      with:
+        removeMarkdown: false
+
+    - name: Update module.json
+      run: |
+        sed -i 's|"version": "[^"]*"|"version": "${{ steps.get_version.outputs.VERSION }}"|' module.json
+        sed -i 's|"download": "[^"]*"|"download": "https://github.com/${{ github.repository }}/releases/download/${{ steps.get_version.outputs.VERSION }}/module.zip"|' module.json
+        sed -i 's|"manifest": "[^"]*"|"manifest": "https://github.com/${{ github.repository }}/releases/latest/download/module.json"|' module.json
+
+    - name: Generate Release Notes
+      id: generate_notes
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        RELEASE_NOTES=$(gh release view --notes ${{ steps.get_version.outputs.VERSION }} 2>/dev/null || gh release view --notes ${{ steps.get_version.outputs.VERSION }}^ 2>/dev/null || echo "")
+        echo "RELEASE_NOTES<<EOF" >> $GITHUB_OUTPUT
+        echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Create Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        CHANGELOG_ENTRY="${{ steps.changelog.outputs.latestBody }}"
+        if [ -z "$CHANGELOG_ENTRY" ]; then
+          CHANGELOG_ENTRY="No specific changelog entry found for this version. Please check the full CHANGELOG.md for details."
+        fi
+        RELEASE_NOTES="${{ steps.generate_notes.outputs.RELEASE_NOTES }}"
+        FULL_NOTES="$CHANGELOG_ENTRY
+
+        ## Auto-generated release notes
+        $RELEASE_NOTES"
+        gh release create ${{ steps.get_version.outputs.VERSION }} \
+          --draft \
+          --title "Release ${{ steps.get_version.outputs.VERSION }}" \
+          --notes "$FULL_NOTES"
+
+    - name: Upload Release Assets
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        gh release upload ${{ steps.get_version.outputs.VERSION }} module.json module.zip

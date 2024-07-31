@@ -1,3 +1,7 @@
+## v1.5.4
+
+Attempt at auto releases.
+
 ## v1.5.3
 
 This release mostly addresses a username change from TheDarkTongo to angometry, which is what I use nowadays on other platforms.
