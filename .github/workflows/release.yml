@@ -19,6 +19,12 @@ jobs:
       id: get_version
       run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
 
+    - name: Update module.json
+      run: |
+        sed -i 's|"version": "[^"]*"|"version": "${{ steps.get_version.outputs.VERSION }}"|' module.json
+        sed -i 's|"download": "[^"]*"|"download": "https://github.com/${{ github.repository }}/releases/download/${{ steps.get_version.outputs.VERSION }}/module.zip"|' module.json
+        sed -i 's|"manifest": "[^"]*"|"manifest": "https://github.com/${{ github.repository }}/releases/latest/download/module.json"|' module.json
+
     - name: Create ZIP file
       run: zip -r module.zip . -x '*.git*'
 
@@ -27,12 +33,6 @@ jobs:
       uses: ocavue/changelog-parser-action@v1.2.0
       with:
         removeMarkdown: false
-
-    - name: Update module.json
-      run: |
-        sed -i 's|"version": "[^"]*"|"version": "${{ steps.get_version.outputs.VERSION }}"|' module.json
-        sed -i 's|"download": "[^"]*"|"download": "https://github.com/${{ github.repository }}/releases/download/${{ steps.get_version.outputs.VERSION }}/module.zip"|' module.json
-        sed -i 's|"manifest": "[^"]*"|"manifest": "https://github.com/${{ github.repository }}/releases/latest/download/module.json"|' module.json
 
     - name: Generate Release Notes
       id: generate_notes
