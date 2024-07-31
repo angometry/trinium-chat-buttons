@@ -1,4 +1,4 @@
-name: Create Draft Release
+name: Create Release
 
 on:
   push:
@@ -34,15 +34,9 @@ jobs:
       with:
         removeMarkdown: false
 
-    - name: Generate Release Notes
-      id: generate_notes
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        RELEASE_NOTES=$(gh release view --notes ${{ steps.get_version.outputs.VERSION }} 2>/dev/null || gh release view --notes ${{ steps.get_version.outputs.VERSION }}^ 2>/dev/null || echo "")
-        echo "RELEASE_NOTES<<EOF" >> $GITHUB_OUTPUT
-        echo "$RELEASE_NOTES" >> $GITHUB_OUTPUT
-        echo "EOF" >> $GITHUB_OUTPUT
+    - name: Get previous tag
+      id: previoustag
+      run: echo "PREVIOUS_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo '')" >> $GITHUB_OUTPUT
 
     - name: Create Release
       env:
@@ -52,13 +46,16 @@ jobs:
         if [ -z "$CHANGELOG_ENTRY" ]; then
           CHANGELOG_ENTRY="No specific changelog entry found for this version. Please check the full CHANGELOG.md for details."
         fi
-        RELEASE_NOTES="${{ steps.generate_notes.outputs.RELEASE_NOTES }}"
+        PREVIOUS_TAG="${{ steps.previoustag.outputs.PREVIOUS_TAG }}"
+        if [ -n "$PREVIOUS_TAG" ]; then
+          COMPARE_LINK="**Full Changelog**: https://github.com/${{ github.repository }}/compare/$PREVIOUS_TAG...${{ steps.get_version.outputs.VERSION }}"
+        else
+          COMPARE_LINK="**Full Changelog**: https://github.com/${{ github.repository }}/commits/${{ steps.get_version.outputs.VERSION }}"
+        fi
         FULL_NOTES="$CHANGELOG_ENTRY
 
-        ## Auto-generated release notes
-        $RELEASE_NOTES"
+        $COMPARE_LINK"
         gh release create ${{ steps.get_version.outputs.VERSION }} \
-          --draft \
           --title "Release ${{ steps.get_version.outputs.VERSION }}" \
           --notes "$FULL_NOTES"
 
