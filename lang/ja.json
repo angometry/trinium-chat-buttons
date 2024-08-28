@@ -11,10 +11,10 @@
     "ToggleMidiDisadvantage": "MidiQOL不利切り替え",
 
     "PrivacyButtonsHeader": "プライバシーボタン",
-    "MidiButtonsPollingHeader": "MIDI Buttons + Polling",
+    "MidiButtonsPollingHeader": "MIDIボタン + 投票",
     "CombatTrackerHeader": "戦闘トラッカー",
     "DebugHeader": "その他の設定",
-    "GMScreenHeader": "GM Screen（More settings are configurable from the GM screen itself）",
+    "GMScreenHeader": "GM Screen（GM Screen自体に更なるコンフィグ設定があります）",
 
     "UpdateCombatant": "戦闘参加者を更新",
     "RemoveCombatant": "戦闘参加者を取り除く",
@@ -52,9 +52,9 @@
     "Enemy": "敵対的",
     "Secret": "秘匿",
     "Disposition": "Disposition Actions",
-    "InitiativeActions": "Initiative Actions",
-    "VisibilityActions": "Visibility Actions",
-    "InputInitiative": "Input Initiative"
+    "InitiativeActions": "イニシアチブ・アクション",
+    "VisibilityActions": "視認性アクション",
+    "InputInitiative": "イニシアチブ入力"
   },
   "TCB_GMSCREEN": {
     "Tab1": "タブ 1",
