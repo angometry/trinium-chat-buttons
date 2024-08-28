@@ -51,7 +51,7 @@
     "Friendly": "友好的",
     "Enemy": "敵対的",
     "Secret": "秘匿",
-    "Disposition": "Disposition Actions",
+    "Disposition": "Dispositionアクション",
     "InitiativeActions": "イニシアチブ・アクション",
     "VisibilityActions": "視認性アクション",
     "InputInitiative": "イニシアチブ入力"
@@ -157,14 +157,14 @@
     "LeftSideMode": "左側モード",
     "RightSideMode": "右側モード",
     "BottomMode": "下段モード",
-    "GMScreenLeftMargin": "左詰め（下段モード）",
+    "GMScreenLeftMargin": "左余白（下段モード）",
     "GMScreenLeftMarginHint": "Set the left margin of the GM Screen in bottom mode (in pixels)",
-    "GMScreenRightMargin": "Right Margin (Bottom Mode)",
+    "GMScreenRightMargin": "右余白（下段モード）",
     "GMScreenRightMarginHint": "Set the right margin of the GM Screen in bottom mode (in pixels)",
     "ExpandBottomMode": "Expand Screen in Bottom Mode",
     "ExpandBottomModeHint": "Enable to ignore the Default Column Width settings in Bottom Mode, expanding to fill all available horizontal space instead. Individual Column Width settings will still be respected.",
-    "GMScreenLayout": "GM Screen Layout",
+    "GMScreenLayout": "GM Screenレアウト",
     "GMScreenLayoutHint": "Configure the layout of the GM Screen",
-    "GMScreenDefaultTabs": "Default Tabs"
+    "GMScreenDefaultTabs": "デフォルトタブ"
   }
 }
