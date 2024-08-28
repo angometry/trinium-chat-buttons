@@ -5,15 +5,15 @@
     "SelfRoll": "自分だけロール",
     "BlindRoll": "GMだけ公開ロール",
 
-    "ToggleMidiFastForward": "MidiQOL早回し切り替え",
-    "ToggleMidiRoll": "MidiQOL自動ロール + D20早回し切り替え",
+    "ToggleMidiFastForward": "MidiQOL早送り切り替え",
+    "ToggleMidiRoll": "MidiQOL自動ロール + D20早送り切り替え",
     "ToggleMidiAdvantage": "MidiQOL有利切り替え",
     "ToggleMidiDisadvantage": "MidiQOL不利切り替え",
 
     "PrivacyButtonsHeader": "プライバシーボタン",
     "MidiButtonsPollingHeader": "MIDI Buttons + Polling",
     "CombatTrackerHeader": "戦闘トラッカー",
-    "DebugHeader": "Misc Settings",
+    "DebugHeader": "その他の設定",
     "GMScreenHeader": "GM Screen（More settings are configurable from the GM screen itself）",
 
     "UpdateCombatant": "戦闘参加者を更新",
