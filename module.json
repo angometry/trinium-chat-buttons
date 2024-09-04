@@ -19,6 +19,12 @@
       "flags": {}
     },
     {
+      "lang": "fr",
+      "name": "French",
+      "path": "lang/fr.json",
+      "flags": {}
+    },
+    {
       "lang": "ja",
       "name": "日本語",
       "path": "lang/ja.json",
