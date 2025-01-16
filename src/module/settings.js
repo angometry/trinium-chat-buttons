@@ -2,6 +2,7 @@ import { GM_SCREEN_PRESETS } from '../templates/gm-screen-presets.js';
 
 export const SETTINGS = {
   MODULE_NAME: 'trinium-chat-buttons',
+  WINDOW_MODULE_NAME: 'triniumChatButtons',
 
   PRIVACY_VISIBILITY: 'privacyButtonVisibility',
   MIDI_BUTTON_VISIBILITY: 'midiButtonVisibility',

@@ -96,7 +96,9 @@
     "ActionCancelled": "Content import aborted",
     "UnsupportedContentType": "This type of content cannot be imported this way. You may try inserting it manually via UUID",
     "FailedToInsertContent": "Failed to insert content.",
-    "EditorSaved": "Successfully saved content to tab"
+    "EditorSaved": "Successfully saved content to tab",
+    "ShowMore": "Show More",
+    "LoadMore": "Load More"
   
   },
   "TCB_SETTINGS": {
