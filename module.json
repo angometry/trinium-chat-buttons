@@ -20,8 +20,14 @@
     },
     {
       "lang": "fr",
-      "name": "French",
+      "name": "Français",
       "path": "lang/fr.json",
+      "flags": {}
+    },
+    {
+      "lang": "ja",
+      "name": "日本語",
+      "path": "lang/ja.json",
       "flags": {}
     }
   ],
