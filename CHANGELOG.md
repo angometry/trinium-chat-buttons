@@ -1,4 +1,11 @@
+## v1.6.1
+
+- Fixed module version in module.json, oops.
+
 ## v1.6.0
+
+I apologize for the delay. I've been dealing with some personal issues and had to pause development for a while. This update is mostly a quick fix to various issues.
+Now that I have more time, I plan to split the module into multiple and reimplement everything properly, also addressing some feature requests.
 
 ### New Features
 
