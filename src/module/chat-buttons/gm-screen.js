@@ -90,6 +90,9 @@ class GMScreen {
       return;
     }
 
+    window[SETTINGS.WINDOW_MODULE_NAME] = {
+      toggleGMScreen: this.toggleGMScreen.bind(this)
+    }
     const gmScreenBtn = $(`<a class="tcb-gm-screen-button" title="${game.i18n.localize('TCB_GMSCREEN.ToggleGMScreen')}">
       <i class="fas fa-book-open"></i>
     </a>`);
