@@ -1,3 +1,26 @@
+## v1.6.0
+
+### New Features
+
+- Added keybinding to toggle GM Screen via macro and keyboard shortcut (default 'G') (thanks @4m2c4bl3!), closes #10, fixes #24
+- Added setting to allow players to edit their own initiative, closes #9
+- Added setting to control player health visibility to other players, closes #20
+
+### Localization
+
+- Added Japanese localization (thanks @doumoku!), fixes #18
+- Added French localization (thanks @Mystery-Man-From-Ouperspace!), fixes #12
+
+### Improvements
+
+- Improved CSS layout and compatibility with other modules, closes #17, fixes #13
+- Added guards for systems without health bars or different health structures to prevent combat tracker errors
+- Enhanced active combatant highlighting in mini-tracker for better visibility, closes #19
+
+### Bug Fixes
+
+- Fixed MIDI-QOL button compatibility by disabling for versions 12.x and above, closes #22
+
 ## v1.5.4
 
 Attempt at auto releases.

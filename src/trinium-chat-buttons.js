@@ -1,10 +1,11 @@
-import { SETTINGS, registerSettings, registerGMScreenSettings } from './module/settings.js';
+import { SETTINGS, registerSettings, registerGMScreenSettings, registerKeybindings } from './module/settings.js';
 import { TriniumLogger } from './module/logger.js';
 
 class TriniumChatButtonsInit {
   static init() {
     registerSettings();
     registerGMScreenSettings();
+    registerKeybindings();
 
     this.logger = new TriniumLogger(SETTINGS.MODULE_NAME);
     this.addSettingsHeaders();
@@ -54,7 +55,12 @@ Hooks.once('init', () => {
     import('./module/chat-buttons/roll-privacy.js').then((module) => module.init());
   }
 
-  if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_MIDI_BUTTONS) && game.modules.get('midi-qol')?.active) {
+  const midiModule = game.modules.get('midi-qol');
+  const isMidiCompatible = midiModule?.active && 
+    !midiModule.version.startsWith('12.') && 
+    !midiModule.version.startsWith('13.');
+
+  if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_MIDI_BUTTONS) && isMidiCompatible) {
     import('./module/chat-buttons/midi.js').then((module) => module.init());
   }
 

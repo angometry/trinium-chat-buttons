@@ -98,8 +98,9 @@
     "FailedToInsertContent": "Failed to insert content.",
     "EditorSaved": "Successfully saved content to tab",
     "ShowMore": "Show More",
-    "LoadMore": "Load More"
-  
+    "LoadMore": "Load More",
+    "ToggleGMScreenHint": "Toggle the GM Screen visibility (GM Only)",
+    "DisabledWarning": "GM Screen is currently disabled in module settings"
   },
   "TCB_SETTINGS": {
     "PrivacyButtonVisibility": "Privacy Button Visibility",
@@ -167,6 +168,10 @@
     "ExpandBottomModeHint": "Enable to ignore the Default Column Width settings in Bottom Mode, expanding to fill all available horizontal space instead. Individual Column Width settings will still be respected.",
     "GMScreenLayout": "GM Screen Layout",
     "GMScreenLayoutHint": "Configure the layout of the GM Screen",
-    "GMScreenDefaultTabs": "Default Tabs"
+    "GMScreenDefaultTabs": "Default Tabs",
+    "PlayerHealthPrivacy": "Show PC Health to Other Players",
+    "PlayerHealthPrivacyHint": "Select how much info about other players' health that players can see",
+    "AllowPlayerInitiativeEdit": "Allow Players to Edit Own Initiative",
+    "AllowPlayerInitiativeEditHint": "If enabled, players can edit the initiative value for their own characters in combat"
   }
 }

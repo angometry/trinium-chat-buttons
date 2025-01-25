@@ -10,6 +10,7 @@ export const SETTINGS = {
   POLLING_RATE: 'pollingRate',
   COMBAT_TRACKER_VISIBILITY: 'combatTrackerButtonVisibility',
   HEALTH_PRIVACY: 'healthPrivacy',
+  PLAYER_HEALTH_PRIVACY: 'playerHealthPrivacy',
   LOG_LEVEL: 'logLevel',
   ENABLE_CSS_TWEAKS: 'enableCSSTweaks',
   ENABLE_PRIVACY_BUTTONS: 'enablePrivacyButtons',
@@ -44,6 +45,7 @@ export const SETTINGS = {
   EXPAND_BOTTOM_MODE: 'expandBottomMode',
   GM_SCREEN_LAYOUT: 'gmScreenLayout',
   GM_SCREEN_DEFAULT_TABS: 'gmScreenDefaultTabs',
+  ALLOW_PLAYER_INITIATIVE_EDIT: 'allowPlayerInitiativeEdit',
 };
 
 export const DEFAULT_COLUMN = {
@@ -351,6 +353,20 @@ export function registerSettings() {
     default: 'nothing',
   });
 
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.PLAYER_HEALTH_PRIVACY, {
+    name: game.i18n.localize('TCB_SETTINGS.PlayerHealthPrivacy'),
+    hint: game.i18n.localize('TCB_SETTINGS.PlayerHealthPrivacyHint'),
+    scope: 'world',
+    config: true,
+    type: String,
+    choices: {
+      all: game.i18n.localize('TCB_SETTINGS.HealthPrivacyAll'),
+      healthbar: game.i18n.localize('TCB_SETTINGS.HealthPrivacyHealthbar'),
+      nothing: game.i18n.localize('TCB_SETTINGS.HealthPrivacyNothing'),
+    },
+    default: 'all',
+  });
+
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ONLY_SHOW_TURN_CONTROLS, {
     name: game.i18n.localize('TCB_SETTINGS.OnlyShowTurnControls'),
     hint: game.i18n.localize('TCB_SETTINGS.OnlyShowTurnControlsHint'),
@@ -391,5 +407,39 @@ export function registerSettings() {
       error: game.i18n.localize('TCB_SETTINGS.LogLevelError'),
     },
     default: 'warn',
+  });
+
+  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ALLOW_PLAYER_INITIATIVE_EDIT, {
+    name: game.i18n.localize('TCB_SETTINGS.AllowPlayerInitiativeEdit'),
+    hint: game.i18n.localize('TCB_SETTINGS.AllowPlayerInitiativeEditHint'),
+    scope: 'world',
+    config: true,
+    type: Boolean,
+    default: false,
+  });
+}
+
+export function registerKeybindings() {
+  game.keybindings.register(SETTINGS.MODULE_NAME, "toggleGMScreen", {
+    name: "TCB_GMSCREEN.ToggleGMScreen",
+    hint: "TCB_GMSCREEN.ToggleGMScreenHint",
+    editable: [
+      {
+        key: "KeyG",
+      }
+    ],
+    restricted: true,
+    onDown: () => {
+      // Check if GM Screen is enabled in settings
+      if (!game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_GM_SCREEN)) {
+        ui.notifications.warn(game.i18n.localize("TCB_GMSCREEN.DisabledWarning"));
+        return;
+      }
+      // Get the window object and call toggleGMScreen
+      if (window[SETTINGS.WINDOW_MODULE_NAME]) {
+        window[SETTINGS.WINDOW_MODULE_NAME].toggleGMScreen();
+      }
+    },
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   });
 }

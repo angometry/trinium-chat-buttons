@@ -53,12 +53,12 @@ class MiniCombatTracker {
       .on('click.tcb-combat', '#tcb-mini-combat-tracker .tcb-combat-controls-mini button', this.handleControlButtonClick.bind(this))
       .on('click.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', this.handleCombatantClick.bind(this))
       .on('dblclick.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', this.handleCombatantDoubleClick.bind(this))
-      .on('mouseenter.tcb-combat mouseleave.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', this.handleCombatantHover.bind(this));
+      .on('mouseenter.tcb-combat mouseleave.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', this.handleCombatantHover.bind(this))
+      .on('click.tcb-combat', '#tcb-mini-combat-tracker .tcb-initiative-editable', this.handleInitiativeClick.bind(this));
 
     if (game.user.isGM) {
       $(document)
         .on('contextmenu.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini', this.handleCombatantRightClick.bind(this))
-        .on('click.tcb-combat', '#tcb-mini-combat-tracker .tcb-combatant-mini-initiative', this.handleInitiativeClick.bind(this))
         .on('click.tcb-combat', '#tcb-create-combat', this.createNewCombat.bind(this))
         .on('click.tcb-combat', '#tcb-start-combat', () => this.startCombat(game.combats.active));
     }
@@ -186,6 +186,9 @@ class MiniCombatTracker {
     return combat.setupTurns().map((c, index) => {
       const { classes, displayName } = this.getCombatantDisplayInfo(c, combat, currentTurn, index, isGM);
       const healthBar = this.createHealthBar(c, isGM);
+      const canEditInitiative = isGM || 
+        (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ALLOW_PLAYER_INITIATIVE_EDIT) && 
+         c.actor?.isOwner);
 
       if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.STYLE_FOUNDRY_COMBAT_TRACKER)) {
         this.applyClassesToFoundryTracker(c.id, classes, displayName);
@@ -193,7 +196,9 @@ class MiniCombatTracker {
 
       return `
         <div class="tcb-combatant-mini ${classes}" data-combatant-id="${c.id}" data-token-id="${c.token.id}">
-          <div class="tcb-combatant-mini-initiative" data-action="promptInitiative">
+          <div class="tcb-combatant-mini-initiative ${canEditInitiative ? 'tcb-initiative-editable' : ''}" 
+               data-action="promptInitiative" 
+               title="${canEditInitiative ? game.i18n.localize('TRINIUMCB.InputInitiative') : ''}">
             ${c.initiative !== null ? c.initiative : '-'}
           </div>
           <div class="tcb-combatant-mini-name">${displayName}</div>
@@ -247,22 +252,46 @@ class MiniCombatTracker {
   }
 
   static createHealthBar(combatant, isGM) {
-    if (!combatant.actor.system.attributes.hp.value || !combatant.actor.system.attributes.hp.max) {
+    if (!combatant.actor?.system) {
       return '';
     }
+
+    const hp = combatant.actor.system.attributes?.hp || 
+               combatant.actor.system.health?.value || 
+               combatant.actor.system.hp;
+               
+    if (!hp?.value || !hp?.max) {
+      return '';
+    }
+
     const healthPrivacy = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.HEALTH_PRIVACY);
-    const hpPercent = combatant.actor.system.attributes.hp.value / combatant.actor.system.attributes.hp.max;
-    const displayHP = `${combatant.actor.system.attributes.hp.value} / ${combatant.actor.system.attributes.hp.max}`;
+    const playerHealthPrivacy = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.PLAYER_HEALTH_PRIVACY);
+    const hpPercent = hp.value / hp.max;
+    const displayHP = `${hp.value} / ${hp.max}`;
     const hpColor = `rgba(${Math.round(255 - hpPercent * 200)}, ${Math.round(hpPercent * 200)}, 0, 1)`;
 
-    if (!combatant.isNPC && !isGM) {
+    if (isGM) {
       return this.createFullHealthBar(hpPercent, hpColor, displayHP);
-    } else if (healthPrivacy === 'healthbar' && !isGM && !combatant.token.hidden) {
+    }
+
+    if (!combatant.isNPC && combatant.actor.isOwner) {
+      return this.createFullHealthBar(hpPercent, hpColor, displayHP);
+    }
+
+    if (!combatant.isNPC) {
+      if (playerHealthPrivacy === 'all') {
+        return this.createFullHealthBar(hpPercent, hpColor, displayHP);
+      } else if (playerHealthPrivacy === 'healthbar' && !combatant.token.hidden) {
+        return this.createHealthBarOnly(hpPercent, hpColor);
+      } else {
+        return '';
+      }
+    }
+
+    if (healthPrivacy === 'all' && !combatant.token.hidden) {
+      return this.createFullHealthBar(hpPercent, hpColor, displayHP);
+    } else if (healthPrivacy === 'healthbar' && !combatant.token.hidden) {
       return this.createHealthBarOnly(hpPercent, hpColor);
-    } else if (healthPrivacy === 'all' && !isGM && !combatant.token.hidden) {
-      return this.createFullHealthBar(hpPercent, hpColor, displayHP);
-    } else if (isGM) {
-      return this.createFullHealthBar(hpPercent, hpColor, displayHP);
     } else {
       return '';
     }
@@ -388,6 +417,13 @@ class MiniCombatTracker {
 
     const combatant = combat.combatants.get(combatantId);
     if (!combatant) return;
+
+    // Check if user has permission to edit initiative
+    const canEditInitiative = game.user.isGM || 
+      (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ALLOW_PLAYER_INITIATIVE_EDIT) && 
+       combatant.actor?.isOwner);
+
+    if (!canEditInitiative) return;
 
     const newInitiative = await this.promptForInitiative();
     if (newInitiative !== null) {
