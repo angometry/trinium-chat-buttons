@@ -45,7 +45,7 @@
     "src/utils/journal-entry-renderer.js",
     "src/utils/notification.js",
     "src/module/chat-buttons/gm-screen.js",
-    "src/module/chat-buttons/midi.js",
+
     "src/module/chat-buttons/combat-tracker.js",
     "src/module/chat-buttons/utility.js",
     

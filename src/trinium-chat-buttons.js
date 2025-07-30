@@ -17,7 +17,7 @@ class TriniumChatButtonsInit {
       const chatControls = $(html).find('.chat-controls');
       if (chatControls.length && !chatControls.parent().hasClass('chat-controls-wrapper')) {
         chatControls.wrap('<div class="chat-controls-wrapper"></div>');
-        chatControls.parent().append('<div id="tcb-midi-controls"></div>');
+
       }
     });
   }
@@ -28,11 +28,6 @@ class TriniumChatButtonsInit {
         .addClass('form-group group-header trinium-settings-header')
         .html(game.i18n.localize('TRINIUMCB.GMScreenHeader'))
         .insertBefore($('[name="trinium-chat-buttons.enableGMScreen"]').closest('div.form-group'));
-
-      $('<div>')
-        .addClass('form-group group-header trinium-settings-header')
-        .html(game.i18n.localize('TRINIUMCB.MidiButtonsPollingHeader'))
-        .insertBefore($('[name="trinium-chat-buttons.enableMidiButtons"]').closest('div.form-group'));
       $('<div>')
         .addClass('form-group group-header trinium-settings-header')
         .html(game.i18n.localize('TRINIUMCB.CombatTrackerHeader'))
@@ -47,15 +42,6 @@ class TriniumChatButtonsInit {
 
 Hooks.once('init', () => {
   TriniumChatButtonsInit.init();
-
-  const midiModule = game.modules.get('midi-qol');
-  const isMidiCompatible = midiModule?.active && 
-    !midiModule.version.startsWith('12.') && 
-    !midiModule.version.startsWith('13.');
-
-  if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_MIDI_BUTTONS) && isMidiCompatible) {
-    import('./module/chat-buttons/midi.js').then((module) => module.init());
-  }
 
   if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_GM_SCREEN)) {
     import('./module/chat-buttons/gm-screen.js').then((module) => module.init());

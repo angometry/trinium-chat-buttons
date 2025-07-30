@@ -4,17 +4,11 @@ export const SETTINGS = {
   MODULE_NAME: 'trinium-chat-buttons',
   WINDOW_MODULE_NAME: 'triniumChatButtons',
 
-
-  MIDI_BUTTON_VISIBILITY: 'midiButtonVisibility',
-  ENABLE_POLLING: 'enablePolling',
-  POLLING_RATE: 'pollingRate',
   COMBAT_TRACKER_VISIBILITY: 'combatTrackerButtonVisibility',
   HEALTH_PRIVACY: 'healthPrivacy',
   PLAYER_HEALTH_PRIVACY: 'playerHealthPrivacy',
   LOG_LEVEL: 'logLevel',
   ENABLE_CSS_TWEAKS: 'enableCSSTweaks',
-
-  ENABLE_MIDI_BUTTONS: 'enableMidiButtons',
   ENABLE_COMBAT_TRACKER_BUTTONS: 'enableCombatTrackerButtons',
   ONLY_SHOW_TURN_CONTROLS: 'onlyShowTurnControls',
   STYLE_FOUNDRY_COMBAT_TRACKER: 'styleFoundryCombatTracker',
@@ -252,47 +246,6 @@ export function registerGMScreenSettings() {
 }
 
 export function registerSettings() {
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_MIDI_BUTTONS, {
-    name: game.i18n.localize('TCB_SETTINGS.EnableMidiButtons'),
-    hint: game.i18n.localize('TCB_SETTINGS.EnableMidiButtonsHint'),
-    scope: 'world',
-    config: true,
-    type: Boolean,
-    default: true,
-  });
-
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.MIDI_BUTTON_VISIBILITY, {
-    name: game.i18n.localize('TCB_SETTINGS.MidiButtonVisibility'),
-    hint: game.i18n.localize('TCB_SETTINGS.MidiButtonVisibilityHint'),
-    scope: 'world',
-    config: true,
-    type: String,
-    choices: {
-      gm: game.i18n.localize('TCB_SETTINGS.GMOnly'),
-      players: game.i18n.localize('TCB_SETTINGS.PlayersOnly'),
-      everyone: game.i18n.localize('TCB_SETTINGS.Everyone'),
-    },
-    default: 'gm',
-  });
-
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_POLLING, {
-    name: game.i18n.localize('TCB_SETTINGS.EnablePolling'),
-    hint: game.i18n.localize('TCB_SETTINGS.EnablePollingHint'),
-    scope: 'world',
-    config: true,
-    type: Boolean,
-    default: true,
-  });
-
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.POLLING_RATE, {
-    name: game.i18n.localize('TCB_SETTINGS.PollingRate'),
-    hint: game.i18n.localize('TCB_SETTINGS.PollingRateHint'),
-    scope: 'world',
-    config: true,
-    type: Number,
-    default: 150,
-  });
-
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_COMBAT_TRACKER_BUTTONS, {
     name: game.i18n.localize('TCB_SETTINGS.EnableCombatTrackerButtons'),
     hint: game.i18n.localize('TCB_SETTINGS.EnableCombatTrackerButtonsHint'),

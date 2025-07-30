@@ -25,16 +25,6 @@
   flex: 0 0 auto;
 }
 
-#tcb-midi-button-groups {
-  width: 100%;
-}
-
-#tcb-midi-buttons {
-  height: 24px;
-  gap: 4px;
-  margin-bottom: 5px;
-}
-
 #tcb-combat-tracker-button-groups {
   height: 24px;
   width: 100%;
@@ -68,22 +58,6 @@
   border-color: black;
 }
 
-/* Midi buttons */
-#tcb-midi-buttons .tcb-button {
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: 1px solid black;
-}
-
-#tcb-midi-buttons .tcb-button:hover {
-  color: white;
-  box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-#tcb-midi-buttons .tcb-button.tcb-active {
-  color: black;
-}
-
 #tcb-combat-tracker-toggle {
   flex: 0 0 60%;
 }
@@ -106,22 +80,6 @@
 #tcb-control-icons .tcb-button:hover {
   text-shadow: 0 0 10px rgb(255 255 255 / 50%);
   box-shadow: none;
-}
-
-#tcb-midi-fast-forward-toggle.tcb-active {
-  background-color: #ff551f;
-}
-
-#tcb-midi-roll-toggle.tcb-active {
-  background-color: #ffe922;
-}
-
-#tcb-midi-advantage-toggle.tcb-active {
-  background-color: #88ff28;
-}
-
-#tcb-midi-disadvantage-toggle.tcb-active {
-  background-color: #ff3c2d;
 }
 
 #tcb-combat-tracker-toggle.tcb-active {
