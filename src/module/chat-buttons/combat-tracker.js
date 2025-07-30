@@ -80,7 +80,7 @@ class MiniCombatTracker {
 
   static createCombatTrackerToggleButton() {
     return $(`
-      <button class="tcb-button" id="tcb-combat-tracker-toggle" title="${game.i18n.localize('TRINIUMCB.ToggleCombatTracker')}">
+      <button type="button" class="tcb-button" id="tcb-combat-tracker-toggle" title="${game.i18n.localize('TRINIUMCB.ToggleCombatTracker')}">
         <i class="fas fa-fist-raised"></i> ${game.i18n.localize('TRINIUMCB.MiniTracker')}
       </button>
     `);
@@ -305,19 +305,19 @@ class MiniCombatTracker {
     if (isGM) {
       return `
         <div class="tcb-combat-controls-mini">
-          <button data-control="previousRound" title="${game.i18n.localize('TRINIUMCB.PreviousRound')}">
+          <button type="button" data-control="previousRound" title="${game.i18n.localize('TRINIUMCB.PreviousRound')}">
             <i class="fas fa-step-backward"></i>
           </button>
-          <button data-control="previousTurn" title="${game.i18n.localize('TRINIUMCB.PreviousTurn')}">
+          <button type="button" data-control="previousTurn" title="${game.i18n.localize('TRINIUMCB.PreviousTurn')}">
             <i class="fas fa-arrow-left"></i>
           </button>
-          <button data-control="nextTurn" title="${game.i18n.localize('TRINIUMCB.NextTurn')}">
+          <button type="button" data-control="nextTurn" title="${game.i18n.localize('TRINIUMCB.NextTurn')}">
             <i class="fas fa-arrow-right"></i>
           </button>
-          <button data-control="nextRound" title="${game.i18n.localize('TRINIUMCB.NextRound')}">
+          <button type="button" data-control="nextRound" title="${game.i18n.localize('TRINIUMCB.NextRound')}">
             <i class="fas fa-step-forward"></i>
           </button>
-          <button data-control="endCombat" title="${game.i18n.localize('TRINIUMCB.EndCombat')}">
+          <button type="button" data-control="endCombat" title="${game.i18n.localize('TRINIUMCB.EndCombat')}">
             <i class="fas fa-stop"></i>
           </button>
         </div>
@@ -325,7 +325,7 @@ class MiniCombatTracker {
     } else if (combat.combatant?.token?.isOwner) {
       return `
         <div class="tcb-combat-controls-mini">
-          <button data-control="endTurn" title="${game.i18n.localize('TRINIUMCB.EndTurn')}" class="end-turn-button">
+          <button type="button" data-control="endTurn" title="${game.i18n.localize('TRINIUMCB.EndTurn')}" class="end-turn-button">
             <i class="fas fa-hourglass-end"></i> ${game.i18n.localize('TRINIUMCB.EndTurn')}
           </button>
         </div>
@@ -653,16 +653,16 @@ class MiniCombatTracker {
 
   static createInitiativeButtons() {
     return `
-      <button class="tcb-dialog-button" data-action="clear-initiative" title="${game.i18n.localize('TRINIUMCB.ClearInitiative')}">
+      <button type="button" class="tcb-dialog-button" data-action="clear-initiative" title="${game.i18n.localize('TRINIUMCB.ClearInitiative')}">
         <i class="fas fa-eraser"></i>
       </button>
-      <button class="tcb-dialog-button" data-action="reroll-initiative" title="${game.i18n.localize('TRINIUMCB.RerollInitiative')}">
+      <button type="button" class="tcb-dialog-button" data-action="reroll-initiative" title="${game.i18n.localize('TRINIUMCB.RerollInitiative')}">
         <i class="fas fa-dice-d20"></i>
       </button>
-      <button class="tcb-dialog-button" data-action="set-initiative" title="${game.i18n.localize('TRINIUMCB.SetInitiative')}">
+      <button type="button" class="tcb-dialog-button" data-action="set-initiative" title="${game.i18n.localize('TRINIUMCB.SetInitiative')}">
         <i class="fas fa-input-numeric"></i>
       </button>
-      <button class="tcb-dialog-button" data-action="set-turn" title="${game.i18n.localize('TRINIUMCB.SetCurrent')}">
+      <button type="button" class="tcb-dialog-button" data-action="set-turn" title="${game.i18n.localize('TRINIUMCB.SetCurrent')}">
         <i class="fas fa-arrows-to-line"></i>
       </button>
     `;
@@ -673,10 +673,10 @@ class MiniCombatTracker {
     const defeatedClass = combatant.defeated ? 'tcb-button-active' : '';
 
     return `
-      <button class="tcb-dialog-button tcb-visibility-button ${hiddenClass}" data-action="toggle-visibility" title="${game.i18n.localize('TRINIUMCB.ToggleVisibility')}">
+      <button type="button" class="tcb-dialog-button tcb-visibility-button ${hiddenClass}" data-action="toggle-visibility" title="${game.i18n.localize('TRINIUMCB.ToggleVisibility')}">
         <i class="fas fa-eye-slash"></i>
       </button>
-      <button class="tcb-dialog-button tcb-defeated-button ${defeatedClass}" data-action="toggle-defeated" title="${game.i18n.localize('TRINIUMCB.MarkDefeated')}">
+      <button type="button" class="tcb-dialog-button tcb-defeated-button ${defeatedClass}" data-action="toggle-defeated" title="${game.i18n.localize('TRINIUMCB.MarkDefeated')}">
         <i class="fas fa-skull"></i>
       </button>
     `;
@@ -693,7 +693,7 @@ class MiniCombatTracker {
     return dispositions.map((d) => {
       const activeClass = combatant.token.disposition === d.value ? 'tcb-button-active' : '';
       return `
-        <button class="tcb-dialog-button tcb-disposition-button tcb-disposition-${d.value} ${activeClass}" data-action="set-disposition" data-disposition="${d.value}" title="${game.i18n.localize(`TRINIUMCB.${d.label}`)}">
+        <button type="button" class="tcb-dialog-button tcb-disposition-button tcb-disposition-${d.value} ${activeClass}" data-action="set-disposition" data-disposition="${d.value}" title="${game.i18n.localize(`TRINIUMCB.${d.label}`)}">
           <i class="fas fa-${d.icon}"></i>
         </button>
       `;

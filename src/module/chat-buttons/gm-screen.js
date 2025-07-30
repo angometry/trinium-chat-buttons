@@ -49,7 +49,7 @@ class GMScreen {
       toggleGMScreen: this.toggleGMScreen.bind(this)
     }
     
-    const gmScreenBtn = $(`<button class="tcb-button" id="tcb-gm-screen-button" title="${game.i18n.localize('TCB_GMSCREEN.ToggleGMScreen')}">
+    const gmScreenBtn = $(`<button type="button" class="tcb-button" id="tcb-gm-screen-button" title="${game.i18n.localize('TCB_GMSCREEN.ToggleGMScreen')}">
       <i class="fas fa-book-open"></i>
     </button>`);
 

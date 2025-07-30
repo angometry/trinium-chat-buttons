@@ -46,17 +46,17 @@ class UtilityButtons {
 
   static createGMControlIcons() {
     return `
-      <button class="tcb-button" id="tcb-roll-npc-initiative" title="${game.i18n.localize(
+      <button type="button" class="tcb-button" id="tcb-roll-npc-initiative" title="${game.i18n.localize(
         'TRINIUMCB.RollNPCInitiative'
       )}">
         <i class="fas fa-dice"></i>
       </button>
-      <button class="tcb-button" id="tcb-select-all-player-tokens" title="${game.i18n.localize(
+      <button type="button" class="tcb-button" id="tcb-select-all-player-tokens" title="${game.i18n.localize(
         'TRINIUMCB.SelectAllPlayerTokens'
       )}">
         <i class="fas fa-users"></i>
       </button>
-      <button class="tcb-button" id="tcb-select-random-player-token" title="${game.i18n.localize(
+      <button type="button" class="tcb-button" id="tcb-select-random-player-token" title="${game.i18n.localize(
         'TRINIUMCB.SelectRandomPlayerToken'
       )}">
         <i class="fas fa-random"></i>
@@ -66,12 +66,12 @@ class UtilityButtons {
 
   static createPlayerControlIcons() {
     return `
-      <button class="tcb-button" id="tcb-roll-player-initiative" title="${game.i18n.localize(
+      <button type="button" class="tcb-button" id="tcb-roll-player-initiative" title="${game.i18n.localize(
         'TRINIUMCB.RollPlayerInitiative'
       )}">
         <i class="fas fa-dice"></i>
       </button>
-      <button class="tcb-button" id="tcb-select-own-token" title="${game.i18n.localize('TRINIUMCB.SelectOwnToken')}">
+      <button type="button" class="tcb-button" id="tcb-select-own-token" title="${game.i18n.localize('TRINIUMCB.SelectOwnToken')}">
         <i class="fas fa-user"></i>
       </button>
     `;
