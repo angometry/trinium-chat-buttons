@@ -56,7 +56,7 @@ class MidiButtons {
   }
 
   static getChatControls(html) {
-    const chatControls = html.find('#chat-controls');
+    const chatControls = $(html).find('.chat-controls');
     if (!chatControls.length) {
       this.logger.error('No chat controls found. Unable to initialize buttons.');
       return null;

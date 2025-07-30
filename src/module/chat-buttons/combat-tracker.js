@@ -13,7 +13,7 @@ class MiniCombatTracker {
   }
 
   static onRenderChatLog(chatLog, html, data) {
-    const chatControls = html.find('#chat-controls');
+    const chatControls = $(html).find('.chat-controls');
     if (!chatControls.length) {
       this.logger.debug('No chat controls found.');
       return;

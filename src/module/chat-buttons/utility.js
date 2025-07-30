@@ -11,7 +11,7 @@ class UtilityButtons {
   }
 
   static onRenderChatLog(chatLog, html, data) {
-    const combatTrackerButtonGroup = html.find('#tcb-combat-tracker-button-groups');
+    const combatTrackerButtonGroup = $(html).find('#tcb-combat-tracker-button-groups');
     if (!combatTrackerButtonGroup.length) {
       this.logger.debug('No combat tracker button found.');
       return;

@@ -108,22 +108,6 @@
   box-shadow: none;
 }
 
-.tcb-button[data-id="publicroll"].tcb-active {
-  background-color: #85ce72; /* Green for public roll */
-}
-
-.tcb-button[data-id="gmroll"].tcb-active {
-  background-color: #7fa5c5; /* Blue for GM roll */
-}
-
-.tcb-button[data-id="selfroll"].tcb-active {
-  background-color: #ffb13e; /* Yellow for self roll */
-}
-
-.tcb-button[data-id="blindroll"].tcb-active {
-  background-color: #e16f81; /* Red for blind roll */
-}
-
 #tcb-midi-fast-forward-toggle.tcb-active {
   background-color: #ff551f;
 }

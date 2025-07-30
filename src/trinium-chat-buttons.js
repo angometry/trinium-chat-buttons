@@ -14,7 +14,7 @@ class TriniumChatButtonsInit {
 
   static wrapChatControls() {
     Hooks.on('renderChatLog', (chatLog, html) => {
-      const chatControls = html.find('#chat-controls');
+      const chatControls = $(html).find('.chat-controls');
       if (chatControls.length && !chatControls.parent().hasClass('chat-controls-wrapper')) {
         chatControls.wrap('<div class="chat-controls-wrapper"></div>');
         chatControls.parent().append('<div id="tcb-midi-controls"></div>');
@@ -28,10 +28,7 @@ class TriniumChatButtonsInit {
         .addClass('form-group group-header trinium-settings-header')
         .html(game.i18n.localize('TRINIUMCB.GMScreenHeader'))
         .insertBefore($('[name="trinium-chat-buttons.enableGMScreen"]').closest('div.form-group'));
-      $('<div>')
-        .addClass('form-group group-header trinium-settings-header')
-        .html(game.i18n.localize('TRINIUMCB.PrivacyButtonsHeader'))
-        .insertBefore($('[name="trinium-chat-buttons.enablePrivacyButtons"]').closest('div.form-group'));
+
       $('<div>')
         .addClass('form-group group-header trinium-settings-header')
         .html(game.i18n.localize('TRINIUMCB.MidiButtonsPollingHeader'))
@@ -50,10 +47,6 @@ class TriniumChatButtonsInit {
 
 Hooks.once('init', () => {
   TriniumChatButtonsInit.init();
-
-  if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_PRIVACY_BUTTONS)) {
-    import('./module/chat-buttons/roll-privacy.js').then((module) => module.init());
-  }
 
   const midiModule = game.modules.get('midi-qol');
   const isMidiCompatible = midiModule?.active && 

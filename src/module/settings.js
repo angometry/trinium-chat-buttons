@@ -4,7 +4,7 @@ export const SETTINGS = {
   MODULE_NAME: 'trinium-chat-buttons',
   WINDOW_MODULE_NAME: 'triniumChatButtons',
 
-  PRIVACY_VISIBILITY: 'privacyButtonVisibility',
+
   MIDI_BUTTON_VISIBILITY: 'midiButtonVisibility',
   ENABLE_POLLING: 'enablePolling',
   POLLING_RATE: 'pollingRate',
@@ -13,7 +13,7 @@ export const SETTINGS = {
   PLAYER_HEALTH_PRIVACY: 'playerHealthPrivacy',
   LOG_LEVEL: 'logLevel',
   ENABLE_CSS_TWEAKS: 'enableCSSTweaks',
-  ENABLE_PRIVACY_BUTTONS: 'enablePrivacyButtons',
+
   ENABLE_MIDI_BUTTONS: 'enableMidiButtons',
   ENABLE_COMBAT_TRACKER_BUTTONS: 'enableCombatTrackerButtons',
   ONLY_SHOW_TURN_CONTROLS: 'onlyShowTurnControls',
@@ -252,29 +252,6 @@ export function registerGMScreenSettings() {
 }
 
 export function registerSettings() {
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_PRIVACY_BUTTONS, {
-    name: game.i18n.localize('TCB_SETTINGS.EnablePrivacyButtons'),
-    hint: game.i18n.localize('TCB_SETTINGS.EnablePrivacyButtonsHint'),
-    scope: 'world',
-    config: true,
-    type: Boolean,
-    default: true,
-  });
-
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.PRIVACY_VISIBILITY, {
-    name: game.i18n.localize('TCB_SETTINGS.PrivacyButtonVisibility'),
-    hint: game.i18n.localize('TCB_SETTINGS.PrivacyButtonVisibilityHint'),
-    scope: 'world',
-    config: true,
-    type: String,
-    choices: {
-      gm: game.i18n.localize('TCB_SETTINGS.GMOnly'),
-      players: game.i18n.localize('TCB_SETTINGS.PlayersOnly'),
-      everyone: game.i18n.localize('TCB_SETTINGS.Everyone'),
-    },
-    default: 'everyone',
-  });
-
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_MIDI_BUTTONS, {
     name: game.i18n.localize('TCB_SETTINGS.EnableMidiButtons'),
     hint: game.i18n.localize('TCB_SETTINGS.EnableMidiButtonsHint'),

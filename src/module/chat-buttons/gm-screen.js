@@ -84,7 +84,7 @@ class GMScreen {
   static initializeGMScreenButton(chatLog, html) {
     if (!game.user.isGM) return;
 
-    const chatControls = html.find('#chat-controls');
+    const chatControls = $(html).find('.chat-controls');
     if (!chatControls.length) {
       this.logger.error('No chat controls found');
       return;
