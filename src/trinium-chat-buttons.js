@@ -26,11 +26,11 @@ class TriniumChatButtonsInit {
     if (this.initialized) return;
     
     // Create the button container
-    const container = this.createButtonContainer(html);
-    if (!container) return;
+    const containerData = this.createButtonContainer(html);
+    if (!containerData) return;
 
     // Load and initialize modules in order
-    await this.initializeModules(container);
+    await this.initializeModules(containerData);
     
     this.initialized = true;
     this.logger.info('All modules initialized successfully');
@@ -50,19 +50,24 @@ class TriniumChatButtonsInit {
     
     // Create the new container
     const container = $('<div id="trinium-chat-buttons-container" class="trinium-chat-buttons-container"></div>');
+    
+    // Create the button row that all modules will use
+    const buttonRow = $('<div id="tcb-button-row" class="tcb-button-row"></div>');
+    container.append(buttonRow);
+    
     chatControls.before(container);
     
-    this.logger.debug('Created button container');
-    return container;
+    this.logger.debug('Created button container with button row');
+    return { container, buttonRow };
   }
 
-  static async initializeModules(container) {
+  static async initializeModules({ container, buttonRow }) {
     try {
       // Initialize GM Screen first (for GMs only)
       if (game.user.isGM && game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_GM_SCREEN)) {
         const gmScreenModule = await import('./module/chat-buttons/gm-screen.js');
         this.modules.gmScreen = gmScreenModule;
-        gmScreenModule.initialize(container);
+        gmScreenModule.initialize(container, buttonRow);
         this.logger.debug('GM Screen module initialized');
       }
 
@@ -74,8 +79,8 @@ class TriniumChatButtonsInit {
         this.modules.combatTracker = combatTrackerModule;
         this.modules.utility = utilityModule;
         
-        combatTrackerModule.initialize(container);
-        utilityModule.initialize(container);
+        combatTrackerModule.initialize(container, buttonRow);
+        utilityModule.initialize(container, buttonRow);
         
         this.logger.debug('Combat Tracker and Utility modules initialized');
       }

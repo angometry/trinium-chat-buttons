@@ -9,20 +9,13 @@ class UtilityButtons {
     this.logger.info('Initializing Trinium Chat Buttons Utility Buttons');
   }
 
-  static initialize(container) {
+  static initialize(container, buttonRow) {
     if (!this.shouldShowUtilityButtons()) {
       this.logger.debug('Utility buttons not enabled for this user');
       return;
     }
 
-    // Find the combat tracker button group that was created by the combat tracker
-    const combatTrackerButtonGroup = container.find('#tcb-combat-tracker-button-groups');
-    if (!combatTrackerButtonGroup.length) {
-      this.logger.debug('No combat tracker button group found.');
-      return;
-    }
-
-    this.addUtilityButtons(combatTrackerButtonGroup);
+    this.addUtilityButtons(buttonRow);
     this.addUtilityButtonsListeners();
 
     this.logger.info('Utility Buttons initialized');
@@ -38,21 +31,17 @@ class UtilityButtons {
     );
   }
 
-  static addUtilityButtons(combatTrackerButtonGroup) {
-    combatTrackerButtonGroup.append(this.createControlIcons());
+  static addUtilityButtons(buttonRow) {
+    buttonRow.append(this.createControlIcons());
     this.logger.debug('Utility buttons added');
   }
 
   static createControlIcons() {
-    const controlIcons = $('<div id="tcb-control-icons" class="tcb-button-row"></div>');
-
     if (game.user.isGM) {
-      controlIcons.append(this.createGMControlIcons());
+      return this.createGMControlIcons();
     } else {
-      controlIcons.append(this.createPlayerControlIcons());
+      return this.createPlayerControlIcons();
     }
-
-    return controlIcons;
   }
 
   static createGMControlIcons() {
@@ -162,7 +151,7 @@ class UtilityButtons {
   }
 }
 
-export function initialize(container) {
+export function initialize(container, buttonRow) {
   UtilityButtons.init();
-  UtilityButtons.initialize(container);
+  UtilityButtons.initialize(container, buttonRow);
 }

@@ -12,8 +12,9 @@ class MiniCombatTracker {
     this.registerHooks();
   }
 
-  static initialize(container) {
+  static initialize(container, buttonRow) {
     this.container = container;
+    this.buttonRow = buttonRow;
     
     if (!this.shouldShowCombatTrackerButtons()) {
       this.logger.debug('Combat tracker buttons not enabled for this user');
@@ -73,9 +74,7 @@ class MiniCombatTracker {
   }
 
   static addCombatTrackerButtons() {
-    const buttonGroup = $('<div id="tcb-combat-tracker-button-groups" class="tcb-button-row"></div>');
-    buttonGroup.append(this.createCombatTrackerToggleButton());
-    this.container.append(buttonGroup);
+    this.buttonRow.append(this.createCombatTrackerToggleButton());
     this.logger.debug('Combat tracker buttons added');
   }
 
@@ -703,7 +702,7 @@ class MiniCombatTracker {
 }
 
 
-export function initialize(container) {
+export function initialize(container, buttonRow) {
   MiniCombatTracker.init();
-  MiniCombatTracker.initialize(container);
+  MiniCombatTracker.initialize(container, buttonRow);
 }

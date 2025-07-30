@@ -34,26 +34,26 @@ class GMScreen {
     this.initializeEventListeners();
   }
 
-  static initialize(container) {
+  static initialize(container, buttonRow) {
     if (!game.user.isGM) {
       this.logger.debug('GM Screen not available for non-GM users');
       return;
     }
 
-    this.addGMScreenButton(container);
+    this.addGMScreenButton(buttonRow);
     this.logger.info('GM Screen initialized');
   }
 
-  static addGMScreenButton(container) {
+  static addGMScreenButton(buttonRow) {
     window[SETTINGS.WINDOW_MODULE_NAME] = {
       toggleGMScreen: this.toggleGMScreen.bind(this)
     }
     
     const gmScreenBtn = $(`<button class="tcb-button" id="tcb-gm-screen-button" title="${game.i18n.localize('TCB_GMSCREEN.ToggleGMScreen')}">
-      <i class="fas fa-book-open"></i> GM Screen
+      <i class="fas fa-book-open"></i>
     </button>`);
 
-    container.append(gmScreenBtn);
+    buttonRow.append(gmScreenBtn);
     this.logger.debug('GM Screen button added');
   }
 
@@ -937,7 +937,7 @@ class GMScreen {
   }
 }
 
-export function initialize(container) {
+export function initialize(container, buttonRow) {
   GMScreen.init();
-  GMScreen.initialize(container);
+  GMScreen.initialize(container, buttonRow);
 }
