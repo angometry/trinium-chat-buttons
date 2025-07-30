@@ -7,19 +7,25 @@ class UtilityButtons {
   static init() {
     this.logger = new TriniumLogger(SETTINGS.MODULE_NAME);
     this.logger.info('Initializing Trinium Chat Buttons Utility Buttons');
-    Hooks.on('renderChatLog', this.onRenderChatLog.bind(this));
   }
 
-  static onRenderChatLog(chatLog, html, data) {
-    const combatTrackerButtonGroup = $(html).find('#tcb-combat-tracker-button-groups');
-    if (!combatTrackerButtonGroup.length) {
-      this.logger.debug('No combat tracker button found.');
+  static initialize(container) {
+    if (!this.shouldShowUtilityButtons()) {
+      this.logger.debug('Utility buttons not enabled for this user');
       return;
     }
 
-    if (this.shouldShowUtilityButtons()) {
-      this.initializeCombatTracker(combatTrackerButtonGroup);
+    // Find the combat tracker button group that was created by the combat tracker
+    const combatTrackerButtonGroup = container.find('#tcb-combat-tracker-button-groups');
+    if (!combatTrackerButtonGroup.length) {
+      this.logger.debug('No combat tracker button group found.');
+      return;
     }
+
+    this.addUtilityButtons(combatTrackerButtonGroup);
+    this.addUtilityButtonsListeners();
+
+    this.logger.info('Utility Buttons initialized');
   }
 
   static shouldShowUtilityButtons() {
@@ -32,17 +38,7 @@ class UtilityButtons {
     );
   }
 
-  static initializeCombatTracker(combatTrackerButtonGroup) {
-    this.addCombatTrackerButtons(combatTrackerButtonGroup);
-    this.addUtilityButtonsListeners();
-
-    this.logger.info('Utility Buttons initialized');
-  }
-
-  static addCombatTrackerButtons(combatTrackerButtonGroup) {
-    const buttonGroup = $('<div id="tcb-combat-tracker-button-groupss" class="tcb-button-row"></div>');
-    buttonGroup.append(this.createControlIcons());
-
+  static addUtilityButtons(combatTrackerButtonGroup) {
     combatTrackerButtonGroup.append(this.createControlIcons());
     this.logger.debug('Utility buttons added');
   }
@@ -166,6 +162,7 @@ class UtilityButtons {
   }
 }
 
-export function init() {
+export function initialize(container) {
   UtilityButtons.init();
+  UtilityButtons.initialize(container);
 }

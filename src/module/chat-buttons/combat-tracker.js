@@ -3,25 +3,33 @@ import { SETTINGS } from '../settings.js';
 
 class MiniCombatTracker {
   static logger;
+  static container;
   static #eventsBound = false;
 
   static init() {
     this.logger = new TriniumLogger(SETTINGS.MODULE_NAME);
     this.logger.info('Initializing Trinium Chat Buttons Combat Tracker');
-    Hooks.on('renderChatLog', this.onRenderChatLog.bind(this));
     this.registerHooks();
   }
 
-  static onRenderChatLog(chatLog, html, data) {
-    const chatControls = $(html).find('.chat-controls');
-    if (!chatControls.length) {
-      this.logger.debug('No chat controls found.');
+  static initialize(container) {
+    this.container = container;
+    
+    if (!this.shouldShowCombatTrackerButtons()) {
+      this.logger.debug('Combat tracker buttons not enabled for this user');
       return;
     }
 
-    if (this.shouldShowCombatTrackerButtons()) {
-      this.initializeCombatTracker(chatControls);
+    this.addCombatTrackerButtons();
+    this.container.append(this.createMiniCombatTracker());
+
+    if (!this.#eventsBound) {
+      this.bindEvents();
+      this.#eventsBound = true;
     }
+
+    this.logger.info('Combat tracker initialized');
+    this.toggleCombatTracker();
   }
 
   static shouldShowCombatTrackerButtons() {
@@ -31,20 +39,6 @@ class MiniCombatTracker {
       (combatTrackerVisibility === 'players' && !game.user.isGM) ||
       (combatTrackerVisibility === 'gm' && game.user.isGM)
     );
-  }
-
-  static initializeCombatTracker(chatControls) {
-    this.addCombatTrackerButtons(chatControls);
-    chatControls.parent().prepend(this.createMiniCombatTracker());
-
-    if (!this.#eventsBound) {
-      this.bindEvents();
-      this.#eventsBound = true;
-    }
-
-    this.initialized = true;
-    this.logger.info('Combat tracker initialized');
-    this.toggleCombatTracker();
   }
 
   static bindEvents() {
@@ -78,10 +72,10 @@ class MiniCombatTracker {
     this.logger.info('Started and activated combat');
   }
 
-  static addCombatTrackerButtons(chatControls) {
+  static addCombatTrackerButtons() {
     const buttonGroup = $('<div id="tcb-combat-tracker-button-groups" class="tcb-button-row"></div>');
     buttonGroup.append(this.createCombatTrackerToggleButton());
-    chatControls.parent().prepend(buttonGroup);
+    this.container.append(buttonGroup);
     this.logger.debug('Combat tracker buttons added');
   }
 
@@ -101,7 +95,7 @@ class MiniCombatTracker {
       combatTracker.slideToggle(350);
     } else {
       combatTracker = this.createMiniCombatTracker();
-      $('#chat-controls').parent().prepend(combatTracker);
+      this.container.append(combatTracker);
       combatTracker.slideDown(350);
     }
 
@@ -485,7 +479,7 @@ class MiniCombatTracker {
     }
 
     const dialogContent = this.createDialogContent(combatant);
-    const parentElement = $('#chat-controls-wrapper').length ? $('#chat-controls-wrapper') : $('#chat-controls').parent();
+    const parentElement = this.container || $('body');
     const dialog = $(dialogContent).hide().prependTo(parentElement);
 
     combatantElement.addClass('tcb-combatant-dialogmarker');
@@ -708,6 +702,8 @@ class MiniCombatTracker {
   }
 }
 
-export function init() {
+
+export function initialize(container) {
   MiniCombatTracker.init();
+  MiniCombatTracker.initialize(container);
 }

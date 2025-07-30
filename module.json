@@ -62,5 +62,17 @@
   "compatibility": {
     "minimum": "11",
     "verified": "12"
+  },
+  "flags": {
+    "hotReload": {
+      "extensions": [
+        "js",
+        "css"
+      ],
+      "paths": [
+        "module",
+        "styles"
+      ]
+    }
   }
 }

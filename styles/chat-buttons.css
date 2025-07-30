@@ -5,23 +5,15 @@
   font-weight: bold;
 }
 
-#chat-controls {
-  padding: 0;
-  margin: 0;
-  gap: 4px;
-  align-items: center;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.chat-controls-wrapper {
+/* New container for buttons */
+.trinium-chat-buttons-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
-  margin: 0 0 2px 0;
+  margin: 0 0 8px 0;
   padding: 4px;
+  gap: 4px;
   flex: 0 0 auto;
 }
 
@@ -89,4 +81,17 @@
 .tcb-active {
   box-shadow: none;
   border: 1px solid black;
+}
+
+/* GM Screen button styling */
+#tcb-gm-screen-button {
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: 1px solid black;
+  margin-bottom: 4px;
+}
+
+#tcb-gm-screen-button:hover {
+  color: #FFF;
+  background-color: rgba(0, 0, 0, 0.7);
 }

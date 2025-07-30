@@ -2,6 +2,13 @@ import { SETTINGS, registerSettings, registerGMScreenSettings, registerKeybindin
 import { TriniumLogger } from './module/logger.js';
 
 class TriniumChatButtonsInit {
+  static logger;
+  static modules = {
+    combatTracker: null,
+    utility: null,
+    gmScreen: null
+  };
+
   static init() {
     registerSettings();
     registerGMScreenSettings();
@@ -9,17 +16,72 @@ class TriniumChatButtonsInit {
 
     this.logger = new TriniumLogger(SETTINGS.MODULE_NAME);
     this.addSettingsHeaders();
-    this.wrapChatControls();
+    
+    // Single hook to handle all initialization after chat is rendered
+    Hooks.on('renderChatLog', this.onChatLogRendered.bind(this));
   }
 
-  static wrapChatControls() {
-    Hooks.on('renderChatLog', (chatLog, html) => {
-      const chatControls = $(html).find('.chat-controls');
-      if (chatControls.length && !chatControls.parent().hasClass('chat-controls-wrapper')) {
-        chatControls.wrap('<div class="chat-controls-wrapper"></div>');
+  static async onChatLogRendered(chatLog, html, data) {
+    // Only initialize once
+    if (this.initialized) return;
+    
+    // Create the button container
+    const container = this.createButtonContainer(html);
+    if (!container) return;
 
+    // Load and initialize modules in order
+    await this.initializeModules(container);
+    
+    this.initialized = true;
+    this.logger.info('All modules initialized successfully');
+  }
+
+  static createButtonContainer(html) {
+    const chatForm = $(html).find('.chat-form');
+    const chatControls = chatForm.find('.chat-controls');
+    
+    if (!chatControls.length) {
+      this.logger.error('Chat controls not found');
+      return null;
+    }
+
+    // Remove any existing container first
+    chatForm.find('#trinium-chat-buttons-container').remove();
+    
+    // Create the new container
+    const container = $('<div id="trinium-chat-buttons-container" class="trinium-chat-buttons-container"></div>');
+    chatControls.before(container);
+    
+    this.logger.debug('Created button container');
+    return container;
+  }
+
+  static async initializeModules(container) {
+    try {
+      // Initialize GM Screen first (for GMs only)
+      if (game.user.isGM && game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_GM_SCREEN)) {
+        const gmScreenModule = await import('./module/chat-buttons/gm-screen.js');
+        this.modules.gmScreen = gmScreenModule;
+        gmScreenModule.initialize(container);
+        this.logger.debug('GM Screen module initialized');
       }
-    });
+
+      // Initialize Combat Tracker and Utility modules
+      if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_COMBAT_TRACKER_BUTTONS)) {
+        const combatTrackerModule = await import('./module/chat-buttons/combat-tracker.js');
+        const utilityModule = await import('./module/chat-buttons/utility.js');
+        
+        this.modules.combatTracker = combatTrackerModule;
+        this.modules.utility = utilityModule;
+        
+        combatTrackerModule.initialize(container);
+        utilityModule.initialize(container);
+        
+        this.logger.debug('Combat Tracker and Utility modules initialized');
+      }
+    } catch (error) {
+      this.logger.error('Error initializing modules:', error);
+    }
   }
 
   static addSettingsHeaders() {
@@ -35,40 +97,11 @@ class TriniumChatButtonsInit {
       $('<div>')
         .addClass('form-group group-header trinium-settings-header')
         .html(game.i18n.localize('TRINIUMCB.DebugHeader'))
-        .insertBefore($('[name="trinium-chat-buttons.enableCSSTweaks"]').closest('div.form-group'));
+        .insertBefore($('[name="trinium-chat-buttons.logLevel"]').closest('div.form-group'));
     });
   }
 }
 
 Hooks.once('init', () => {
   TriniumChatButtonsInit.init();
-
-  if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_GM_SCREEN)) {
-    import('./module/chat-buttons/gm-screen.js').then((module) => module.init());
-  }
-
-  if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_COMBAT_TRACKER_BUTTONS)) {
-    import('./module/chat-buttons/combat-tracker.js').then((module) => module.init());
-    import('./module/chat-buttons/utility.js').then((module) => module.init());
-  }
-
-  if (game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_CSS_TWEAKS)) {
-    const style = document.createElement('style');
-    style.id = 'trinium-chat-buttons-css-tweaks';
-    style.innerHTML = `
-      /* Darker sidebar, no gap to the edge of the screen */
-      #sidebar.app {
-          background-color: rgba(25,25,25,0.6);
-          margin: 0px;
-          height: 100%;
-          border-radius: 0;
-      }
-
-      /* No gap below sidebar tab buttons */
-      #sidebar-tabs.tabs {
-          margin-bottom: 0px;
-      }
-    `;
-    document.head.appendChild(style);
-  }
 });

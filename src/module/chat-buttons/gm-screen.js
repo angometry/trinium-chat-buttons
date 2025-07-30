@@ -8,7 +8,7 @@ import { GM_SCREEN_PRESETS } from '../../templates/gm-screen-presets.js';
 
 const CSS = {
   GM_SCREEN: '#tcb-gm-screen',
-  GM_SCREEN_BUTTON: '#chat-controls .tcb-gm-screen-button',
+  GM_SCREEN_BUTTON: '#tcb-gm-screen-button',
   TAB_BUTTON: '.tcb-tab-button',
   EDIT_BUTTON: '.tcb-edit-button',
   SETTINGS_BUTTON: '.tcb-settings-button',
@@ -32,6 +32,29 @@ class GMScreen {
     this.logger = new TriniumLogger(SETTINGS.MODULE_NAME);
     this.logger.info('Initializing GM Screen');
     this.initializeEventListeners();
+  }
+
+  static initialize(container) {
+    if (!game.user.isGM) {
+      this.logger.debug('GM Screen not available for non-GM users');
+      return;
+    }
+
+    this.addGMScreenButton(container);
+    this.logger.info('GM Screen initialized');
+  }
+
+  static addGMScreenButton(container) {
+    window[SETTINGS.WINDOW_MODULE_NAME] = {
+      toggleGMScreen: this.toggleGMScreen.bind(this)
+    }
+    
+    const gmScreenBtn = $(`<button class="tcb-button" id="tcb-gm-screen-button" title="${game.i18n.localize('TCB_GMSCREEN.ToggleGMScreen')}">
+      <i class="fas fa-book-open"></i> GM Screen
+    </button>`);
+
+    container.append(gmScreenBtn);
+    this.logger.debug('GM Screen button added');
   }
 
   static initializeEventListeners() {
@@ -77,27 +100,6 @@ class GMScreen {
     ];
 
     events.forEach(({ selector, event, handler }) => $(document).on(event, selector, handler));
-
-    Hooks.on('renderChatLog', this.initializeGMScreenButton.bind(this));
-  }
-
-  static initializeGMScreenButton(chatLog, html) {
-    if (!game.user.isGM) return;
-
-    const chatControls = $(html).find('.chat-controls');
-    if (!chatControls.length) {
-      this.logger.error('No chat controls found');
-      return;
-    }
-
-    window[SETTINGS.WINDOW_MODULE_NAME] = {
-      toggleGMScreen: this.toggleGMScreen.bind(this)
-    }
-    const gmScreenBtn = $(`<a class="tcb-gm-screen-button" title="${game.i18n.localize('TCB_GMSCREEN.ToggleGMScreen')}">
-      <i class="fas fa-book-open"></i>
-    </a>`);
-
-    chatControls.prepend(gmScreenBtn);
   }
 
   static toggleGMScreen() {
@@ -153,7 +155,9 @@ class GMScreen {
     }
 
     gmScreenHtml += '</div>';
-    $('#interface').append($(gmScreenHtml));
+    
+    // Append directly to body instead of #interface
+    $('body').append($(gmScreenHtml));
 
     for (let i = 1; i <= numberOfColumns; i++) {
       const column = layout[i] || DEFAULT_COLUMN;
@@ -177,7 +181,6 @@ class GMScreen {
       $gmScreen.removeClass('tcb-visible');
     }
   }
-
 
   static createColumnHTML(columnIndex, column) {
     const tabButtons = (start, end) => Array.from({ length: end - start + 1 }, (_, i) => i + start)
@@ -206,7 +209,6 @@ class GMScreen {
           </div>`).join('')}
       </div>`;
   }
-
 
   static toggleTabContainer(event) {
     const $button = $(event.currentTarget);
@@ -246,7 +248,6 @@ class GMScreen {
       $row.find('.tcb-tab-number').text(`${game.i18n.localize('TCB_GMSCREEN.Tab')} #${tab}`);
     });
   }
-
 
   static async setDefaultTab(columnIndex, rowIndex, tab) {
     const defaultTabs = game.settings.get(SETTINGS.MODULE_NAME, SETTINGS.GM_SCREEN_DEFAULT_TABS);
@@ -594,7 +595,6 @@ class GMScreen {
     $('#tcb-gm-screen-editor').data('active-tab', newTab);
   }
 
-
   static async updateEditorPreview() {
     const content = $(CSS.EDITOR_TEXTAREA).val();
     if (this.isJournalEntryUUID(content)) {
@@ -937,6 +937,7 @@ class GMScreen {
   }
 }
 
-export function init() {
+export function initialize(container) {
   GMScreen.init();
+  GMScreen.initialize(container);
 }

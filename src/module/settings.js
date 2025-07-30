@@ -8,11 +8,9 @@ export const SETTINGS = {
   HEALTH_PRIVACY: 'healthPrivacy',
   PLAYER_HEALTH_PRIVACY: 'playerHealthPrivacy',
   LOG_LEVEL: 'logLevel',
-  ENABLE_CSS_TWEAKS: 'enableCSSTweaks',
   ENABLE_COMBAT_TRACKER_BUTTONS: 'enableCombatTrackerButtons',
   ONLY_SHOW_TURN_CONTROLS: 'onlyShowTurnControls',
   STYLE_FOUNDRY_COMBAT_TRACKER: 'styleFoundryCombatTracker',
-  OVERRIDE_DND5E_CHECK: 'overrideDnd5eCheck',
 
   ENABLE_GM_SCREEN: 'enableGMScreen',
 
@@ -309,15 +307,6 @@ export function registerSettings() {
   game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.STYLE_FOUNDRY_COMBAT_TRACKER, {
     name: game.i18n.localize('TCB_SETTINGS.StyleFoundryCombatTracker'),
     hint: game.i18n.localize('TCB_SETTINGS.StyleFoundryCombatTrackerHint'),
-    scope: 'world',
-    config: true,
-    type: Boolean,
-    default: true,
-  });
-
-  game.settings.register(SETTINGS.MODULE_NAME, SETTINGS.ENABLE_CSS_TWEAKS, {
-    name: game.i18n.localize('TCB_SETTINGS.EnableCSSTweaks'),
-    hint: game.i18n.localize('TCB_SETTINGS.EnableCSSTweaksHint'),
     scope: 'world',
     config: true,
     type: Boolean,
