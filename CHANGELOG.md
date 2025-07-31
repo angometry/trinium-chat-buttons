@@ -1,3 +1,10 @@
+## v2.0.0
+
+**Breaking change**: The module has been updated for Foundry VTT version 13, losing support for previous versions.
+
+Due to the UI changes in Foundry 13, there were quite a few problematic color and layout issues to fix.
+Due to not having time to even use the module myself, I may have missed something. In that case, please open an issue and I will try to resolve it asap.
+
 ## v1.6.1
 
 - Fixed module version in module.json, oops.
