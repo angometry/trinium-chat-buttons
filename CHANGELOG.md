@@ -1,3 +1,7 @@
+## v2.0.2
+
+- Fixed chat button positioning to be outside the chat form, preventing interference with form submission.
+
 ## v2.0.1
 
 - Fixed chat button placement in Foundry 13.347. Non-breaking for previous versions.

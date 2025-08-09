@@ -38,14 +38,20 @@ class TriniumChatButtonsInit {
 
   static createButtonContainer(html) {
     const chatForm = $(html).find('.chat-form');
+    const chatScroll = $(html).find('.chat-scroll');
     
     if (!chatForm.length) {
       this.logger.error('Chat form not found');
       return null;
     }
+    
+    if (!chatScroll.length) {
+      this.logger.error('Chat scroll not found');
+      return null;
+    }
 
     // Remove any existing container first
-    chatForm.find('#trinium-chat-buttons-container').remove();
+    $(html).find('#trinium-chat-buttons-container').remove();
     
     // Create the new container
     const container = $('<div id="trinium-chat-buttons-container" class="trinium-chat-buttons-container"></div>');
@@ -54,8 +60,8 @@ class TriniumChatButtonsInit {
     const buttonRow = $('<div id="tcb-button-row" class="tcb-button-row"></div>');
     container.append(buttonRow);
     
-    // Append to the chat form
-    chatForm.append(container);
+    // Insert between chat-scroll and chat-form (outside the form)
+    chatScroll.after(container);
     
     this.logger.debug('Created button container with button row');
     return { container, buttonRow };

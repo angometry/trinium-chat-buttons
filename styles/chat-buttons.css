@@ -10,15 +10,19 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  width: 100%;
+  width: var(--sidebar-width);
   gap: 4px;
   flex: 0 0 auto;
+  padding-inline: var(--chat-message-spacing);
+  pointer-events: all;
+  position: relative;
 }
 
 #tcb-button-row {
   display: flex;
   gap: 0.5rem;
   width: 100%;
+  pointer-events: all;
 }
 
 #tcb-button-row > .tcb-button {
@@ -45,6 +49,9 @@
   align-items: center;
   justify-content: center;
   border-color: black;
+  pointer-events: all;
+  position: relative;
+  z-index: 1;
 }
 
 #tcb-gm-screen-button {
