@@ -22,7 +22,7 @@ class MiniCombatTracker {
     }
 
     this.addCombatTrackerButtons();
-    this.container.append(this.createMiniCombatTracker());
+    this.container.prepend(this.createMiniCombatTracker());
 
     if (!this.#eventsBound) {
       this.bindEvents();
@@ -94,7 +94,7 @@ class MiniCombatTracker {
       combatTracker.slideToggle(350);
     } else {
       combatTracker = this.createMiniCombatTracker();
-      this.container.append(combatTracker);
+      this.container.prepend(combatTracker);
       combatTracker.slideDown(350);
     }
 
