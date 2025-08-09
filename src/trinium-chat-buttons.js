@@ -38,10 +38,9 @@ class TriniumChatButtonsInit {
 
   static createButtonContainer(html) {
     const chatForm = $(html).find('.chat-form');
-    const chatControls = chatForm.find('.chat-controls');
     
-    if (!chatControls.length) {
-      this.logger.error('Chat controls not found');
+    if (!chatForm.length) {
+      this.logger.error('Chat form not found');
       return null;
     }
 
@@ -55,7 +54,8 @@ class TriniumChatButtonsInit {
     const buttonRow = $('<div id="tcb-button-row" class="tcb-button-row"></div>');
     container.append(buttonRow);
     
-    chatControls.before(container);
+    // Append to the chat form
+    chatForm.append(container);
     
     this.logger.debug('Created button container with button row');
     return { container, buttonRow };
