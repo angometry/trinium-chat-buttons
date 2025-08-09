@@ -1,3 +1,8 @@
+## v2.0.1
+
+- Fixed chat button placement in Foundry 13.347. Non-breaking for previous versions.
+- Fixed combat tracker rendering below buttons instead of above.
+
 ## v2.0.0
 
 **Breaking change**: The module has been updated for Foundry VTT version 13, losing support for previous versions.
